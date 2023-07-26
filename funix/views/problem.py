@@ -22,7 +22,7 @@ from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  
 from judge.utils.views import SingleObjectFormView, TitleMixin, generic_message
 from django.views.generic import View
 from judge.models.runtime import Language
-from funix.models import ProblemInitialSource
+from funix.models import ProblemInitialSource, SubmissionWPM
 
 def get_contest_problem(problem, profile):
     try:
@@ -300,6 +300,11 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             for timestamp in suspicious_behaviors: 
                 SuspiciousSubmissionBehavior.objects.create(submission= self.new_submission, time=datetime.datetime.fromtimestamp(timestamp))
 
+
+        # uuuuvcomment wpm
+        wpm = int(json.loads(form.cleaned_data['wpm']))
+        SubmissionWPM.objects.create(submission=self.new_submission, wpm=wpm)
+        
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
@@ -332,11 +337,11 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             
             if not request.user.has_perm('judge.resubmit_other') and self.old_submission.user != request.profile:
                 raise PermissionDenied()
-        else:
-            if not self.request.user.is_anonymous:
-                submissions = Submission.objects.filter(user=self.request.user.profile,problem=problem).order_by('-date')
-                if submissions.count() > 0:
-                    self.old_submission = submissions[0]
+        # else:
+        #     if not self.request.user.is_anonymous:
+        #         submissions = Submission.objects.filter(user=self.request.user.profile,problem=problem).order_by('-date')
+        #         if submissions.count() > 0:
+        #             self.old_submission = submissions[0]
 
         return super().dispatch(request, *args, **kwargs)
 

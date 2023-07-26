@@ -1,5 +1,5 @@
 from django.contrib import admin
-from funix.models import ProblemTestCaseData, SuspiciousSubmissionBehavior, ProblemInitialSource
+from funix.models import ProblemTestCaseData, SuspiciousSubmissionBehavior, ProblemInitialSource, SubmissionWPM
 from judge.admin.problem import ProblemAdmin
 from django.forms import ModelForm
     
@@ -17,3 +17,4 @@ ProblemAdmin.inlines = ProblemAdmin.inlines + [ProblemInitialSourceInline]
 admin.site.register(ProblemTestCaseData)
 admin.site.register(SuspiciousSubmissionBehavior)
 admin.site.register(ProblemInitialSource)
+admin.site.register(SubmissionWPM)

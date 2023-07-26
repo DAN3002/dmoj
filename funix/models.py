@@ -39,8 +39,6 @@ class SuspiciousSubmissionBehavior(models.Model):
     def __str__(self): 
         return f"{self.submission.user.username} - {self.submission.problem.name} - {self.submission.id} - {self.time}"
     
-
-    
 class ProblemInitialSource(models.Model): 
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE, related_name="initial_codes")
     source = models.TextField(verbose_name="Problem Initial Source", max_length=65536, default="", blank=True)
@@ -48,3 +46,10 @@ class ProblemInitialSource(models.Model):
     
     class Meta:
         unique_together = ('problem', 'language')
+        
+class SubmissionWPM(models.Model): 
+    submission = models.OneToOneField(Submission, on_delete=models.CASCADE, related_name="wpm")
+    wpm = models.IntegerField(verbose_name="Words Per Minutes", default=-1, null=True)
+    
+    def __str__(self): 
+        return "{} wpm".format(str(self.wpm))

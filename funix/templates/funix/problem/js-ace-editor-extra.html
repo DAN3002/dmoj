@@ -25,7 +25,6 @@
     },
     stop: () => {
       $("#ace_source").height($(".codeplace_editor").height());
-      console.log(window.aceEditor);
       window.aceEditor.resize();
       localStorage.setItem("editor_height", $(".codeplace_editor").height());
     },
@@ -37,7 +36,6 @@
   // clear code in the editor
   function clearEditor() {
     var source = $("textarea#id_source");
-    
     source.val(window.initial_code);
     window.ace_source.getSession().setValue(window.initial_code);
   }

@@ -35,7 +35,7 @@
                 {% else %}
                     update_submit_area(template);
                 {% endif %}
-                
+
                 // save for reset button
                 window.initial_code = template;
             });
@@ -112,6 +112,19 @@
           editor.getSession().setUseWrapMode(true);
           editor.setFontSize(14);
           editor.setPrintMarginColumn(100);
+
+          // uuuuvcomment wpm handling
+          const changeListener = () => {
+            if (!window.startedEdittingAt) {
+                window.startedEdittingAt = Date.now();
+                editor.off("change", changeListener)
+            }
+          }
+
+          editor.on("change", changeListener)
+          // uuuuvcomment end wpm handling
+
+
           // uuuuvcomment ace pasting event
           editor.on("paste", e => {
             if (e.text.length < 200) return;
@@ -130,7 +143,7 @@
         function preventSubmit() {
             event.preventDefault();
             $('#problem_submit').find(':submit').attr('disabled', false);
-        }        
+        }
 
         var ellipsis = "[...]"
 
@@ -142,12 +155,13 @@
         // initial_code can be template code (represents for each language)
         // or initial_code like somecode [...] somecode
         var initial_code = window.initial_code;
+        var initial_code_characters_count = initial_code.replace(/\[\.\.\.\]|\r/gi, '').length;
 
-        // if initial code contains [...] => need to check 
+        // if initial code contains [...] => need to check
         if (initial_code.includes(ellipsis)) {
             initial_code = initial_code.replace(/[\t\n\r ]+/g, " ");
             var contestant_code = $('#id_source').val().replace(/[\t\n\r ]+/g, " ");
-            
+
             var lang_id = $("#id_language").val();
 
             // validate
@@ -166,16 +180,36 @@
                 return result;
             }
 
-            
+
             var codePortions = initial_code.split(ellipsis).map(item => transform(item));
             var regex = new RegExp(`^${codePortions.join(".+")}$`)
             var i = 0;
             if (!regex.test(contestant_code)) {
                 alert("Invalid code");
                 preventSubmit();
-            } 
-        } 
+            }
+        }
 
+
+        // calculate wpm
+        let wpm
+        const duration = Math.ceil((Date.now() - window.startedEdittingAt)/1000/60*100)/100;
+        if (!duration) {
+            wpm = -1
+        } else {
+            let characters_count = $('#id_source').val().length;
+
+            // có 2 cases:
+            //  - initial code là code để điền vào
+            if (initial_code) {
+                characters_count -= initial_code_characters_count;
+            }
+            //  - initial code là code cho đẹp
+            // chưa nghĩ ra. Không nên làm kiểu này. Theo mình là vô nghĩa. chỉ nên làm initial_code kiểu trên.
+            wpm = Math.round(characters_count/5/duration);
+        }
+
+        document.querySelector("input[name=wpm]").value = wpm;
       });
   });
 </script>

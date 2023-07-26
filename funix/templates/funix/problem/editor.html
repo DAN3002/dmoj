@@ -10,7 +10,7 @@
         <div id="language">
             {{ form.language.errors }}
             <div id="language-select">
-                <select id="id_language" name="language" onchange="onChangeLanguage(event)">
+                <select id="id_language" name="language" >
                     {% for lang in form.fields.language.queryset %}
                         <option 
                             value="{{ lang.id }}" 
@@ -74,6 +74,7 @@
     </div>
 
     {{form.suspicious_behaviors}}
+    {{form.wpm}}
 
     {# uuuuvcomment ------------------------- submit button ------------------------- #}
     {# uuuuvcomment ------------------ or no judge is available --------------------- #}
@@ -87,16 +88,16 @@
                 </div>
 
                 <div class="submitbar_buttons">
-                    <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
-                    {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}>
+                    {# <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
+                    {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}> #}
+                    
+                    {% if submission %}
+                        <a class="button accent" href="{{ url('beta_problem', problem.code) }}">{{ _('Resubmit!') }}</a>
+                    {% else %}
+                        <input id="submit-button"  type="submit" value="{{ _('Submit') }}" class="button accent" {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}>
+                    {% endif %}
                 </div>
             </div>
         {% endif %}
     </div>
 </form>
-
-<script type="text/javascript">
-    function onChangeLanguage(event) {
-        console.log(event.target.value)
-    }
-</script>

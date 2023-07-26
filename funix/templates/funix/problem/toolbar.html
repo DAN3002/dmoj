@@ -29,6 +29,7 @@
   </svg>
 </button>
 
+{% if submission is none %}
 <button onclick="clearEditor()" type="button" class="button">
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -47,3 +48,4 @@
 
   <span>reset</span>
 </button>
+{% endif %}
