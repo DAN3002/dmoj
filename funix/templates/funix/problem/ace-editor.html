@@ -12,6 +12,8 @@
             window.previous_template = code;
             source.val(code);
             window.ace_source.getSession().setValue(code);
+            window.start_editting_at = 0;
+            window.character_count = 0;
           }
 
           var source = $('textarea#id_source');
@@ -114,14 +116,17 @@
           editor.setPrintMarginColumn(100);
 
           // uuuuvcomment wpm handling
-          const changeListener = () => {
-            if (!window.startedEdittingAt) {
-                window.startedEdittingAt = Date.now();
-                editor.off("change", changeListener)
-            }
+          function calculate_characters(e) {
+            if (window.start_editting_at === 0) window.start_editting_at = Date.now();
+            const character_count = window.character_count;
+            const actionType = e.action;
+            const this_event_character_count = e.lines.reduce((acc, cur) => acc + cur.replace(/\r/gi, "").length, 0);
+
+            if (e.action === "insert") window.character_count += this_event_character_count;
+            if (e.action === "remove") window.character_count -= this_event_character_count;
           }
 
-          editor.on("change", changeListener)
+          editor.on("change", calculate_characters);
           // uuuuvcomment end wpm handling
 
 
@@ -150,6 +155,13 @@
         if ($('#id_source').val().length > 65536) {
             alert("{{ _('Your source code must contain at most 65536 characters.') }}");
             preventSubmit();
+            return;
+        }
+
+        if (window.start_editting_at === 0) {
+            alert("You haven't typed any code.")
+            preventSubmit();
+            return;
         }
 
         // initial_code can be template code (represents for each language)
@@ -191,23 +203,21 @@
         }
 
 
-        // calculate wpm
-        let wpm
-        const duration = Math.ceil((Date.now() - window.startedEdittingAt)/1000/60*100)/100;
-        if (!duration) {
-            wpm = -1
-        } else {
-            let characters_count = $('#id_source').val().length;
-
-            // có 2 cases:
-            //  - initial code là code để điền vào
-            if (initial_code) {
-                characters_count -= initial_code_characters_count;
-            }
-            //  - initial code là code cho đẹp
-            // chưa nghĩ ra. Không nên làm kiểu này. Theo mình là vô nghĩa. chỉ nên làm initial_code kiểu trên.
-            wpm = Math.round(characters_count/5/duration);
+        let wpm;
+        function calculateNewWPM() {
+            const duration = Math.ceil((Date.now() - window.start_editting_at)/1000/60*100)/100;
+            return Math.round(window.character_count/5/duration);
         }
+
+        {% if submission and submission.wpm %}
+            if (window.character_count < 300) {
+                wpm = Number(`{{submission.wpm.wpm}}`); // old wpm
+            } else {
+                wpm = calculateNewWPM();
+            }
+        {% else %}
+            wpm = calculateNewWPM();
+        {% endif %}
 
         document.querySelector("input[name=wpm]").value = wpm;
       });

@@ -88,14 +88,8 @@
                 </div>
 
                 <div class="submitbar_buttons">
-                    {# <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
-                    {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}> #}
-                    
-                    {% if submission %}
-                        <a class="button accent" href="{{ url('beta_problem', problem.code) }}">{{ _('Resubmit!') }}</a>
-                    {% else %}
-                        <input id="submit-button"  type="submit" value="{{ _('Submit') }}" class="button accent" {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}>
-                    {% endif %}
+                    <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
+                    {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}> 
                 </div>
             </div>
         {% endif %}

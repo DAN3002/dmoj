@@ -337,16 +337,14 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             
             if not request.user.has_perm('judge.resubmit_other') and self.old_submission.user != request.profile:
                 raise PermissionDenied()
-        # else:
-        #     if not self.request.user.is_anonymous:
-        #         submissions = Submission.objects.filter(user=self.request.user.profile,problem=problem).order_by('-date')
-        #         if submissions.count() > 0:
-        #             self.old_submission = submissions[0]
+        else:
+            if not self.request.user.is_anonymous:
+                submissions = Submission.objects.filter(user=self.request.user.profile,problem=problem).order_by('-date')
+                if submissions.count() > 0:
+                    self.old_submission = submissions[0]
 
         return super().dispatch(request, *args, **kwargs)
 
-
-    # get context data 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['langs'] = Language.objects.all()
