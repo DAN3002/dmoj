@@ -191,6 +191,8 @@
             }
         </style>
     </noscript>
+
+    <link rel="stylesheet" href="{{ static('funix/css/base.css') }}" />
 </head>
 
 
@@ -292,17 +294,19 @@
 
 
     <main id="content">
-        {% block title_row %}
-            <h2 style="display:inline">
-                {% block content_title %}
-                    {% if content_title %}{{ content_title }}{% else %}{{ title }}{% endif %}
-                {% endblock %}
-            </h2>
-        {% endblock %}
-        {% block header %}{% endblock %}
-        {% block title_ruler %}
-            <hr>
-        {% endblock %}
+        {#
+            {% block title_row %}
+                <h2 style="display:inline">
+                    {% block content_title %}
+                        {% if content_title %}{{ content_title }}{% else %}{{ title }}{% endif %}
+                    {% endblock %}
+                </h2>
+            {% endblock %}
+            {% block header %}{% endblock %}
+            {% block title_ruler %}
+                <hr>
+            {% endblock %}
+        #}
         <div id="content-body">{% block body %}{% endblock %}</div>
     </main>
 

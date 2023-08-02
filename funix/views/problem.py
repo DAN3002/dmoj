@@ -12,7 +12,7 @@ from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _, gettext_lazy
 import json
-from funix.models import SuspiciousSubmissionBehavior
+from funix.models import SuspiciousSubmissionBehavior, Course, CourseProblem, CourseSection
 import datetime
 
 from funix.forms import BetaProblemSubmitForm as ProblemSubmitForm
@@ -152,8 +152,8 @@ def combine_statuses(status_cases, submission):
 def is_anonymous(self):
     return self.request.user.is_anonymous
 
-
 from funix.utils.problem import map_test_cases
+
 class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
     template_name = 'funix/problem/problem.html'
     form_class = ProblemSubmitForm
@@ -242,6 +242,11 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         return form
 
     def get_success_url(self):
+        course = self.kwargs.get("course")
+        
+        if course:
+            return reverse('beta_problem', kwargs=({"course": course, "problem":self.new_submission.problem.code, "submission": self.new_submission.id})) + "?iframe={}".format(self.request.GET.get("iframe"))
+
         return reverse('beta_problem', kwargs=({
             "problem": self.new_submission.problem.code,
             "submission": self.new_submission.id,
@@ -376,6 +381,18 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
                 pass
             else:
                 context['time_limit'] = lang_limit.time_limit
+                
+        # course
+        course_slug = self.kwargs.get("course")
+        if course_slug is not None: 
+            context["course"] = get_object_or_404(Course, slug=course_slug)
+            context["course_problem"] = get_object_or_404(CourseProblem, problem=self.object)
+            context["section"] = CourseSection.objects.get(id=context["course_problem"].section.id)
+            context["course_problems"] = CourseProblem.objects.filter(section=context["section"].id).order_by("number")
+            user = self.request.user
+            if not user.has_perm("funix.view_course_problem", context["course_problem"]):
+                raise PermissionDenied()
+
         return context
     
 

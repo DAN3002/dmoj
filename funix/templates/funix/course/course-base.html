@@ -1,0 +1,26 @@
+{% extends 'funix/base.html' %} 
+
+{% block media %}
+    <link rel="stylesheet" href="{{ static('funix/css/course-base.css') }}" />
+
+    {% block media_child %}
+    {% endblock %}
+{% endblock %} 
+
+
+
+
+{% block body %}
+    <div id="beta-container" >
+      <div id="course-base-wrap">
+        <div id="course-base-banner">
+            {% block banner %}
+            {% endblock %}
+        </div>
+        <div id="course-main">
+            {% block main %}
+            {% endblock %}
+        </div>  
+      </div>
+    </div>
+{% endblock %}

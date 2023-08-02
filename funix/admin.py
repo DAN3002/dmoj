@@ -1,5 +1,6 @@
 from django.contrib import admin
-from funix.models import ProblemTestCaseData, SuspiciousSubmissionBehavior, ProblemInitialSource, SubmissionWPM
+from funix.models import ProblemTestCaseData, SuspiciousSubmissionBehavior, ProblemInitialSource, SubmissionWPM, \
+                        CourseCategory, Course, CourseSection, CourseProblem, FunixProfile, CourseComment, CourseRating
 from judge.admin.problem import ProblemAdmin
 from judge.admin.submission import SubmissionAdmin
 from django.forms import ModelForm
@@ -40,3 +41,11 @@ admin.site.register(ProblemTestCaseData)
 admin.site.register(SuspiciousSubmissionBehavior)
 admin.site.register(ProblemInitialSource)
 admin.site.register(SubmissionWPM)
+
+admin.site.register(CourseCategory)
+admin.site.register(Course)
+admin.site.register(CourseSection)
+admin.site.register(CourseProblem)
+admin.site.register(FunixProfile)
+admin.site.register(CourseComment)
+admin.site.register(CourseRating)

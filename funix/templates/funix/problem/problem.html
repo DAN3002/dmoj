@@ -1,39 +1,80 @@
-{% extends 'funix/problem/problem-base.html' %} {% block media_child %} {{
-form.media.css }}
-<link rel="stylesheet" href="{{ static('plugins/css/resizable.min.css') }}" />
-<link rel="stylesheet" href="{{ static('funix/css/problem.css') }}" />
-{% endblock %} {% block js_media %}
-<script
-  src="{{static('plugins/js/resizable.min.js')}}"
-  type="text/javascript"
-></script>
-<script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
-{{ form.media.js }} {% compress js %} {% include 'funix/problem/ace-editor.html'
-%} {% endcompress %}
+{% extends 'funix/problem/problem-base.html' %} 
+{% block media_child %} 
+  {{ form.media.css }}
+  <link rel="stylesheet" href="{{ static('plugins/css/resizable.min.css') }}" />
+  <link rel="stylesheet" href="{{ static('funix/css/problem.css') }}" />
+{% endblock %} 
 
-<script type="text/javascript" src="{{ static('event.js') }}"></script>
-{% if submission and not submission.is_graded and last_msg %} {% include
-"funix/problem/js-event.html" %} {% endif %} {% if submission and not
-submission.is_graded %}
-<script type="text/javascript">
-  $(function () {
-    $(document).keydown(function (e) {
-      // Ctrl-Enter or Command-Enter
-      if ((e.metaKey || e.ctrlKey) && e.which == 13) {
-        $("#abort-button form").submit();
-      }
-    });
-  });
-</script>
-{% endif %} {% endblock %} {% block problem_content %} {% if submission %} {%
-set is_processing = submission is not none %} {% endif %}
+{% block js_media %}
+  <script src="{{static('plugins/js/resizable.min.js')}}" type="text/javascript"></script>
+  <script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
+  {{ form.media.js }} 
+  {% compress js %} 
+    {% include 'funix/problem/ace-editor.html' %} 
+  {% endcompress %}
+
+  <script type="text/javascript" src="{{ static('event.js') }}"></script>
+{% if submission and not submission.is_graded and last_msg %} 
+  {% include "funix/problem/js-event.html" %} {% endif %} 
+  {% if submission and not submission.is_graded %}
+    <script type="text/javascript">
+      $(function () {
+        $(document).keydown(function (e) {
+          // Ctrl-Enter or Command-Enter
+          if ((e.metaKey || e.ctrlKey) && e.which == 13) {
+            $("#abort-button form").submit();
+          }
+        });
+      });
+    </script>
+  {% endif %} 
+{% endblock %} 
+
+{% block problem_content %} 
+  {% if submission %} 
+    {% set is_processing = submission is not none %} 
+  {% endif %}
 
 <div class="problem_container">
   <div class="topbar">
-    <span>
-      {% if content_title %}{{ content_title }}{% else %}{{ title }}{% endif
-      %}</span
-    >
+    <h1 id="problem_title">
+      {% if course %}
+        <a href="{{ url('beta_course_detail', course.slug) }}">{{ course.name }}</a>:
+        {{ course_problem.section.name }}:
+      {% endif %}
+      {{ problem.name }}
+    </h1>
+
+    {% if course %}
+
+      <div id="course_problems">
+        {% if submission %}
+        {% endif %}
+        {% for c_problem in course_problems %}
+          {% with latest_submission =  c_problem.problem.submission_set.filter(user=request.user.profile).order_by("-date").first() %}
+            {% if latest_submission %}
+              {% if latest_submission.result == "AC" %}
+                <a class="{% if c_problem.problem.code == problem.code %}active{% endif %} success" href="{{ url('beta_problem', course=course.slug, problem=c_problem.problem.code) }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                </a>
+              {% else %}
+                <a class="{% if c_problem.problem.code == problem.code %}active{% endif %} danger" href="{{ url('beta_problem', course=course.slug, problem=c_problem.problem.code) }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </a>
+              {% endif %}
+            {% else %}
+              <a class="{% if c_problem.problem.code == problem.code %}active{% endif %}" href="{{ url('beta_problem', course=course.slug, problem=c_problem.problem.code) }}">
+                {{ c_problem.number }}
+              </a>
+            {% endif %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 
   <div class="main">

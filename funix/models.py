@@ -2,8 +2,15 @@ from django.db import models
 from judge.models.problem_data import ProblemTestCase
 from judge.models.problem import Problem
 from judge.models.submission import Submission
+from judge.models.profile  import Profile
 from zipfile import ZipFile
 from judge.models.runtime import Language
+from datetime import date
+from django.utils.text import slugify
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from datetime import datetime
+
 
 # Create your models here.
 class ProblemTestCaseData(models.Model):
@@ -53,3 +60,121 @@ class SubmissionWPM(models.Model):
     
     def __str__(self): 
         return "{} wpm".format(str(self.wpm))
+    
+# course category
+class CourseCategory(models.Model):
+    name = models.CharField(verbose_name="Course Category", max_length=255, unique=True)
+    slug = models.CharField(max_length=255, unique=True)
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+    
+    def __str__(self): 
+        return self.name
+
+# course
+class Course(models.Model):
+    author = models.ForeignKey(Profile,verbose_name="Author", related_name="courses", on_delete=models.DO_NOTHING)
+    goals = models.TextField(verbose_name="Goals")
+    free = models.BooleanField(verbose_name="Is Free", default=False)
+    name = models.CharField(verbose_name="Course Name", max_length=255, unique=True)
+    description = models.TextField(verbose_name="Course Description", max_length=1000)
+    certificate = models.CharField(verbose_name="Course Certificate", max_length=225,blank=True, default="")
+    og_image = models.CharField(verbose_name="Og Image", max_length=255, blank=True)
+    summary = models.TextField(verbose_name="Course Summary", blank=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(blank=True)
+    slug = models.CharField(max_length=255, unique=True)
+    category = models.ForeignKey(CourseCategory, related_name="courses", on_delete=models.CASCADE, null=True)
+    thumbnail = models.ImageField(default='default.jpg')
+    
+    def save(self, *args, **kwargs) -> None:
+        self.updated_at = date.today()
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.name
+
+# CourseSection
+class CourseSection(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="sections")
+    name = models.CharField(verbose_name="Section Name", max_length=255, unique=True)
+    number = models.IntegerField()
+
+    class Meta:
+        unique_together = ['name', 'number', 'course']
+        
+    def __str__(self):
+        return self.course.name + " - " + self.name + " - " + str(self.number)
+    
+
+# course problem
+class CourseProblem(models.Model):
+    problem = models.ForeignKey(Problem, related_name="course_problems", on_delete=models.CASCADE)
+    section = models.ForeignKey(CourseSection, related_name="problems", on_delete=models.CASCADE)
+    number = models.IntegerField()
+    time = models.IntegerField(default=0)
+    
+    class Meta:
+        unique_together = ['problem', 'section', 'number']
+        permissions = [("view_course_problem", "User can view the problem if enrolled"),]        
+
+    def has_permission(self, user):
+        if user.is_authenticated and user.funix:
+            return self.section.course in user.funix.courses.all()
+            
+        return False
+
+    def __str__(self):
+        return f"{self.section.course.name} - {self.section.name} - {self.problem.name} - {self.number}"
+
+# funix profile
+class FunixProfile(models.Model):
+    profile = models.OneToOneField(Profile,verbose_name="Funix Profile", related_name="funix", on_delete=models.CASCADE)
+    courses = models.ManyToManyField(Course)
+    
+# course rating
+def validate_rating(value):
+    if not 1 <= value <= 5:
+        raise ValidationError("Rating must be between 1 and 5")
+    
+class CourseRating(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[validate_rating])
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('course', 'user')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.name} - {self.rating}"
+
+# course comment
+class CourseComment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField(default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_approved = models.BooleanField(default=False)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.author.username} - {self.text[:50]}"
+
+    def approve(self):
+        self.is_approved = True
+        self.save()
+
+    def unapprove(self):
+        self.is_approved = False
+        self.save()
+    
+    def has_parent(self):
+        return self.parent is not None
