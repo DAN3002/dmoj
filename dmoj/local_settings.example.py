@@ -335,3 +335,5 @@ STATICFILES_DIRS = settings.STATICFILES_DIRS
 STATICFILES_DIRS = STATICFILES_DIRS + [
     os.path.join(BASE_DIR, 'funix/static'),
 ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')

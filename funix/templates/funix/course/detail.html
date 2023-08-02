@@ -119,6 +119,16 @@
                             return;
                         }
 
+                        if (`{{ enrolled }}` !== 'True') {
+                            alert("You need to enroll and complete at least 70% of the course to rate.")
+                            return;
+                        }
+
+                        if (Number(`{{ average_rating }}`) < 70) {
+                            alert("You need to complete at least 70% of this course to rate.")
+                            return;
+                        }
+
                         $("input[name=star]").val(star)
                         $("#rating").submit()
                     }
@@ -178,7 +188,7 @@
                     </div>
                 {% else %}
                     {% if request.user.is_authenticated %}
-                        <form action="{{ url('beta_course_enroll', course.slug) }}">
+                        <form action="{{ url('beta_course_enroll', course.slug) }}" method="POST">
                             {% csrf_token %}
                             <input clas="button" type="submit" value="Register now">
                         </form>
@@ -201,22 +211,31 @@
                     {% if problem_count == 0 %}
                         <p>There is no problem</p>
                     {% endif %}
-                    {% for section in course.sections.all() %}
+                    {% set sections = course.sections.all() %}
+                    {% if sections.count() == 0 %}
+                        <p>There is no sections.</p>
+                    {% endif %}
+                    {% for section in sections %}
+                        {% set problems = section.problems.all() %}
                         <div class="course-section-wrap">
                             <div class="course-section">
                                 <h3 class="section-name">{{ section.name }}</h3>
                                 <div class="section-problems">
-                                    {% for problem in section.problems.all() %}
-                                        {% if latest_submissions[problem.problem.id] %}
-                                            {% if latest_submissions[problem.problem.id].result == "AC" %}
-                                                <a class="success" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                                    {% if problems.count() == 0 %}
+                                        <p style="height: 35px; margin: 0; line-height: 35px;">This section has no problem.</p>
+                                    {% else %}
+                                        {% for problem in section.problems.all() %}
+                                            {% if latest_submissions[problem.problem.id] %}
+                                                {% if latest_submissions[problem.problem.id].result == "AC" %}
+                                                    <a class="success" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                                                {% else %}
+                                                    <a class="danger" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                                                {% endif %}
                                             {% else %}
-                                                <a class="danger" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                                                <a href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
                                             {% endif %}
-                                        {% else %}
-                                            <a href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
-                                        {% endif %}
-                                    {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -225,7 +244,7 @@
             </div>
             <div id="tabs-goals">
               <p>
-                {{course.goals}}
+                {{ course.goals|markdown("blog", MATH_ENGINE)|reference|str|safe }} 
               </p>
             </div>
             <div id="tabs-comments">
@@ -237,7 +256,6 @@
                 <script type="text/javascript">
                     function post_course_comment() {
                         const text = $("#textbox textarea").val()
-                        console.log("comment content: ", text)
                         $.ajax({
                             url: "{{url('beta_course_post_comment', object.slug)}}",
                             type: "POST", 
@@ -290,8 +308,7 @@
               </ul>
             </div>
             <div id="tabs-certificate">
-                <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-                <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+                <p>Certificate for you.</p>
               </div>
         </div>
     </div>

@@ -26,10 +26,13 @@ urlpatterns = [
     ),
     # course
     path('/courses', CourseListView.as_view(), name="beta_course_list"),
-    path('/course/<slug:slug>', CourseDetailView.as_view(), name="beta_course_detail"),
-    path('/course/<slug:course>/post-comment', post_course_comment, name="beta_course_post_comment"),
-    path('/course/<slug:course>/rating', CourseRatingView.as_view(), name="beta_course_rating"),
-    path('/course/<slug:course>/problem/<str:problem>', ProblemBeta.as_view(), name="beta_problem"),
-    path('/course/<slug:course>/problem/<str:problem>/submission/<int:submission>', ProblemBeta.as_view(), name="beta_problem"),
-    path('/course/<slug:course>/enroll', CourseEnrollView.as_view(), name="beta_course_enroll"),
+    path('/course/<slug:course>', include([
+        path('', CourseDetailView.as_view(), name="beta_course_detail"),
+        path('/post-comment', post_course_comment, name="beta_course_post_comment"),
+        path('/rating', CourseRatingView.as_view(), name="beta_course_rating"),
+        path('/problem/<str:problem>', ProblemBeta.as_view(), name="beta_problem"),
+        path('/problem/<str:problem>/submission/<int:submission>', ProblemBeta.as_view(), name="beta_problem"),
+        path('/enroll', CourseEnrollView.as_view(), name="beta_course_enroll"),
+    ]))
+
 ]

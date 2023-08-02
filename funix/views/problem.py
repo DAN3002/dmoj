@@ -1,4 +1,6 @@
 import logging
+import json
+import datetime
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -11,18 +13,17 @@ from django.utils.functional import cached_property
 from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _, gettext_lazy
-import json
-from funix.models import SuspiciousSubmissionBehavior, Course, CourseProblem, CourseSection
-import datetime
-
-from funix.forms import BetaProblemSubmitForm as ProblemSubmitForm
-from judge.models import ContestSubmission, Judge, Language, Problem,  RuntimeVersion, Submission, SubmissionSource
-from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  user_attempted_ids, \
-    user_completed_ids
-from judge.utils.views import SingleObjectFormView, TitleMixin, generic_message
 from django.views.generic import View
+
+from judge.models import ContestSubmission, Judge, Language, Problem,  RuntimeVersion, Submission, SubmissionSource
+from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  user_attempted_ids, user_completed_ids
+from judge.utils.views import SingleObjectFormView, TitleMixin, generic_message
 from judge.models.runtime import Language
-from funix.models import ProblemInitialSource, SubmissionWPM
+
+from funix.models.course import  Course, CourseProblem, CourseSection
+from funix.models.submission import SuspiciousSubmissionBehavior, SubmissionWPM
+from funix.models.problem import ProblemInitialSource 
+from funix.forms import BetaProblemSubmitForm as ProblemSubmitForm
 
 def get_contest_problem(problem, profile):
     try:
@@ -325,9 +326,15 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             return HttpResponseForbidden(format_html('<h1>{0}</h1>', _('Do you want me to ban you?')))
 
     def dispatch(self, request, *args, **kwargs):
-        submission_id = kwargs.get('submission')
         problem_code = kwargs.get('problem')
         problem = get_object_or_404(Problem, code=problem_code)
+        
+        # check if is not in course and is course problem => 404
+        if self.kwargs.get('course') is None: 
+            if problem.course_problems.count() > 0:
+                raise Http404()
+                
+        submission_id = kwargs.get('submission')
         self.old_submission = None
 
         if submission_id is not None:

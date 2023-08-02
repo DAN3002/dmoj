@@ -41,7 +41,6 @@ admin.site.register(ProblemTestCaseData)
 admin.site.register(SuspiciousSubmissionBehavior)
 admin.site.register(ProblemInitialSource)
 admin.site.register(SubmissionWPM)
-
 admin.site.register(CourseCategory)
 admin.site.register(Course)
 admin.site.register(CourseSection)

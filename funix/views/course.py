@@ -1,16 +1,15 @@
-from typing import Any, Optional
 from django import http
 import json
 from django.http import HttpResponseForbidden
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import RedirectView
-from funix.models import Course, CourseCategory, CourseSection, FunixProfile, CourseProblem, CourseComment, CourseRating
+from funix.models.profile import FunixProfile
+from funix.models.course import Course, CourseCategory, CourseSection,CourseProblem, CourseComment, CourseRating
 from django.db import models
 from django.shortcuts import get_object_or_404
 from django.utils.html import format_html
 from django.urls import reverse
-from judge.models.problem import Problem
 from judge.models.submission import Submission
 from django.db.models import Max, Avg
 
@@ -38,8 +37,8 @@ class CourseListView(ListView):
                 problem_counts[course.id] = course.sections.annotate(problem_count=models.Count('problems')).aggregate(models.Sum('problem_count'))['problem_count__sum'] or 0
                 total_times[course.id] = 0 if problem_counts[course.id] == 0 else course.sections.aggregate(models.Sum('problems__time'))['problems__time__sum']
                 if self.request.user.is_authenticated:
-                    if hasattr(self.request.user.profile, "funix"):
-                        funix_profile = self.request.user.profile.funix
+                    if hasattr(self.request.user, "funix"):
+                        funix_profile = self.request.user.funix
                         if course in funix_profile.courses.all():
                             enrolleds[course.id] = True
                         else: 
@@ -72,6 +71,7 @@ class CourseSectionView(ListView):
 
 class CourseDetailView(DetailView):
     model = Course
+    slug_url_kwarg = 'course'
     template_name = "funix/course/detail.html"
     
     def get_context_data(self, **kwargs):
@@ -80,8 +80,13 @@ class CourseDetailView(DetailView):
         
         # get total problem count
         context["problem_count"] = self.object.sections.annotate(problem_count=models.Count('problems')).aggregate(models.Sum('problem_count'))['problem_count__sum'] or 0
-        context["total_time"] = 0 if context["problem_count"] == 0 else self.object.sections.aggregate(models.Sum('problems__time'))['problems__time__sum']
         context["total_users"] = self.object.funixprofile_set.all().count()
+        total_time = 0 if context["problem_count"] == 0 else self.object.sections.aggregate(models.Sum('problems__time'))['problems__time__sum']
+        if total_time < 60:
+            total_time = str(total_time) + 'm'
+        else:
+            total_time = str(round(total_time * 10 / 60) / 10) + "hr"
+        context["total_time"] = total_time
 
         # get all problem with latest submission
         latest_submissions = {}
@@ -109,8 +114,8 @@ class CourseDetailView(DetailView):
         # enroll
         context["enrolled"] = False
         if self.request.user.is_authenticated:
-            if hasattr(self.request.user.profile, "funix"):
-                funix_profile = self.request.user.profile.funix
+            if hasattr(self.request.user, "funix"):
+                funix_profile = self.request.user.funix
                 if self.object in funix_profile.courses.all():
                     context["enrolled"] = True
                 
@@ -130,9 +135,9 @@ class CourseEnrollView(RedirectView):
 
         # not authenticated => 404
         if not user.is_authenticated:
-            raise http.Http404()
+            return http.Http404()
         
-        funix_profile, created = FunixProfile.objects.get_or_create(profile=user.profile)
+        funix_profile, created = FunixProfile.objects.get_or_create(user=user)
         course = get_object_or_404(Course, slug=self.kwargs.get("course"))
 
         # already enrolled but still enroll again => hack => warn
@@ -161,12 +166,35 @@ class CourseRatingView(RedirectView):
         return reverse("beta_course_detail", args=[self.kwargs.get("course")])
 
     def post(self, request, *args, **kwargs):
-        course = get_object_or_404(Course, slug=request.POST.get("course"))
-        star = request.POST.get("star")
         user = self.request.user
-        
         if not user.is_authenticated:
-            raise HttpResponseForbidden()
+            return HttpResponseForbidden()
+        
+        course = get_object_or_404(Course, slug=request.POST.get("course"))
+        sections = CourseSection.objects.filter(course=course)
+        course_problems = CourseProblem.objects.filter(section__in=sections)
+
+        problem_count = course.sections.annotate(problem_count=models.Count('problems')).aggregate(models.Sum('problem_count'))['problem_count__sum'] or 0
+        correct_problems_count = 0
+        
+        if self.request.user.is_authenticated:
+            for course_problem in course_problems:
+                problem = course_problem.problem
+                latest_submission = Submission.objects.filter(problem=problem, user=self.request.user.profile).aggregate(Max('id'))
+                if latest_submission["id__max"]:
+                    latest_submission = Submission.objects.get(id=latest_submission["id__max"], user=self.request.user.profile)
+                    if latest_submission.result == "AC":
+                        correct_problems_count += 1
+                
+        progress_percentage = 0 if problem_count == 0 else round(correct_problems_count / problem_count * 100)
+        if progress_percentage < 70: 
+            pass
+            # return HttpResponseForbidden()
+        
+        star = request.POST.get("star")
+        
+        
+
         
         try:
             rating = CourseRating.objects.get(user=user, course=course)

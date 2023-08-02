@@ -1,16 +1,19 @@
 <div class="problem_clsf clearfloat">
   <div class="problem_clsf_item clsf_author">
     {% if not contest_problem or not
-    contest_problem.contest.hide_problem_authors %} {% cache 86400
-    'problem_authors' problem.id LANGUAGE_CODE %} {% with
-    authors=problem.authors.all() %} {% if authors %}
-    <i class="fa fa-pencil-square-o fa-fw"></i>
-    <span class="pi-name">
-      {% trans trimmed count=authors|length %} Author: {% pluralize count %}
-      Authors: {% endtrans %}
-    </span>
+    contest_problem.contest.hide_problem_authors %} 
+    {% cache 86400 'problem_authors' problem.id LANGUAGE_CODE %} 
+    {% with authors=problem.authors.all() %}
+     {% if authors %}
+      <i class="fa fa-pencil-square-o fa-fw"></i>
+      <span class="pi-name">
+        {% trans trimmed count=authors|length %} Author: {% pluralize count %} Authors: {% endtrans %}
+      </span>
     <div class="pi-value authors-value">{{ link_users(authors) }}</div>
-    {% endif %} {% endwith %} {% endcache %} {% endif %}
+    {% endif %} 
+    {% endwith %} 
+    {% endcache %} 
+    {% endif %}
   </div>
 
   <div class="problem_clsf_item clsf_points">
@@ -66,8 +69,9 @@
       />
     </svg>
 
-    Problem type: {% for type in problem.types.all() %}
-    <span> {{ type }} </span>
+    Problem type: 
+    {% for type in problem.types.all() %}
+      <span> {{ type }} </span>
     {% endfor %}
   </div>
 
@@ -93,18 +97,19 @@
 
 <div class="problem_description">
   <div class="content-description screen">
-    {{ problem.description|markdown(problem.markdown_style,
-    MATH_ENGINE)|reference|str|safe }} {# uuuuvcomment #} {# I commented out
-    these lines of code temporarily #} {# I will get back later #} {% if
-    submission and False %} {% cache 86400 'problem_html' problem.id MATH_ENGINE
-    LANGUAGE_CODE %} {{ description|markdown(problem.markdown_style,
-    MATH_ENGINE)|reference|str|safe }} {% endcache %} {% endif %}
-    {% with license=problem.license %} {% if license %}
-    <span class="license">
-      <a href="{{ url('license', license.key) }}"
-        >{{ license.display or license.name }}</a
-      >
-    </span>
-    {% endif %} {% endwith %}
+    {{ problem.description|markdown(problem.markdown_style, MATH_ENGINE)|reference|str|safe }} 
+    {# uuuuvcomment #} {# I commented out these lines of code temporarily #} {# I will get back later #} 
+    {% if submission and False %} 
+      {% cache 86400 'problem_html' problem.id MATH_ENGINE LANGUAGE_CODE %}
+        {{ description|markdown(problem.markdown_style, MATH_ENGINE)|reference|str|safe }} 
+      {% endcache %} 
+    {% endif %}
+    {% with license=problem.license %} 
+      {% if license %}
+        <span class="license">
+          <a href="{{ url('license', license.key) }}">{{ license.display or license.name }}</a>
+        </span>
+      {% endif %} 
+    {% endwith %}
   </div>
 </div>
