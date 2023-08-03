@@ -204,9 +204,6 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             ),
         )
 
-    def get_title(self):
-        return _('Submit to %s') % self.object.translated_name(self.request.LANGUAGE_CODE)
-
     def get_initial(self):
         initial = {'language': self.default_language}
         if self.old_submission is not None:
@@ -372,6 +369,20 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         context['iframe'] = self.request.GET.get('iframe')
         submission = self.old_submission
         context['old_submission'] = self.initial
+        
+        # translation
+        try:
+            translation = self.object.translations.get(language=self.request.LANGUAGE_CODE)
+        except ProblemTranslation.DoesNotExist:
+            context['title'] = self.object.name
+            context['language'] = settings.LANGUAGE_CODE
+            context['description'] = self.object.description
+            context['translated'] = False
+        else:
+            context['title'] = translation.name
+            context['language'] = self.request.LANGUAGE_CODE
+            context['description'] = translation.description
+            context['translated'] = True
 
         if submission is not None:
             context['submission'] = submission

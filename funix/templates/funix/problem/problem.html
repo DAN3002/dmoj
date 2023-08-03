@@ -42,11 +42,10 @@
         <a href="{{ url('beta_course_detail', course.slug) }}">{{ course.name }}</a>:
         {{ course_problem.section.name }}:
       {% endif %}
-      {{ problem.name }}
+      {{ title }}
     </h1>
 
     {% if course %}
-
       <div id="course_problems">
         {% if submission %}
         {% endif %}
