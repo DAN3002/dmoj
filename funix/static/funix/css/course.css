@@ -1,0 +1,356 @@
+#course-detail {
+    padding: 0 80px;
+    background: #f9f9f9;
+    min-height: 100%;
+}
+
+.dark-theme #course-detail {
+    background: transparent;
+}
+
+#course-banner {
+    background: var(--bg-main);
+    border-radius: 6px;
+    padding: 20px 15px;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    top: -100px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+#course-banner h1 {
+    width: 100%;
+    font-size: 32px;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+#author-students-rating-description, #statistic {
+    border-right: .5px solid var(--border);
+}
+
+#author-students-rating-description {
+    width:  50%;
+    padding-right: 10px;
+}
+
+#author-students-rating-description svg {
+    width: 20px;
+}
+
+#author-students-rating p, #author-students-rating form {
+    display: flex;
+    gap: 5px;
+}
+
+#author svg {
+    color: blue;
+}
+
+#students svg {
+    color: green;
+}
+
+#rating {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+#rating button {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+#rating svg {
+    color: orange;
+}
+
+#author-students-rating {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+#author-students-rating p {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+#statistic {
+    width: 30%;
+    padding: 0 10px;
+}
+
+#statistic svg {
+    width: 20px;
+}
+
+.statistic-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.statistic-item p:first-child {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#statistic-time svg {
+    color: blue;
+}
+
+#statistic-problem svg {
+    color: green;
+}
+
+#statistic-cert svg {
+    color: purple;
+}
+
+#enroll {
+    width: 20%;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#free {
+    color: green;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+#course-sections {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.course-section-wrap {
+    padding: 10px;
+    width: 50%;
+}
+
+.course-section {
+    border: .5px solid var(--border);
+}
+
+.section-name {
+    text-align: center;
+    padding: 10px;
+    border-bottom: .5px solid var(--border);
+}
+
+.section-problems {
+    padding: 10px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.section-problems a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: .5px solid var(--border);
+    transition: .2s;
+    color: var(--text-color-main-standout);
+}
+
+.section-problems a:hover {
+    background: rgb(79, 0, 224) !important;
+    border: .5px solid var(--border-hover);
+    color: white;
+}
+
+.section-problems a.danger {
+    color: white;
+    background: #ff5b5b;
+}
+
+.section-problems a.success {
+    color: white;
+    background: #288f18;
+}
+
+/* progress percentage */
+.progress-bar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-bar span {
+    color: #000
+}
+
+/* tabs  */
+#tabs {
+    width: 100%;
+    background: transparent;
+    border: none;
+    margin-top: 10px;
+    border-top: .5px solid var(--border);
+}
+
+#tabs > ul {
+    background: transparent;
+    border: none;
+}
+
+#tabs > ul > li {
+    background: transparent;
+    border: none;
+}
+
+#tabs > ul > li a {
+    color: var(--text-color-main) ;
+}
+
+#tabs > ul > li.ui-state-active {
+    border-bottom: 2px solid blue;
+}
+
+#tabs > ul > li.ui-state-active a {
+    color: var(--text-color-main-standout) ;
+}
+
+#tabs > div {
+    color: var(--text-color-main-standout);
+}
+
+/* comment  */
+#comment-box {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#comment-box #user-avatar {
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#comment-box #user-avatar svg {
+    width: 30px;
+}
+
+#comment-box #textbox {
+    flex: 1;
+}
+
+#comment-box #textbox textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 8px;
+    margin: 0;
+}
+
+#comment-box #post-button {
+    padding: 8px 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#comment-list {
+    padding: 0;
+}
+
+.comment-item {
+    display: flex;
+    border-bottom: .5px solid var(--border);
+    padding: 10px 0;
+}
+
+.comment-item .user-avatar {
+    width: 60px;
+    padding-top: 30px;
+}
+
+.comment-item .user-avatar svg {
+    width: 30px;
+}
+
+.comment-item .username {
+    color: blue;
+}
+
+.comment-item .updated-at { 
+    color: var(--text-color-main);
+}
+
+.comment-item-text {
+
+}
+
+.comment-item-reacts button {
+    background: transparent;
+    border: none;
+    display: inline-block;
+    transition: .2s;
+}
+
+.comment-item-reacts button:hover svg {
+    color: rgb(111, 111, 255);
+}
+
+.comment-item-reacts svg {
+    width: 20px;
+    color: var(--text-color-main-standout);
+}
+
+
+@media screen and (max-width: 992px) {
+    #author-students-rating-description {
+        width:  70%;
+        border-bottom: .5px solid var(--border);
+    }
+
+    #statistic {
+        width: 30%;
+        border-bottom: .5px solid var(--border);
+        border-right: none;
+    }
+
+    #enroll {
+        width: 100%;
+        padding: 20px 0 40px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #course-detail {
+        padding: 0 8px;
+    }
+
+    #author-students-rating-description {
+        width:  100%;
+    }
+
+    #statistic {
+        width: 100%;
+    }
+
+    #enroll {
+        width: 100%;
+    }
+}

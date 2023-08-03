@@ -1,0 +1,21 @@
+#course-base-wrap {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    --banner-height: 200px;
+} 
+
+#course-base-banner {
+    height: var(--banner-height);
+}
+
+#course-base-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+#course-main {
+    height: calc(100vh - var(--banner-height) - var(--mainnav-height));
+}
