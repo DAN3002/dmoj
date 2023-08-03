@@ -13,35 +13,6 @@
           $( "#tabs" ).tabs();
         } );
     </script>
-
-    <script type="text/javascript">
-        function react_to_comment(event, react_type) {
-            //
-        }
-
-        function get_comments() {
-            //
-        }
-
-
-
-        function post_comment() {
-            const text = $("#textbox textarea").val()
-            $.ajax({
-                url: "{{url('beta_course_post_comment', object.slug)}}",
-                type: "POST", 
-                data: JSON.stringify({text: text}),
-                contentType: "application/json",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                }
-            }).done(function(response) {
-                console.log(response)
-            }).fail((xhr, status, error) => {
-                console.log(xhr.responseText)
-            });
-        }
-    </script>
 {% endblock %}
 
 {% block banner %}
@@ -233,7 +204,7 @@
               <li><a href="#tabs-problems">Problems</a></li>
               <li><a href="#tabs-goals">Goals</a></li>
               {% if request.user.is_authenticated %}
-                <li><a href="#tabs-comments">Comments</a></li>
+                {# <li><a href="#tabs-comments">Comments</a></li> #}
                 <li><a href="#tabs-certificate">Certificate</a></li>
               {% endif %}
             </ul>
@@ -279,7 +250,7 @@
               </p>
             </div>
             {% if request.user.is_authenticated %}
-                <div id="tabs-comments">
+                {# <div id="tabs-comments">
                     <div id="comment-box">
                         <div id ="user-avatar">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -327,7 +298,7 @@
                                 </div>
                             </li>
                     </ul>
-                </div>
+                </div> #}
                 <div id="tabs-certificate">
                     <p>Certificate for you.</p>
                 </div>

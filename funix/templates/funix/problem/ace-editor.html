@@ -30,7 +30,7 @@
             }).done(function (template) {
                 {% if submission %}
                     if (lang_id == `{{submission.language.id}}`) {
-                        update_submit_area(`{{submission.source.source}}`)
+                        update_submit_area(`{{submission.source.source|safe}}`)
                     } else {
                         update_submit_area(template);
                     }
