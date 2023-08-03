@@ -81,7 +81,6 @@ def validate_rating(value):
             raise ValidationError("Rating must be between 1 and 5")
     
 class CourseRating(models.Model):
-    
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="ratings")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[validate_rating], default=5)
@@ -92,31 +91,4 @@ class CourseRating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.course.name} - {self.rating}"
-
-class CourseComment(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="comments")
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField(default="")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_approved = models.BooleanField(default=False)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
-
-    class Meta:
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"{self.author.username} - {self.text[:50]}"
-
-    def approve(self):
-        self.is_approved = True
-        self.save()
-
-    def unapprove(self):
-        self.is_approved = False
-        self.save()
-    
-    def has_parent(self):
-        return self.parent is not None
-
 

@@ -16,3 +16,5 @@ sass_processed
 node_modules
 .github
 funix.zip
+/uploads/
+__pycache__/
