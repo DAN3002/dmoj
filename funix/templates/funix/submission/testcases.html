@@ -64,24 +64,6 @@
 
         <div id="testcase{{case.order}}" class="tab_content {% if case.order == 1 %}{{ 'active' }}{% endif %}">
             <div class="inner">
-                {% if not case_in_map.sub_order %} {# just show points if this is not a subcase #}
-                    <p class="testcase_data_item">
-                        <label>Points:</label>
-                        <span>
-                            {% if case_submission %} {# if is normal case and has submission #}
-                                {{ _('%(points)s/%(total)s points', points=case_submission.points|floatformat(0), total=case_submission.total|floatformat(0)) }}
-                            {% elif case_in_map.type == 'S'and submission and  submission.test_cases.filter(batch=case_in_map.batch).count() > 1 %} {# if is batched start #}
-                                {% set batched_submission = submission.test_cases.filter(batch=case_in_map.batch)[0] %}
-                                {{ _('%(points)s/%(total)s points', points=batched_submission.points|floatformat(0), total=batched_submission.total|floatformat(0)) }}
-                            {% else %}
-                                {{case.points}}
-                            {% endif %}
-                        </span>
-                        <div class="odd-holder" style="width: 20px"></div>
-                    </p>
-                {% endif %}
-        
-                
                 {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}
                         <div class="testcase_data_item">
@@ -151,7 +133,7 @@
                             <span
                             class=" 
                                 {% if case_submission.status == 'AC' %}{{'success'}}{% elif case_submission.status == 'WA' %}{{'danger'}}{% else %}{{'warning'}}{% endif %}"
-                            >{{case_submission.status}}</span>
+                            >{{case_submission.long_status}}</span>
                         {% else %}
                             <span>_</span>
                         {% endif %}

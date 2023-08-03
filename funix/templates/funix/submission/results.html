@@ -31,14 +31,12 @@
 {# uuuuvcomment ------------------------- submission results and loading ------------------------- #}
 <div id="test-cases">
     <link rel="stylesheet" href="{{ static('funix/css/submission-status.css') }}" />
-
     <br />
     <hr class="half-hr" />
     <br />
-
-    <div id="test-cases">{% include "submission/status-testcases.html" %}</div>
+    <div id="test-cases">{% include "funix/submission/status-testcases.html" %}</div>
 </div>
 
 {% else %}
-<p>You haven't made any submission.</p>
+    <p>You haven't made any submission.</p>
 {% endif %}
