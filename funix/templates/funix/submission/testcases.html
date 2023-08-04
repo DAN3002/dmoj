@@ -67,7 +67,7 @@
                 {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}
                         <div class="testcase_data_item">
-                            <label>Input:</label> 
+                            <label>{{ _("Input")|title }}:</label> 
                             {% if case.data and case.data.input_data %}
                                 <div class="outer_wrapper">
                                     <div class="inner_wrapper">
@@ -89,7 +89,7 @@
                 {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}
                         <div class="testcase_data_item">
-                            <label>Expected output:</label>
+                            <label>{{ _("Expected output")|title }}:</label>
                             {% if case.data and case.data.output_data %}
                                 <div class="outer_wrapper">
                                     <div class="inner_wrapper">
@@ -111,7 +111,7 @@
                 {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}
                         <div class="testcase_data_item">
-                            <label>Your output (clipped):</label>
+                            <label>{{ _("Your output")|title }}:</label>
                             {% if case_submission %}
                                 <div class="outer_wrapper">
                                         <div class="inner_wrapper">

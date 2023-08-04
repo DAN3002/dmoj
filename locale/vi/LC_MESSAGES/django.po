@@ -6055,3 +6055,12 @@ msgstr "Hồ sơ Admin"
 msgid "Check all"
 msgstr "Chọn tất cả"
 
+#: funix
+msgid "Input"
+msgstr "Đầu vào"
+
+msgid "Expected output"
+msgstr "Đầu ra mong muốn"
+
+msgid "Your output"
+msgstr "Đầu ra thực tế"
