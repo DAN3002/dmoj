@@ -378,15 +378,14 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         try:
             translation = self.object.translations.get(language=self.request.LANGUAGE_CODE)
         except ProblemTranslation.DoesNotExist:
-            context['title'] = self.object.name
             context['language'] = settings.LANGUAGE_CODE
             context['description'] = self.object.description
             context['translated'] = False
         else:
-            context['title'] = translation.name
             context['language'] = self.request.LANGUAGE_CODE
             context['description'] = translation.description
             context['translated'] = True
+            setattr(self.object, "name", translation.name)
             
         if submission is not None:
             context['submission'] = submission
@@ -404,6 +403,7 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             else:
                 context['time_limit'] = lang_limit.time_limit
                 
+        context['title'] = self.object.name
         # course
         course_slug = self.kwargs.get("course")
         if course_slug is not None: 
@@ -411,6 +411,16 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             context["course_problem"] = get_object_or_404(CourseProblem, problem=self.object)
             context["section"] = CourseSection.objects.get(id=context["course_problem"].section.id)
             context["course_problems"] = CourseProblem.objects.filter(section=context["section"].id).order_by("number")
+            
+            course_translation = context["course"].translations.filter(language=self.request.LANGUAGE_CODE).first()
+            if course_translation:
+                setattr(context['course'], "name", course_translation.name)
+                
+            section_translation =  context["section"].translations.filter(language=self.request.LANGUAGE_CODE).first()
+            if section_translation:
+                setattr(context['section'], "name", section_translation.name)
+                
+            context['title'] = f"{context['course'].name}: {context['section'].name}: {self.object.name}" 
             user = self.request.user
             if not user.has_perm("funix.view_course_problem", context["course_problem"]):
                 raise PermissionDenied()

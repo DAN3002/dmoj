@@ -83,6 +83,7 @@
 #statistic {
     width: 30%;
     padding: 0 10px;
+    text-transform: capitalize;
 }
 
 #statistic svg {
@@ -121,12 +122,17 @@
     justify-content: center;
 }
 
+#enroll input {
+    margin: 0;
+}
+
 #free {
     color: green;
     text-align: center;
     font-size: 25px;
     font-weight: bold;
     margin: 0 0 10px 0;
+    text-transform: capitalize;
 }
 
 #course-sections {
@@ -221,7 +227,8 @@
 }
 
 #tabs > ul > li a {
-    color: var(--text-color-main) ;
+    color: var(--text-color-main);
+    text-transform: capitalize;
 }
 
 #tabs > ul > li.ui-state-active {
@@ -296,10 +303,6 @@
 
 .comment-item .updated-at { 
     color: var(--text-color-main);
-}
-
-.comment-item-text {
-
 }
 
 .comment-item-reacts button {

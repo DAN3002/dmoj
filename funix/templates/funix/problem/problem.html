@@ -49,9 +49,9 @@
       <h1 id="problem_title">
         {% if course %}
           <a href="{{ url('beta_course_detail', course.slug) }}">{{ course.name }}</a>:
-          {{ course_problem.section.name }}:
+          {{ section.name }}:
         {% endif %}
-        {{ title }}
+        {{ object.name }}
       </h1>
 
       {% if course %}
