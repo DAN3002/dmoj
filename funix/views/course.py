@@ -5,7 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import RedirectView
 from funix.models.profile import FunixProfile
-from funix.models.course import Course, CourseCategory, CourseSection,CourseProblem, CourseComment, CourseRating
+from funix.models.course import Course, CourseCategory, CourseSection,CourseProblem, CourseRating
 from django.db import models
 from django.shortcuts import get_object_or_404
 from django.utils.html import format_html
@@ -120,10 +120,6 @@ class CourseDetailView(DetailView):
                     context["enrolled"] = True
                 
                 
-        # get 10 comments
-        context["comments"] = CourseComment.objects.filter(course=self.object)[:10]
-        
-        
         # rating
         context["average_rating"] = round(CourseRating.objects.filter(course=self.object).aggregate(Avg('rating'))['rating__avg'] or 0)
         
@@ -151,16 +147,6 @@ class CourseEnrollView(RedirectView):
         return reverse("beta_course_detail", args=[self.kwargs.get("course")])
     
 
-def post_course_comment(request, course): 
-    if request.method == 'POST':
-        course = get_object_or_404(Course, slug=course)
-        data = json.loads(request.body)
-        text = data.get("text")
-        new_comment = CourseComment.objects.create(course=course, text=text, author=request.user)
-        response_data = {'id': new_comment.id, 'text': new_comment.text, "created_at": new_comment.created_at, "updated_at": new_comment.updated_at}
-        return http.JsonResponse(response_data)
-
-    
 class CourseRatingView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         return reverse("beta_course_detail", args=[self.kwargs.get("course")])

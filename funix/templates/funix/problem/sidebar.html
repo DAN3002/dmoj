@@ -1,7 +1,8 @@
 {% if problem %}
-<a 
+<li>
+  <a 
   class="{% if request.path == url('beta_problem', problem.code) %}{{'active'}}{% endif %}{% if submission %}{% if request.path == url('beta_problem', problem.code, submission.id) %}{{'active'}}{% endif %}{% endif %}" 
-  href="{{ url('beta_problem', problem.code) }}?iframe=1"
+  href="#problem"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -18,10 +19,12 @@
     />
   </svg>
 </a>
+</li>
 {% endif %}
 
 {% if iframe != '1' %}
-<a 
+<li>
+  <a 
 href="{{ url('beta_problem_list') }}?iframe=1" 
 title="Problems"
 class="{% if request.path == url('beta_problem_list') %}{{'active'}}{% endif %}"
@@ -41,9 +44,11 @@ class="{% if request.path == url('beta_problem_list') %}{{'active'}}{% endif %}"
     />
   </svg>
 </a>
+</li>
 
 {% if problem %}
-<a 
+<li>
+  <a 
 href="{{ url('beta_problem_comments', problem.code) }}?iframe=1"
 class="{% if request.path == url('beta_problem_comments', problem.code)%}{{'active'}}{% endif %}"
 >
@@ -62,30 +67,31 @@ class="{% if request.path == url('beta_problem_comments', problem.code)%}{{'acti
     />
   </svg>
 </a>
+</li>
 {% endif %}
 {% endif %}
 
-{% if problem %}
-{% if request.user.is_authenticated and submission %}
+{% if request.user.is_authenticated and submissions %}
+<li>
   <a
-    href="{{ url('user_submissions', problem.code, request.user.username) }}"
-    title="{{ _('My submissions') }}"
+  href="#submissions"
+  title="{{ _('My submissions') }}"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1"
+    stroke="currentColor"
+    class="w-6 h-6"
   >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1"
-      stroke="currentColor"
-      class="w-6 h-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-  </a>
-  {% endif %}
-  {% endif %}
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+</a>
+</li>
+{% endif %}
 

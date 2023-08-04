@@ -3,7 +3,7 @@ from funix.views.problem_data import beta_update_problem_data
 from funix.views.submission import abort_submission_beta, SubmissionTestCaseQueryBeta
 from django.urls import path, include
 from judge.views.widgets import rejudge_submission
-from funix.views.course import CourseListView, CourseDetailView, CourseEnrollView, post_course_comment, CourseRatingView
+from funix.views.course import CourseListView, CourseDetailView, CourseEnrollView, CourseRatingView
 
 
 urlpatterns = [
@@ -28,11 +28,9 @@ urlpatterns = [
     path('/courses', CourseListView.as_view(), name="beta_course_list"),
     path('/course/<slug:course>', include([
         path('', CourseDetailView.as_view(), name="beta_course_detail"),
-        path('/post-comment', post_course_comment, name="beta_course_post_comment"),
         path('/rating', CourseRatingView.as_view(), name="beta_course_rating"),
         path('/problem/<str:problem>', ProblemBeta.as_view(), name="beta_problem"),
         path('/problem/<str:problem>/submission/<int:submission>', ProblemBeta.as_view(), name="beta_problem"),
         path('/enroll', CourseEnrollView.as_view(), name="beta_course_enroll"),
     ]))
-
 ]

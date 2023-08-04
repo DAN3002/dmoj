@@ -1,0 +1,31 @@
+<div id="submissions" >
+   <ul id="submission-list">
+        {% for subm in submissions %}
+            <li class="submission-item">
+                <span class="submission-date">
+                    {{ relative_time(subm.date) }}
+                </span>
+                 <div class="submission-item-inner">
+                    <span class="submission-status {{ subm.result }}">{{ subm.long_status }}</span>
+                    <span class="submission-language">{{ subm.language }}</span>
+                    <h5 class="submission-problem-name">{{ subm.problem.name }}</h5>
+                    <span class="submission-time">
+                        {% if subm.time is not none %}
+                            {{ subm.time|floatformat }} s
+                        {% else %}
+                            _
+                        {% endif %}
+                    </span>
+                    <span class="submission-memory">
+                        {% if subm.memory is not none %}
+                            {{ subm.memory|kbdetailformat }}
+                        {% else %}
+                            _
+                        {% endif %}
+                    </span>
+                    <a class="submission-url" href="{{ url('beta_problem', problem=subm.problem.code, submission=subm.id) }}">view</a>
+                 </div>
+            </li>
+        {% endfor %}
+   </ul>
+</div>

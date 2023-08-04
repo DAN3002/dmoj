@@ -333,6 +333,9 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
                 
         submission_id = kwargs.get('submission')
         self.old_submission = None
+        
+        if self.request.user.is_authenticated:
+            self.submissions = Submission.objects.filter(user=request.user.profile, problem=problem).order_by("-date")
 
         if submission_id is not None:
             self.old_submission = get_object_or_404(
@@ -369,6 +372,7 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         context['iframe'] = self.request.GET.get('iframe')
         submission = self.old_submission
         context['old_submission'] = self.initial
+        context["submissions"] = self.submissions
         
         # translation
         try:
