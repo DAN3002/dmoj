@@ -5,7 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import RedirectView
 from funix.models.profile import FunixProfile
-from funix.models.course import Course, CourseCategory, CourseSection,CourseProblem, CourseRating
+from funix.models.course import Course, CourseCategory, CourseSection,CourseProblem, CourseRating, CourseTranslation
 from django.db import models
 from django.shortcuts import get_object_or_404
 from django.utils.html import format_html
@@ -18,8 +18,18 @@ class CourseListView(ListView):
     template_name = "funix/course/list.html"
     context_object_name = 'categories'
     
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.prefetch_related('translations')
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        for object in context[self.context_object_name]:
+            translation = object.translations.filter(language=self.request.LANGUAGE_CODE).first()
+            if translation:
+                setattr(object, 'name', translation.name)
+        
         context["title"] = "Courses"
         categories = context[self.context_object_name]
         average_points = {}
@@ -29,6 +39,7 @@ class CourseListView(ListView):
         problem_counts = {}
         enrolleds ={}
         progress_percentages = {}
+        course_translations = {}
         for category in categories:
             for course in category.courses.all():
                 average_points[course.id] = CourseRating.objects.filter(course=course).aggregate(Avg('rating'))['rating__avg'] or 0
@@ -56,6 +67,20 @@ class CourseListView(ListView):
                         if latest_submission.result == "AC":
                             correct_problems_count += 1
                 progress_percentages[course.id] = 0 if problem_counts[course.id] == 0 else round(correct_problems_count / problem_counts[course.id] * 100)
+
+                # course translation
+                try:
+                    course_translation = course.translations.get(language=self.request.LANGUAGE_CODE)
+                except CourseTranslation.DoesNotExist:
+                    course_translations[course.id] = {
+                        "name": course.name,
+                        "description": course.description,
+                    }
+                else:
+                    course_translations[course.id] = {
+                        "name": course_translation.name,
+                        "description": course_translation.description,
+                    }
                 
         context["average_points"] = average_points
         context["votes"] = votes
@@ -64,6 +89,8 @@ class CourseListView(ListView):
         context["total_times"] = total_times
         context["enrolleds"] = enrolleds
         context["progress_percentages"] = progress_percentages
+        context["course_translations"] = course_translations
+        
         return context
         
 class CourseSectionView(ListView):
@@ -123,6 +150,25 @@ class CourseDetailView(DetailView):
         # rating
         context["average_rating"] = round(CourseRating.objects.filter(course=self.object).aggregate(Avg('rating'))['rating__avg'] or 0)
         
+        # course translations
+        course_translation = self.object.translations.filter(language=self.request.LANGUAGE_CODE).first()
+        if course_translation:
+            setattr(self.object, 'name', course_translation.name)
+            setattr(self.object, 'description', course_translation.description)
+            setattr(self.object, 'goals', course_translation.goals)
+        
+        # section translations
+        section_translations = {}
+        for section in self.object.sections.all():
+            section_translations[section.id] = {
+                "name": section.name
+            }
+            section_translation = section.translations.filter(language=self.request.LANGUAGE_CODE).first()
+
+            if section_translation:
+                section_translations[section.id]["name"] = section_translation.name
+        
+        context["section_translations"] = section_translations
         return context
 
 class CourseEnrollView(RedirectView):

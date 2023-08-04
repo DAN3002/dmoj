@@ -4,6 +4,7 @@ from datetime import date
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 class CourseCategory(models.Model):
     name = models.CharField(verbose_name="Course Category", max_length=255, unique=True)
@@ -48,7 +49,7 @@ class CourseSection(models.Model):
         unique_together = ['name', 'number', 'course']
         
     def __str__(self):
-        return self.name
+        return f'{self.course.name} - {self.name}'
     
 
 class CourseProblem(models.Model):
@@ -92,3 +93,35 @@ class CourseRating(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.course.name} - {self.rating}"
 
+class CourseTranslation(models.Model):
+    course = models.ForeignKey(Course, verbose_name='course', related_name='translations', on_delete=models.CASCADE)
+    language = models.CharField(verbose_name='language', max_length=7, choices=settings.LANGUAGES)
+    name = models.CharField(verbose_name='translated name', max_length=100, db_index=True)
+    description = models.TextField(verbose_name='translated description')
+    goals = models.TextField(verbose_name="translated goals")
+    
+    class Meta:
+        unique_together = ('course', 'language')
+        verbose_name = 'course translation'
+        verbose_name_plural = 'course translations'
+        
+class CourseSectionTranslation(models.Model):
+    course_section = models.ForeignKey(CourseSection, verbose_name='course section', related_name='translations', on_delete=models.CASCADE)
+    language = models.CharField(verbose_name='language', max_length=7, choices=settings.LANGUAGES)
+    name = models.CharField(verbose_name='translated name', max_length=255, db_index=True)
+    
+    class Meta:
+        unique_together = ('course_section', 'language')
+        verbose_name = 'course section translation'
+        verbose_name_plural = 'course section translations'
+        
+class CourseCategoryTranslation(models.Model):
+    course_category = models.ForeignKey(CourseCategory, verbose_name='course category', related_name='translations', on_delete=models.CASCADE)
+    language = models.CharField(verbose_name='language', max_length=7, choices=settings.LANGUAGES)
+    name = models.CharField(verbose_name='translated name', max_length=255, db_index=True)
+    
+    class Meta:
+        unique_together = ('course_category', 'language')
+        verbose_name = 'course category translation'
+        verbose_name_plural = 'course category translations'
+        

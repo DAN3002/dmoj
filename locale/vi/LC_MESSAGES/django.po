@@ -6064,3 +6064,33 @@ msgstr "Đầu ra mong muốn"
 
 msgid "Your output"
 msgstr "Đầu ra thực tế"
+
+msgid "free"
+msgstr "miễn phí"
+
+msgid "goals"
+msgstr "mục tiêu"
+
+msgid "certificate"
+msgstr "chứng chỉ"
+
+msgid "students"
+msgstr "học viên"
+
+msgid "course"
+msgstr "khóa"
+
+msgid "course list"
+msgstr "danh sách khóa"
+
+msgid "problems count"
+msgstr "số bài tập"
+
+msgid "total time"
+msgstr "tổng thời gian"
+
+msgid "for you"
+msgstr "dành cho bạn"
+
+msgid "continue learning"
+msgstr "Tiếp tục học"

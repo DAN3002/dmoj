@@ -374,7 +374,7 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         context['old_submission'] = self.initial
         context["submissions"] = self.submissions
         
-        # translation
+        # problem translation
         try:
             translation = self.object.translations.get(language=self.request.LANGUAGE_CODE)
         except ProblemTranslation.DoesNotExist:
@@ -387,7 +387,7 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             context['language'] = self.request.LANGUAGE_CODE
             context['description'] = translation.description
             context['translated'] = True
-
+            
         if submission is not None:
             context['submission'] = submission
 

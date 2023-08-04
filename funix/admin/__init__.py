@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from funix.models.problem import ProblemTestCaseData, ProblemInitialSource
-from funix.models.course import CourseCategory, CourseRating, Course
-from funix.admin.course import CourseAdmin
+from funix.models.course import CourseCategory, CourseRating, Course, CourseSection
+from funix.admin.course import CourseAdmin, CourseCategoryAdmin, CourseSectionAdmin
 from funix.models.profile import FunixProfile
 from funix.models.submission import SuspiciousSubmissionBehavior, SubmissionWPM
 from funix.admin.submission import SubmissionWPMInline, wpm_column
@@ -29,7 +29,8 @@ admin.site.register(ProblemTestCaseData)
 admin.site.register(SuspiciousSubmissionBehavior)
 admin.site.register(ProblemInitialSource)
 admin.site.register(SubmissionWPM)
-admin.site.register(CourseCategory)
+admin.site.register(CourseCategory, CourseCategoryAdmin)
+admin.site.register(CourseSection, CourseSectionAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(FunixProfile)
 admin.site.register(CourseRating)

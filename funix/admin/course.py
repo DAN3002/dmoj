@@ -1,8 +1,23 @@
 from django.contrib import admin
-from funix.models.course import Course, CourseProblem, CourseSection
+from funix.models.course import Course, CourseProblem, CourseSection, CourseTranslation, CourseSectionTranslation, CourseCategoryTranslation, CourseCategory
 from django.forms import ModelForm
 from judge.widgets import AdminMartorWidget
 
+# category
+class CourseCategoryTranslationInline(admin.StackedInline):
+    model = CourseCategoryTranslation
+    extra = 0
+    
+class CourseCategoryAdmin(admin.ModelAdmin):
+    inlines = [CourseCategoryTranslationInline]
+
+# section
+class CourseSectionTranslationInline(admin.StackedInline):
+    model = CourseSectionTranslation
+    extra = 0
+
+class CourseSectionAdmin(admin.ModelAdmin):
+    inlines = [CourseSectionTranslationInline]
 
 # course problem inline
 class CourseProblemForm(ModelForm):
@@ -23,7 +38,7 @@ class CourseSectionInline(admin.StackedInline):
     extra = 0
 
 
-# course form
+# course inline
 class CourseForm(ModelForm):
     class Meta: 
         model = Course
@@ -32,9 +47,22 @@ class CourseForm(ModelForm):
             'goals': AdminMartorWidget(),
         }
         
+class CourseTranslationForm(ModelForm):
+    class Meta: 
+        model = CourseTranslation
+        fields = "__all__"
+        widgets = {
+            'goals': AdminMartorWidget(),
+        }
+
+class CourseTranslationInline(admin.StackedInline):
+    form = CourseTranslationForm
+    model = CourseTranslation        
+    extra = 0
+
 class CourseAdmin(admin.ModelAdmin):
     form = CourseForm
-    inlines = [CourseSectionInline,CourseProblemInline]
+    inlines = [CourseSectionInline, CourseProblemInline, CourseTranslationInline]
     
 
 
