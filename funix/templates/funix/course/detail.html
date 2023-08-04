@@ -110,7 +110,7 @@
                         <span>{{ average_rating }}</span>
                     {% endif %}
 
-                    ({{object.ratings.count()}} votes)
+                    ({{object.ratings.count()}} {{ _("votes") }})
                 </form>
                 <script type="text/javascript">
                     function submithandler(event, star) {
@@ -212,36 +212,37 @@
                 <div id="course-sections">
                     {% if problem_count == 0 %}
                         <p>There is no problem</p>
-                    {% endif %}
-                    {% set sections = course.sections.all() %}
-                    {% if sections.count() == 0 %}
-                        <p>There is no sections.</p>
-                    {% endif %}
-                    {% for section in sections %}
-                        {% set problems = section.problems.all() %}
-                        <div class="course-section-wrap">
-                            <div class="course-section">
-                                <h3 class="section-name">{{ section_translations[section.id].name }}</h3>
-                                <div class="section-problems">
-                                    {% if problems.count() == 0 %}
-                                        <p style="height: 35px; margin: 0; line-height: 35px;">This section has no problem.</p>
-                                    {% else %}
-                                        {% for problem in section.problems.all() %}
-                                            {% if latest_submissions[problem.problem.id] %}
-                                                {% if latest_submissions[problem.problem.id].result == "AC" %}
-                                                    <a class="success" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                    {% else %}
+                        {% set sections = course.sections.all() %}
+                        {% if sections.count() == 0 %}
+                            <p>There is no sections.</p>
+                        {% endif %}
+                        {% for section in sections %}
+                            {% set problems = section.problems.all() %}
+                            <div class="course-section-wrap">
+                                <div class="course-section">
+                                    <h3 class="section-name">{{ section_translations[section.id].name }}</h3>
+                                    <div class="section-problems">
+                                        {% if problems.count() == 0 %}
+                                            <p style="height: 35px; margin: 0; line-height: 35px;">This section has no problem.</p>
+                                        {% else %}
+                                            {% for problem in section.problems.all() %}
+                                                {% if latest_submissions[problem.problem.id] %}
+                                                    {% if latest_submissions[problem.problem.id].result == "AC" %}
+                                                        <a class="success" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                                                    {% else %}
+                                                        <a class="danger" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                                                    {% endif %}
                                                 {% else %}
-                                                    <a class="danger" href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
+                                                    <a href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
                                                 {% endif %}
-                                            {% else %}
-                                                <a href="{{url('beta_problem', course=course.slug, problem=problem.problem.code)}}">{{ problem.number }}</a>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div id="tabs-goals">
