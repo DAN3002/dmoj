@@ -397,6 +397,7 @@ urlpatterns += [
     path('beta', include('funix.urls'))
 ] + url_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+
 from django.conf import settings
 DEBUG = settings.DEBUG
 if DEBUG == False: 

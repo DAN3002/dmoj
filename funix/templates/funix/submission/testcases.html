@@ -128,7 +128,7 @@
 
                 {% if case.type != 'S' %}
                     <div class="testcase_data_item">
-                        <label>Result:</label>
+                        <label>{{ _("result")|title  }}:</label>
                         {% if case_submission %}
                             <span
                             class=" 
@@ -143,7 +143,7 @@
 
                 {% if case.type != 'S' %}
                     <div class="testcase_data_item">
-                        <label>Memory:</label>
+                        <label>{{ _("memory usage")|title  }}:</label>
                         {% if case_submission %}
                             <span>{{case_submission.memory|kbdetailformat}}</span>
                         {% else %}
@@ -155,7 +155,7 @@
 
                 {% if case.type != 'S' %}
                     <div class="testcase_data_item">
-                        <label>Time:</label>
+                        <label>{{ _("Time")|title }}:</label>
                         {% if case_submission %}
                             <span>{{case_submission.time|floatformat(3)}}s</span>
                         {% else %}
