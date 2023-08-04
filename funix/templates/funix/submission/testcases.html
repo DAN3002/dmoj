@@ -67,8 +67,8 @@
                 {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}
                         <div class="testcase_data_item">
-                            <label>{{ _("Input")|title }}:</label> 
-                            {% if case.data and case.data.input_data %}
+                            <label>{{ _("Input")|title }}: </label> 
+                            {% if case.data and (case.data.input_data or case.data.input_data == "")  %}
                                 <div class="outer_wrapper">
                                     <div class="inner_wrapper">
                                         <pre >
