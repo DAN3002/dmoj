@@ -120,6 +120,14 @@
 </div>
 
 
-{% compress js %} {% include "funix/problem/js-ace-editor-extra.html" %} {%
-include "funix/problem/js-resizing.html" %} {% include
-"funix/problem/js-tabs.html" %} {% endcompress %} {% endblock %}
+  {% compress js %} 
+    {% include "funix/problem/js-ace-editor-extra.html" %} 
+    {% include "funix/problem/js-resizing.html" %} 
+    {% include "funix/problem/js-tabs.html" %} 
+  {% endcompress %} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-chtml.min.js"></script>
+
+{% endblock %}
+
+
+

@@ -1,5 +1,5 @@
-{% extends "common-content.html" %} {% block content_media %} {% include
-"comments/media-css.html" %}
+{% extends "common-content.html" %} {% block content_media %} 
+{% include "comments/media-css.html" %}
 <style>
   .title-state {
     font-size: 2em;
@@ -43,14 +43,17 @@
     padding-top: 0.5em;
   }
 </style>
-{% endblock %} {% block content_js_media %} {% include "comments/media-js.html"
-%} {% if vote_perm.can_view() %}
+{% endblock %} {% block content_js_media %} 
+{% include "comments/media-js.html"%} 
+{% if vote_perm.can_view() %}
 <script
   src="{{ static('libs/chart.js/Chart.js') }}"
   type="text/javascript"
 ></script>
 <script src="{{ static('problem-vote.js') }}" type="text/javascript"></script>
-{% endif %} {% endblock %} {% block title_row %}
+{% endif %} 
+{% endblock %} 
+{% block title_row %}
 
 <div class="problem-title">
   {% if request.user.is_authenticated %} {% if problem.id in
@@ -93,8 +96,9 @@
   </a>
   {% endif %}
 </div>
-{% endblock %} {% block info_float %} {% if request.user.is_authenticated and
-request.in_contest and submission_limit %} {% if submissions_left > 0 %}
+{% endblock %} 
+{% block info_float %} 
+{% if request.user.is_authenticated and request.in_contest and submission_limit %} {% if submissions_left > 0 %}
 <a
   href="{{ url('beta_problem', problem.code) }}"
   class="unselectable button full"
@@ -112,7 +116,8 @@ request.in_contest and submission_limit %} {% if submissions_left > 0 %}
 <div class="no-submissions-left submissions-left">
   {{ _('0 submissions left') }}
 </div>
-{% endif %} {% else %} {# uuuuvcomment #}
+{% endif %} 
+{% else %} {# uuuuvcomment #}
 <a
   href="{{ url('beta_problem', problem.code) }}"
   class="unselectable button full"
@@ -120,7 +125,8 @@ request.in_contest and submission_limit %} {% if submissions_left > 0 %}
   {{ _('Submit solution beta') }}
 </a>
 <br />
-{# uuuuvcomment #} {% endif %}
+{# uuuuvcomment #} 
+{% endif %}
 
 <hr style="padding-bottom: 0.3em" />
 
@@ -221,13 +227,20 @@ not request.in_contest %}
 <hr style="padding-top: 0.3em" />
 
 <div class="problem-info-entry">
-  <i class="fa fa-check fa-fw"></i
-  ><span class="pi-name">{{ _('Points:') }}</span>
+  <i class="fa fa-check fa-fw"></i >
+    <span class="pi-name">{{ _('Points:') }}</span>
   <span class="pi-value">
-    {% if contest_problem %} {{ contest_problem.points }}{% if
-    contest_problem.partial %} {{ _('(partial)') }}{% endif %} {% else %} {{
-    problem.points|floatformat }}{% if problem.partial %} {{ _('(partial)') }}{%
-    endif %} {% endif %}
+    {% if contest_problem %} 
+      {{ contest_problem.points }}
+      {% if contest_problem.partial %} 
+        {{ _('(partial)') }}
+      {% endif %} 
+    {% else %} 
+    {{ problem.points|floatformat }}
+      {% if problem.partial %} 
+        {{ _('(partial)') }}
+      {% endif %} 
+    {% endif %}
   </span>
 </div>
 <div class="problem-info-entry">
@@ -270,13 +283,17 @@ authors=problem.authors.all() %} {% if authors %}
   >
   <div class="pi-value authors-value">{{ link_users(authors) }}</div>
 </div>
-{% endif %} {% endwith %} {% endcache %} {% endif %} {% if not contest_problem
-or not contest_problem.contest.hide_problem_tags %}
+{% endif %} 
+{% endwith %} 
+{% endcache %} 
+{% endif %} 
+{% if not contest_problem or not contest_problem.contest.hide_problem_tags %}
 <div id="problem-types">
   {% with types=problem.types_list %}
   <div class="toggle closed unselectable">
-    <i class="fa fa-chevron-right fa-fw"></i>{% trans trimmed
-    count=problem.types_list|length %} Problem type {% pluralize count %}
+    <i class="fa fa-chevron-right fa-fw"></i>
+    {% trans trimmed count=problem.types_list|length %} 
+    Problem type {% pluralize count %}
     Problem types {% endtrans %}
   </div>
   <div style="display: none" class="toggled">
@@ -284,32 +301,38 @@ or not contest_problem.contest.hide_problem_tags %}
   </div>
   {% endwith %}
 </div>
-{% endif %} {% if show_languages %}
+{% endif %} 
+{% if show_languages %}
 <div id="allowed-langs">
   <div class="toggle open unselectable">
     <i class="fa fa-chevron-right fa-fw"></i>{{ _('Allowed languages') }}
   </div>
   <div class="toggled">
-    {% with usable=problem.usable_common_names, langs=problem.languages_list()
-    %} {% for lang in langs %} {%- if lang in usable -%} {{ lang }} {%- else -%}
+    {% with usable=problem.usable_common_names, langs=problem.languages_list() %} 
+    {% for lang in langs %} 
+    {%- if lang in usable -%} 
+    {{ lang }} 
+    {%- else -%}
     <s title="{{ _('No %(lang)s judge online', lang=lang) }}">{{ lang }}</s>
-    {%- endif -%} {% if not loop.last %}, {% endif -%} {% endfor %} {% endwith
-    %}
+    {%- endif -%} 
+    {% if not loop.last %}, {% endif -%} 
+    {% endfor %} 
+    {% endwith %}
   </div>
 </div>
-{% endif %} {% if problem.is_editable_by(request.user) %}
+{% endif %} 
+{% if problem.is_editable_by(request.user) %}
 <div id="available-judges">
-  <i class="fa fa-database fa-fw"></i
-  ><span class="pi-name"
-    >{% trans trimmed count=available_judges|length %} Judge: {% pluralize count
-    %} Judges: {% endtrans %}
+  <i class="fa fa-database fa-fw"></i>
+  <span class="pi-name" >
+    {% trans trimmed count=available_judges|length %}
+     Judge: {% pluralize count %} Judges: 
+     {% endtrans %}
   </span>
   <div class="pi-value judges-value">
     {% if available_judges %} {% if perms.judge.change_judge %} {% for judge in
     available_judges %}
-    <a href="{{ url('admin:judge_judge_change', judge.id) }}"
-      >{{ judge.name }}</a
-    >
+    <a href="{{ url('admin:judge_judge_change', judge.id) }}" >{{ judge.name }}</a >
     {%- if not loop.last %}, {% endif %} {% endfor %} {% else %} {{
     available_judges|join(", ") }} {% endif %} {% else %}
     <i>{{ _('none available') }}</i>
@@ -328,7 +351,8 @@ or not contest_problem.contest.hide_problem_tags %}
     >{{ license.display or license.name }}</a
   >
 </span>
-{% endif %} {% endwith %} {% endblock %} {% block post_description_end %} {% if
+{% endif %} {% endwith %} {% endblock %} 
+{% block post_description_end %} {% if
 request.user.is_authenticated and not request.profile.mute %}
 <a href="{{ url('new_problem_ticket', problem.code) }}" class="button clarify">
   {%- if contest_problem and contest_problem.contest.use_clarifications and
@@ -352,5 +376,8 @@ contest_problem.contest.use_clarifications %}
   </p>
   {% endif %}
 </div>
-{% else %} {% include "comments/list.html" %} {% endif %} {% endblock %} {%
-block bodyend %} {{ super() }} {% include "comments/math.html" %} {% endblock %}
+{% else %} 
+{% include "comments/list.html" %} 
+{% endif %} 
+{% endblock %} 
+{% block bodyend %} {{ super() }} {% include "comments/math.html" %} {% endblock %}
