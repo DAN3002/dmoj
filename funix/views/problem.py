@@ -212,26 +212,7 @@ class ProblemBetaMixin(object):
             if not course_slug and problem.course_problems.count() > 0:
                 return generic_message(self.request, 'This problem is not public', f'This problem is belong to course {course_slug}' , status=404)
             
-            # Lấy submission hiện tại và danh sách submissions
-            # CHỈ LẤY KHI NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP
-            # - Nếu user đang đăng nhập thì lấy danh sách submissions
-            submission_id = kwargs.get('submission')
-            self.old_submission = None
-            self.submissions = None
-            if self.request.user.is_authenticated:
-                self.submissions = Submission.objects.filter(user=request.user.profile, problem=problem).order_by("-date")
-                    
-                if submission_id is not None:
-                    self.old_submission = get_object_or_404(Submission.objects.select_related('source', 'language'),id=submission_id,)
 
-                    if not self.old_submission.can_see_detail(request.user):
-                        return generic_message(self.request, 'Permission denied', f'You are not allowed to see this submission {submission_id} of the problem {self.kwargs.get("problem")}.' , status=403)
-                    
-                    if not request.user.has_perm('judge.resubmit_other') and self.old_submission.user != request.profile:
-                        raise PermissionDenied()
-                else:
-                    if self.submissions.count() > 0:
-                        self.old_submission = self.submissions[0]
             
             return super(ProblemBetaMixin, self).get(request, *args, **kwargs)
 
@@ -403,6 +384,30 @@ class ProblemBeta(ProblemBetaMixin, SingleObjectFormView):
                 kwargs.get(self.slug_url_kwarg),
             )
             return HttpResponseForbidden(format_html('<h1>{0}</h1>', _('Do you want me to ban you?')))
+
+    def dispatch(self, request, *args, **kwargs):
+        # Lấy submission hiện tại và danh sách submissions
+        # CHỈ LẤY KHI NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP
+        # - Nếu user đang đăng nhập thì lấy danh sách submissions
+        submission_id = kwargs.get('submission')
+        self.old_submission = None
+        self.submissions = None
+        if self.request.user.is_authenticated:
+            self.submissions = Submission.objects.filter(user=request.user.profile, problem__code=self.kwargs.get("problem")).order_by("-date")
+                
+            if submission_id is not None:
+                self.old_submission = get_object_or_404(Submission.objects.select_related('source', 'language'),id=submission_id,)
+
+                if not self.old_submission.can_see_detail(request.user):
+                    return generic_message(self.request, 'Permission denied', f'You are not allowed to see this submission {submission_id} of the problem {self.kwargs.get("problem")}.' , status=403)
+                
+                if not request.user.has_perm('judge.resubmit_other') and self.old_submission.user != request.profile:
+                    raise PermissionDenied()
+            else:
+                if self.submissions.count() > 0:
+                    self.old_submission = self.submissions[0]
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
