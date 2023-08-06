@@ -302,12 +302,6 @@
                 </div> #}
                 <div id="tabs-certificate">
                     <p>Certificate for you.</p>
-                    {% if request.user.funix %}
-                        has funix
-                        {% for f in request.user.funix.courses.all() %}
-                            {{ f }}
-                        {% endfor %}
-                    {% endif %}
                 </div>
             {% endif %}
         </div>
