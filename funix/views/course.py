@@ -175,6 +175,10 @@ class CourseDetailView(DetailView):
                 section_translations[section.id]["name"] = section_translation.name
         
         context["section_translations"] = section_translations
+        
+        # seo
+        context["og_image"] = self.object.og_image if self.object.og_image else self.object.thumbnail.url
+        context["meta_description"] = self.object.description
         return context
 
 class CourseEnrollView(RedirectView):

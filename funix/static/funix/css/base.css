@@ -1,4 +1,3 @@
-
 :root {
   --mainnav-height: 44px;
   --sidebar-width: 60px;
@@ -92,14 +91,13 @@
 }
 
 #page-container footer,
-#page-container hr:first-of-type,
 #page-container br:first-of-type,
 #page-container h2:first-of-type {
   display: none !important;
 }
 
-#page-container #content ,
-  #page-container #content-body {
+#page-container #content,
+#page-container #content-body {
   margin: 0 !important;
   padding: 0 !important;
   width: 100% !important;
@@ -183,12 +181,12 @@
 /* sidebar  */
 #sidebar {
   width: var(--sidebar-width);
-  min-width:  var(--sidebar-width);
-  height: 100%; 
+  min-width: var(--sidebar-width);
+  height: 100%;
   box-shadow: var(--box-shadow);
   background: var(--bg-main);
   border-right: 0.5px solid var(--border);
-  flex-shrink:0 ;
+  flex-shrink: 0;
   padding: 0;
 }
 
@@ -206,8 +204,6 @@
   color: var(--text-color-main-hover);
 }
 
-
-
 #sidebar svg {
   width: 25px;
 }
@@ -220,7 +216,7 @@
   border-top-left-radius: 0;
 }
 
-#sidebar.ui-widget-header  {
+#sidebar.ui-widget-header {
   border-top: none;
   border-left: none;
   border-bottom: none;
