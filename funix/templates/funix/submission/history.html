@@ -1,3 +1,4 @@
+{% if request.user.is_authenticated and submissions %}
 <div id="submissions" >
    <ul id="submission-list">
         {% for subm in submissions %}
@@ -29,3 +30,4 @@
         {% endfor %}
    </ul>
 </div>
+{% endif %}

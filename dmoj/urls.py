@@ -404,3 +404,7 @@ if DEBUG == False:
     handler404 = 'funix.views.error.error404'
     handler403 = 'funix.views.error.error403'
     handler500 = 'funix.views.error.error500'
+    
+handler404 = 'funix.views.error.error404'
+handler403 = 'funix.views.error.error403'
+handler500 = 'funix.views.error.error500'

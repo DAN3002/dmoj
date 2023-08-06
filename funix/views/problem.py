@@ -24,13 +24,14 @@ from funix.models.course import  Course, CourseProblem, CourseSection
 from funix.models.submission import SuspiciousSubmissionBehavior, SubmissionWPM
 from funix.models.problem import ProblemInitialSource 
 from funix.forms import BetaProblemSubmitForm as ProblemSubmitForm
+from funix.models.profile import FunixProfile
+
 
 def get_contest_problem(problem, profile):
     try:
         return problem.contests.get(contest_id=profile.current_contest.contest_id)
     except ObjectDoesNotExist:
         return None
-
 
 def get_contest_submission_count(problem, profile, virtual):
     return profile.current_contest.submissions.exclude(submission__status__in=['IE']) \
@@ -44,8 +45,10 @@ class ProblemMixin(object):
 
     def get_object(self, queryset=None):
         problem = super(ProblemMixin, self).get_object(queryset)
+        
         if not problem.is_accessible_by(self.request.user):
             raise Http404()
+        
         return problem
 
     def no_such_problem(self):
@@ -53,6 +56,7 @@ class ProblemMixin(object):
         return generic_message(self.request, _('No such problem'),
                                _('Could not find a problem with the code "%s".') % code, status=404)
 
+        
     def get(self, request, *args, **kwargs):
         try:
             return super(ProblemMixin, self).get(request, *args, **kwargs)
@@ -155,22 +159,104 @@ def is_anonymous(self):
 
 from funix.utils.problem import map_test_cases
 
-class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
+class ProblemBetaMixin(object):
+    model = Problem
+    slug_url_kwarg = 'problem'
+    slug_field = 'code'
+    
+    def get_object(self, queryset=None):
+        problem = super(ProblemBetaMixin, self).get_object(queryset)
+        return problem
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            problem = self.get_object(self.get_queryset())
+            if not problem.is_accessible_by(self.request.user) and not self.kwargs.get("course"):
+                raise Http404()
+            
+            # course
+            course_slug = self.kwargs.get("course")
+            self.course = None
+            self.course_problem = None
+            if course_slug:
+                course = Course.objects.filter(slug=course_slug).first()
+                if not course:
+                    return generic_message(self.request, 'Course Not Found', 'Not found course' , status=404)
+                
+                course_translation = course.translations.filter(language=self.request.LANGUAGE_CODE).first()
+                if course_translation:
+                    setattr(course, "name", course_translation.name)
+                    
+                course_problem = get_object_or_404(CourseProblem, problem=problem, course=course)
+                section = CourseSection.objects.get(id=course_problem.section.id)
+                course_problems = CourseProblem.objects.filter(section=section.id).order_by("number")
+    
+                    
+                section_translation =  section.translations.filter(language=self.request.LANGUAGE_CODE).first()
+                if section_translation:
+                    setattr(section, "name", section_translation.name)
+                
+                if self.request.user.is_authenticated:
+                    funix_profile, created = FunixProfile.objects.get_or_create(user=self.request.user)
+                    if not course in funix_profile.courses.all():
+                        return generic_message(self.request, 'Register required', f'You need to register the course {course.name} to see this problem' , status=403)
+                else:
+                    return generic_message(self.request, 'Login and register required', f'You need to login and register the course {course.name} to see this problem' , status=403)
+
+                
+                self.course = course
+                self.section = section
+                self.course_problem = course_problem
+                self.course_problems = course_problems
+            
+            if not course_slug and problem.course_problems.count() > 0:
+                return generic_message(self.request, 'This problem is not public', f'This problem is belong to course {course_slug}' , status=404)
+            
+            # Lấy submission hiện tại và danh sách submissions
+            # CHỈ LẤY KHI NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP
+            # - Nếu user đang đăng nhập thì lấy danh sách submissions
+            submission_id = kwargs.get('submission')
+            self.old_submission = None
+            self.submissions = None
+            if self.request.user.is_authenticated:
+                self.submissions = Submission.objects.filter(user=request.user.profile, problem=problem).order_by("-date")
+                    
+                if submission_id is not None:
+                    self.old_submission = get_object_or_404(Submission.objects.select_related('source', 'language'),id=submission_id,)
+
+                    if not self.old_submission.can_see_detail(request.user):
+                        return generic_message(self.request, 'Permission denied', f'You are not allowed to see this submission {submission_id} of the problem {self.kwargs.get("problem")}.' , status=403)
+                    
+                    if not request.user.has_perm('judge.resubmit_other') and self.old_submission.user != request.profile:
+                        raise PermissionDenied()
+                else:
+                    if self.submissions.count() > 0:
+                        self.old_submission = self.submissions[0]
+            
+            return super(ProblemBetaMixin, self).get(request, *args, **kwargs)
+
+        except Http404:
+            return self.no_such_problem()
+
+
+class ProblemBeta(ProblemBetaMixin, SingleObjectFormView):
+
     template_name = 'funix/problem/problem.html'
     form_class = ProblemSubmitForm
 
     @cached_property
     def contest_problem(self):
-        if (is_anonymous(self)):
+        if self.request.user.is_anonymous:
             return None
         
         if self.request.profile.current_contest is None:
             return None
+        
         return get_contest_problem(self.object, self.request.profile)
 
     @cached_property
     def remaining_submission_count(self):
-        if (is_anonymous(self)):
+        if self.request.user.is_anonymous:
             return None
 
         max_subs = self.contest_problem and self.contest_problem.max_submissions
@@ -195,14 +281,10 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         if not self.request.user.is_anonymous:
             return self.request.profile.language
 
-    def get_content_title(self):
-        return mark_safe(
-            escape(_('Submit to %s')) % format_html(
-                '<a href="{0}">{1}</a>',
-                reverse('problem_detail', args=[self.object.code]),
-                self.object.translated_name(self.request.LANGUAGE_CODE),
-            ),
-        )
+    def no_such_problem(self):
+        code = self.kwargs.get(self.slug_url_kwarg, None)
+        return generic_message(self.request, _('No such problem'),
+                               _('Could not find a problem with the code "%s".') % code, status=404)
 
     def get_initial(self):
         initial = {'language': self.default_language}
@@ -322,41 +404,6 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             )
             return HttpResponseForbidden(format_html('<h1>{0}</h1>', _('Do you want me to ban you?')))
 
-    def dispatch(self, request, *args, **kwargs):
-        problem_code = kwargs.get('problem')
-        problem = get_object_or_404(Problem, code=problem_code)
-        
-        # check if is not in course and is course problem => 404
-        if self.kwargs.get('course') is None: 
-            if problem.course_problems.count() > 0:
-                raise Http404()
-                
-        submission_id = kwargs.get('submission')
-        self.old_submission = None
-        
-        if self.request.user.is_authenticated:
-            self.submissions = Submission.objects.filter(user=request.user.profile, problem=problem).order_by("-date")
-
-        if submission_id is not None:
-            self.old_submission = get_object_or_404(
-                Submission.objects.select_related('source', 'language'),
-                id=submission_id,
-            )
-
-            if not self.old_submission.can_see_detail(request.user):
-                # raise SubmissionPermissionDenied(submission) # uuuuvcomment
-                raise PermissionDenied()
-            
-            if not request.user.has_perm('judge.resubmit_other') and self.old_submission.user != request.profile:
-                raise PermissionDenied()
-        else:
-            if not self.request.user.is_anonymous:
-                submissions = Submission.objects.filter(user=self.request.user.profile,problem=problem).order_by('-date')
-                if submissions.count() > 0:
-                    self.old_submission = submissions[0]
-
-        return super().dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['langs'] = Language.objects.all()
@@ -365,13 +412,13 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         context['submissions_left'] = self.remaining_submission_count
         context['ACE_URL'] = settings.ACE_URL
         context['default_lang'] = self.default_language
-        problem = context['problem']
+        
+        problem = self.object
         
         context['testcases_map'] = map_test_cases(problem.cases.all())
 
         context['iframe'] = self.request.GET.get('iframe')
         submission = self.old_submission
-        context['old_submission'] = self.initial
         context["submissions"] = self.submissions
         
         # problem translation
@@ -394,7 +441,6 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
             context['last_msg'] = event.last()
             context['batches'], statuses, context['max_execution_time'] = group_test_cases(submission.test_cases.all())
             context['statuses'] = combine_statuses(statuses, submission)
-
             context['time_limit'] = submission.problem.time_limit
             try:
                 lang_limit = submission.problem.language_limits.get(language=submission.language)
@@ -404,26 +450,16 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
                 context['time_limit'] = lang_limit.time_limit
                 
         context['title'] = self.object.name
+        
         # course
-        course_slug = self.kwargs.get("course")
-        if course_slug is not None: 
-            context["course"] = get_object_or_404(Course, slug=course_slug)
-            context["course_problem"] = get_object_or_404(CourseProblem, problem=self.object)
-            context["section"] = CourseSection.objects.get(id=context["course_problem"].section.id)
-            context["course_problems"] = CourseProblem.objects.filter(section=context["section"].id).order_by("number")
+        course = self.course
+        if course: 
+            context["course"] = course
+            context["section"] = self.section
+            context["course_problem"] = self.course_problem
+            context["course_problems"] = self.course_problems
+            context['title'] = f"{course.name}: {self.section.name}: {self.object.name}" 
             
-            course_translation = context["course"].translations.filter(language=self.request.LANGUAGE_CODE).first()
-            if course_translation:
-                setattr(context['course'], "name", course_translation.name)
-                
-            section_translation =  context["section"].translations.filter(language=self.request.LANGUAGE_CODE).first()
-            if section_translation:
-                setattr(context['section'], "name", section_translation.name)
-                
-            context['title'] = f"{context['course'].name}: {context['section'].name}: {self.object.name}" 
-            user = self.request.user
-            if not user.has_perm("funix.view_course_problem", context["course_problem"]):
-                raise PermissionDenied()
 
         return context
     

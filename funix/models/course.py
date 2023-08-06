@@ -66,7 +66,6 @@ class CourseProblem(models.Model):
     def has_permission(self, user):
         if user.is_authenticated and user.funix:
             return self.section.course in user.funix.courses.all()
-            
         return False
     
     def save(self, *args, **kwargs):

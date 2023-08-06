@@ -1,5 +1,4 @@
 from django import http
-import json
 from django.http import HttpResponseForbidden
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -12,6 +11,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from judge.models.submission import Submission
 from django.db.models import Max, Avg
+from judge.utils.views import generic_message
 
 class CourseListView(ListView):
     model = CourseCategory
@@ -101,6 +101,12 @@ class CourseDetailView(DetailView):
     slug_url_kwarg = 'course'
     template_name = "funix/course/detail.html"
     
+    def get(self, request, *args, **kwargs):
+        try:
+            return super(CourseDetailView, self).get(request, *args, **kwargs)
+        except http.Http404:
+            return generic_message(self.request, "Course Not Found", f"Could not found the course with slug {self.kwargs.get('course')}", status=404)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = self.object.name
@@ -187,7 +193,7 @@ class CourseEnrollView(RedirectView):
             return HttpResponseForbidden(format_html('<h1>You have already enrolled. Do you want me to ban you?</h1>'))
         else:
             funix_profile.courses.add(course)
-        return super().dispatch(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
     
     def get_redirect_url(self, *args, **kwargs):
         return reverse("beta_course_detail", args=[self.kwargs.get("course")])

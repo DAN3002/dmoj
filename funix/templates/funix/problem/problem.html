@@ -56,9 +56,8 @@
 
       {% if course %}
         <div id="course_problems">
-          {% if submission %}
-          {% endif %}
           {% for c_problem in course_problems %}
+          {% if request.user.is_authenticated %}
             {% with latest_submission =  c_problem.problem.submission_set.filter(user=request.user.profile).order_by("-date").first() %}
               {% if latest_submission %}
                 {% if latest_submission.result == "AC" %}
@@ -80,6 +79,11 @@
                 </a>
               {% endif %}
             {% endwith %}
+            {% else %}
+              <a class="{% if c_problem.problem.code == problem.code %}active{% endif %}" href="{{ url('beta_problem', course=course.slug, problem=c_problem.problem.code) }}">
+                {{ c_problem.number }}
+              </a>
+            {% endif %}
           {% endfor %}
         </div>
       {% endif %}
