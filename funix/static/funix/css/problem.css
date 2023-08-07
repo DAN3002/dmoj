@@ -167,6 +167,9 @@
   font-weight: 300;
   letter-spacing: 1px;
   color: var(--text-color-main-standout);
+  width: 992px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .topbar #problem_title a {
