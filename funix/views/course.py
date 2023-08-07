@@ -61,11 +61,12 @@ class CourseListView(ListView):
                 correct_problems_count = 0
                 for course_problem in course_problems:
                     problem = course_problem.problem
-                    latest_submission = Submission.objects.filter(problem=problem).aggregate(Max('id'))
-                    if latest_submission["id__max"]:
-                        latest_submission = Submission.objects.get(id=latest_submission["id__max"])
-                        if latest_submission.result == "AC":
-                            correct_problems_count += 1
+                    if self.request.user.is_authenticated:
+                        latest_submission = Submission.objects.filter(problem=problem, user=self.request.user.profile).aggregate(Max('id'))
+                        if latest_submission["id__max"]:
+                            latest_submission = Submission.objects.get(id=latest_submission["id__max"])
+                            if latest_submission.result == "AC":
+                                correct_problems_count += 1
                 progress_percentages[course.id] = 0 if problem_counts[course.id] == 0 else round(correct_problems_count / problem_counts[course.id] * 100)
 
                 # course translation
@@ -90,6 +91,7 @@ class CourseListView(ListView):
         context["enrolleds"] = enrolleds
         context["progress_percentages"] = progress_percentages
         context["course_translations"] = course_translations
+        context['iframe'] = self.request.GET.get('iframe')
         
         return context
         
@@ -179,6 +181,8 @@ class CourseDetailView(DetailView):
         # seo
         context["og_image"] = self.object.og_image if self.object.og_image else self.object.thumbnail.url
         context["meta_description"] = self.object.description
+        
+        context['iframe'] = self.request.GET.get('iframe')
         return context
 
 class CourseEnrollView(RedirectView):

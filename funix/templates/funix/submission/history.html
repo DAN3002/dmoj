@@ -24,7 +24,11 @@
                             _
                         {% endif %}
                     </span>
-                    <a class="submission-url" href="{{ url('beta_problem', problem=subm.problem.code, submission=subm.id) }}">view</a>
+                    {% if course %}
+                        <a class="submission-url" href="{{ url('beta_problem', course=course.slug, problem=subm.problem.code, submission=subm.id) }}">view</a>
+                    {% else %}
+                        <a class="submission-url" href="{{ url('beta_problem', problem=subm.problem.code, submission=subm.id) }}">view</a>
+                    {% endif %}
                  </div>
             </li>
         {% endfor %}

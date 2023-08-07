@@ -91,7 +91,6 @@
 }
 
 #page-container footer,
-#page-container br:first-of-type,
 #page-container h2:first-of-type {
   display: none !important;
 }
