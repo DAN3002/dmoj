@@ -13,6 +13,9 @@ from django.urls import reverse
 
 @login_required
 def beta_update_problem_data(request, problem):
+    if not request.user.is_superuser: 
+        raise Http404
+
     problem_object = get_object_or_404(Problem, code=problem)
     if not problem_object.is_editable_by(request.user):
         raise Http404
@@ -56,11 +59,13 @@ def beta_update_problem_data(request, problem):
                 test_cases = list(map(add_is_not_pretest, data_loaded.get('test_cases')))
                 
             cases = pretest_test_cases + test_cases
+            
             # reducing for in case there are batched test cases
             def reducer(acc, case):
                 if (case.get('batched')) is not None:
                     batched_points = case.get('points')
                     batched_is_pretest = case.get('is_pretest')
+                    
                     if case.get('output_prefix') is None:
                         batched_output_prefix = glob_output_prefix
                         

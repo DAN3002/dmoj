@@ -11,13 +11,25 @@
   <script src="{{static('plugins/js/resizable.min.js')}}" type="text/javascript"></script>
   <script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
   {{ form.media.js }} 
+
+  {% if is_html %}
+  <script type="text/javascript">
+    function update_iframe_height() {
+      const iframe = document.querySelector("#html-preview iframe");
+      iframe.style.height = 0;
+      iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 20 + 'px';
+      console.log("update height iframe", iframe.contentWindow.document.documentElement.scrollHeight)
+    }
+  </script>
+  {% endif %}
+  
   {% compress js %} 
     {% include 'funix/problem/ace-editor.html' %} 
   {% endcompress %}
 
   <script type="text/javascript">
     $( function() {
-      $( "#beta-container" ).tabs();
+      $( "#beta-container" ).tabs({% if is_html %}{active: 1}{% endif %});
     } );
   </script>
 
@@ -98,6 +110,7 @@
       <div class="problem_details">
         {% include "funix/submission/history.html" %}
         {% include "funix/problem/details.html" %}
+       {% if is_html %} {% include "funix/problem/html-preview.html" %} {% endif %}
       </div>
     
       <div class="codeplace">

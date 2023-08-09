@@ -14,6 +14,7 @@
     direction: ["left"],
     stop: () => {
       localStorage.setItem("editor_width", $(".codeplace").width());
+      update_iframe_height();
     },
   });
 
@@ -27,6 +28,7 @@
       $("#ace_source").height($(".codeplace_editor").height());
       window.aceEditor.resize();
       localStorage.setItem("editor_height", $(".codeplace_editor").height());
+      update_iframe_height();
     },
   });
 

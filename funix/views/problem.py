@@ -465,7 +465,9 @@ class ProblemBeta(ProblemBetaMixin, SingleObjectFormView):
             context["course_problems"] = self.course_problems
             context['title'] = f"{course.name}: {self.section.name}: {self.object.name}" 
             
-
+        # is html/css problem
+        context['is_html'] = self.object.allowed_languages.first().short_name in ['HTML', 'CSS']
+        
         return context
     
 

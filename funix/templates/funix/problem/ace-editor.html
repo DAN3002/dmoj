@@ -5,6 +5,8 @@
           return state.text;
       }
 
+
+
       window.previous_template = '';
 
       function update_language_template() {
@@ -103,7 +105,23 @@
       $('#ace_source').on('ace_load', function (e, editor) {
           window.aceEditor = editor;
 
+          
+          // iframe
+          {% if is_html %}
+
+            editor.on("change", (e) => {
+                const htmlCode = editor.getValue()
+                const iframe = document.querySelector("#html-preview iframe");
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                iframeDoc.body.innerHTML = htmlCode;
+                update_iframe_height();
+            })
+          {% endif %}
+          // end update iframe
+
           update_language_template();
+          
+
           editor.commands.addCommand({
               name: 'save',
               bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
@@ -125,8 +143,8 @@
             if (e.action === "insert") window.character_count += this_event_character_count;
             if (e.action === "remove") window.character_count -= this_event_character_count;
           }
-
           editor.on("change", calculate_characters);
+
           // uuuuvcomment end wpm handling
 
 

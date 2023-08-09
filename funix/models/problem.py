@@ -13,7 +13,7 @@ class ProblemTestCaseData(models.Model):
 def save(self, *args, **kwargs):
     super(ProblemTestCase, self).save(*args, **kwargs)
     
-    if self.is_pretest == True and ((self.input_file != '' and self.input_file is not None) or (self.output_file != '' and self.output_file is not None)):
+    if (self.input_file != '' and self.input_file is not None) or (self.output_file != '' and self.output_file is not None):
         problem = Problem.objects.get(cases=self)
         archive = ZipFile(problem.data_files.zipfile.path, 'r')
         try:
@@ -23,8 +23,10 @@ def save(self, *args, **kwargs):
     
         if self.input_file != '':
             test_case_data.input_data = archive.read(self.input_file).decode('utf-8')
+            
         if self.output_file != '':
             test_case_data.output_data = archive.read(self.output_file).decode('utf-8')
+
         test_case_data.save()
 
 ProblemTestCase.save = save

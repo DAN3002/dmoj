@@ -181,6 +181,7 @@ class SubmissionTestCaseQueryBeta(SubmissionStatus):
         problem = submission.problem
         context['problem'] = problem
         context['testcases_map'] = map_test_cases(problem.cases.all())
+        context['is_html'] = problem.allowed_languages.first().short_name in ['HTML', 'CSS']
         return context
 
 @require_POST

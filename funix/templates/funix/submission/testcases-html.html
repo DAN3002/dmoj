@@ -1,0 +1,137 @@
+{% if problem.cases.count() == 0 %}
+    <p>This problem has no test data to display.</p>
+{% else %}
+<ul class="tabs">
+    {% set case_count = counter() %}
+    {% for case in testcases_map %}
+       {% if case.type != 'E' %}
+            <li  onclick="tabHandler(event, 'testcase{{case.order}}')" class="tab {% if case.order == 1 %}{{ 'active' }}{% endif %} {% if case.sub_order %}{{'subcase'}}{% endif %}"  >
+                {% if case.type == 'S' %}
+                    <span>Batch {{case.batch_order}}</span>
+                {% else %}
+                    {% if case.sub_order %}
+                        <span>Case {{case.sub_order}}</span>
+                    {% else %}
+                        <span>Test case {{case.batch_order}}</span>
+                    {% endif %}
+                    {% set case_order = case_count() %}
+                    {% if submission %}
+                        {% set case_submission = submission.test_cases.filter(case=case_order)[0] %}
+                    {% endif %}
+                    {% if case_submission %}
+                        {% if case_submission.status == 'AC' %}
+                            <span class="success">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </span>
+                        {% else %}
+                            <span class="danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                {% if case.is_pretest == false %}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                {% endif %}
+
+
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{# uuuuvcomment ------------------------- test cases ------------------------- #}
+{% set case_count = counter() %}
+{% for case_in_map in testcases_map %}
+{% set case = problem.cases.get(order=case_in_map.order) %}
+{% if not case.type == 'E'  %}
+        {% if not case.type == 'S' %}
+            {% set case_order = case_count() %}
+            {% if submission %}
+                {% if  submission.test_cases.filter(case=case_order).count() > 0 %}
+                    {% set case_submission = submission.test_cases.get(case=case_order) %}
+                {% endif %}
+            {% endif %}
+
+        {% endif %}
+
+        <div id="testcase{{case.order}}" class="tab_content {% if case.order == 1 %}{{ 'active' }}{% endif %}">
+            <div class="inner">
+                {% if case.type != 'S' %}
+                    <div class="testcase_data_item">
+                        <label>{{ _("Input")|title }}: </label> 
+
+                        {% if case.data and (case.data.input_data or case.data.input_data == "")  %}
+                            <div class="outer_wrapper">
+                                <div class="inner_wrapper">
+                                    <pre >
+                                        {{case.data.input_data}}
+                                    </pre>
+                                </div>
+                            </div>
+                        {% elif case.generator_args %}
+                            <span>{{ case.generator_args }}</span>
+                        {% else %}
+                            <span>Custom judge</span>
+                        {% endif %}
+                        <div class="odd-holder" style="width: 20px"></div>
+                    </div>
+                {% endif %}
+
+                {% if case.type != 'S' %}
+                    <div class="testcase_data_item">
+                        <label>{{ _("Expected output")|title }}:</label>
+                        {% if case.data and case.data.output_data %}
+                            <div class="outer_wrapper">
+                                <div class="inner_wrapper">
+                                    <pre>
+                                        {{case.data.output_data}}
+                                    </pre>
+                                </div>
+                            </div>
+                        {% elif case.generator_args %}
+                            <span>{{case.generator_args}}</span>
+                        {% else %}
+                            <span>Custom judge</span>
+                        {% endif %}
+                        <div class="odd-holder" style="width: 20px"></div>
+                    </div>
+                {% endif %}
+
+
+                {% if case.type != 'S' %}
+                    <div class="testcase_data_item">
+                        <label>{{ _("result")|title  }}:</label>
+                        {% if case_submission %}
+                            <span
+                            class=" 
+                                {% if case_submission.status == 'AC' %}{{'success'}}{% elif case_submission.status == 'WA' %}{{'danger'}}{% else %}{{'warning'}}{% endif %}"
+                            >{{case_submission.long_status}}</span>
+                        {% else %}
+                            <span>_</span>
+                        {% endif %}
+                        <div class="odd-holder" style="width: 20px"></div>
+                    </div>
+                {% endif %}
+
+                    <div class="testcase_data_item">
+                        <label>{{ _("feedback")|title  }}:</label>
+                        {% if case_submission %}
+                            <span>{{case_submission.feedback}}</span>
+                        {% else %}
+                            <span>_</span>
+                        {% endif %}
+                        <div class="odd-holder" style="width: 20px"></div>
+                    </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
