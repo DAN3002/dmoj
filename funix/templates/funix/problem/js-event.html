@@ -20,11 +20,17 @@
               list.empty().html(data).find('.toggle').each(function () {
                   register_toggle($(this));
               });
+
+              $( "#testcases").tabs();
+              $( ".testcases-and-submission").tabs();
+              
               setTimeout(function () {
                   blocked = false;
+                  
                   if (request)
                       update();
               }, 500);
+              
           }).fail(function (data) {
               console.log('Failed to update testcases!');
           });
@@ -46,6 +52,7 @@
                   case 'grading-begin':
                   case 'processing':
                       update();
+                      
               }
           }
       )

@@ -1,0 +1,50 @@
+#problem-metadata {
+  border-bottom: 0.5px solid var(--border);
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.problem-metadata-item {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  margin: 8px;
+  gap: 2px;
+  white-space: nowrap;
+  color: var(--text-color-main);
+  /* text-transform: capitalize; */
+}
+
+.problem-metadata-item svg {
+  width: 18px;
+}
+
+#problem-metadata .problem-metadata-author,
+#problem-metadata .problem-metadata-author a {
+  color: rgb(146, 146, 235);
+  text-decoration: underline;
+  font-weight: normal !important;
+}
+
+.problem-metadata-points svg {
+  color: rgb(165, 14, 107);
+}
+
+.problem-metadata-memorylimit svg {
+  color: rgb(14, 130, 165);
+}
+
+.problem-metadata-type svg {
+  color: rgb(14, 165, 34);
+}
+
+.problem-metadata-timelimit svg {
+  color: rgb(97, 14, 165);
+}
+
+#problem-metadata .authors-value {
+  padding-left: 2px;
+}

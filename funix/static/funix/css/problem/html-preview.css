@@ -1,0 +1,26 @@
+#html-preview {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+#html-preview-title {
+  height: var(--html-preview-header-height);
+  color: var(--text-color-main-standout);
+}
+
+#html-preview-title p {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+#html-preview iframe {
+  width: 100%;
+  min-height: calc(100vh - var(--topbar-height) - var(--mainnav-height) - var(--html-preview-header-height));
+  background: white;
+  pointer-events: none;
+}

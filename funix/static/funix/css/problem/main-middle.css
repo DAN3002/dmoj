@@ -1,0 +1,118 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--toolbar-height);
+  padding: 0 4px;
+  flex-shrink: 0;
+  stroke-width: 1 !important;
+  flex-wrap: wrap;
+}
+
+#main-middle .django-ace-widget {
+  border: 0.5px solid var(--border);
+}
+
+#main-middle svg.collapse {
+  display: none;
+}
+
+#main-middle.expand svg.expand {
+  display: none;
+}
+
+#main-middle.expand svg.collapse {
+  display: block;
+}
+
+#editor-wrapper {
+  height: calc(
+    (
+        100vh - var(--topbar-height) - var(--toolbar-height) -
+          var(--submitbar-height) - var(--submissionnav-height) -
+          var(--languagebar-height)
+      ) / 2
+  );
+}
+
+/* mess  */
+.alert-dismissable {
+  margin: 5px 0;
+}
+
+#problem_submit .select2-container {
+  width: 100% !important;
+}
+
+#problem.ui-tabs-panel {
+  padding: 0;
+}
+
+.problem-info-entry {
+  display: flex;
+}
+
+.submitbar {
+  width: 100%;
+  height: var(--submitbar-height);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.submitbar .submit-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  float: none !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.rejudge_wrapper #rejudge_form {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#submit-button.disabled {
+  pointer-events: none !important;
+}
+
+#abort-button {
+  display: inline-block;
+}
+
+.login_required_overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.login_required_overlay div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.login_required_overlay a {
+  padding: 8px 20px;
+  box-shadow: var(--shadow-border);
+  border: 0.5px solid var(--border);
+}
+
+@media screen and (max-width: 992px) {
+  #expand_button {
+    display: none !important;
+  }
+}

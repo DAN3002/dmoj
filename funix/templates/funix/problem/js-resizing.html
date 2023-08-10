@@ -1,8 +1,127 @@
 <script type="text/javascript">
-  // collapse - expand coding place 100%
+  const initialResizableHeight = localStorage.getItem("editor_height");
+  if (initialResizableHeight && !isNaN(Number(initialResizableHeight))) {
+    $("#editor-wrapper").height(Number(initialResizableHeight));
+  }
+
+  function set_initial_width() {
+    console.log("set initial width")
+    const initial_left_width = localStorage.getItem("{% if is_html %}{{ 'html_mode_' }}{% else %}{{ 'normal_mode_' }}{% endif %}left_width");
+    if (initial_left_width && !isNaN(Number(initial_left_width))) {
+      $("#main-left").width(Number(initial_left_width));
+    }
+
+    {% if is_html %}
+      const initial_middle_width = localStorage.getItem("html_mode_middle_width");
+      if (initial_middle_width && !isNaN(Number(initial_middle_width))) {
+        $("#main-middle").width(Number(initial_middle_width));
+      }
+    {% endif %}
+  }
+
+  set_initial_width();
+
+  // horizontal resizing
+  function save_width() {
+    console.log("save width")
+
+    {% if is_html %}
+      localStorage.setItem("html_mode_left_width", $("#main-left").width());
+      localStorage.setItem("html_mode_middle_width", $("#main-middle").width());
+    {% else %}
+      localStorage.setItem("normal_mode_left_width", $("#main-left").width());
+    {% endif %}
+  }
+
+  $("#main-left").resizable({
+    direction: ["right"],
+    stop: () => {
+      save_width();
+      {% if is_html %}
+        update_iframe_height();
+      {% endif %}
+      window.aceEditor.resize();
+    },
+  });
+
+  {% if is_html %}
+    $("#main-middle").resizable({
+      direction: ["right"],
+      stop: () => {
+        save_width();
+        update_iframe_height();
+        window.aceEditor.resize();
+      },
+    });
+  {% endif %}
+
+  // updating #ace_source height when and after vertical resizing
+  $("#editor-wrapper").resizable({
+    direction: ["bottom"],
+    resize: () => {
+      $("#ace_source").height($("#editor-wrapper").height());
+    },
+    stop: () => {
+      $("#ace_source").height($("#editor-wrapper").height());
+      window.aceEditor.resize();
+      localStorage.setItem("editor_height", $("#editor-wrapper").height());
+      {% if is_html %}
+        update_iframe_height();
+      {% endif %}
+    },
+  });
+
+  // set initial height to #ace_source
+  $("#ace_source").height($("#editor-wrapper").height());
+
+  // clear code in the editor
+  function clearEditor() {
+    var source = $("textarea#id_source");
+    source.val(window.initial_code);
+    window.ace_source.getSession().setValue(window.initial_code);
+  }
+
   function expandEditor(event) {
-    var codeplace = $(".codeplace");
-    codeplace.toggleClass("expand");
+
+    function save_prev_resizing() {
+      {% if is_html %}
+        localStorage.setItem("pre_html_mode_left_width", $("#main-left").width());
+        localStorage.setItem("pre_html_mode_middle_width", $("#main-middle").width());
+      {% else %}
+        localStorage.setItem("pre_normal_mode_left_width", $("#main-left").width());
+      {% endif %}
+    }
+
+    function restore_prev_resizing() {
+      const pre_left_width = localStorage.getItem("{% if is_html %}{{ 'pre_html_mode_' }}{% else %}{{ 'pre_normal_mode_' }}{% endif %}left_width");
+      if (pre_left_width && !isNaN(Number(pre_left_width))) {
+        $("#main-left").width(Number(pre_left_width));
+      }
+  
+      {% if is_html %}
+        const pre_middle_width = localStorage.getItem("pre_html_mode_middle_width");
+        if (pre_middle_width && !isNaN(Number(pre_middle_width))) {
+          $("#main-middle").width(Number(pre_middle_width));
+        }
+      {% endif %}
+    }
+
+    function expand_middle() {
+      $("#main-middle").width($("#main").width() + "px");
+      $("#main-left").width(0);
+      {% if is_html %}
+      $("#main-right").width(0);
+      {% endif %}
+    }
+
+    const middle = document.getElementById("main-middle");
+    if (middle.classList.contains("expand")) {
+      restore_prev_resizing();
+    } else {
+      save_prev_resizing();
+      expand_middle();
+    }
+    middle.classList.toggle("expand");
   }
 
   // render resizer buttons
@@ -24,6 +143,10 @@
         </div>
         `;
 
-  $(".codeplace .resizable-l")[0].innerHTML = horizontal;
-  $(".codeplace .resizable-b")[0].innerHTML = vertical;
+  
+  document.querySelector("#main-left .resizable-r").innerHTML = horizontal;
+  document.querySelector("#main-middle .resizable-b").innerHTML = vertical;
+  {% if is_html %}
+  document.querySelector("#main-middle .resizable-r").innerHTML = horizontal;
+  {% endif %}
 </script>

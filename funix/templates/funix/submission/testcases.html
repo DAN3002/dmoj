@@ -1,47 +1,47 @@
 {% if problem.cases.count() == 0 %}
     <p>This problem has no test data to display.</p>
 {% else %}
-<ul class="tabs">
+<ul id="testcases-nav">
     {% set case_count = counter() %}
     {% for case in testcases_map %}
        {% if case.type != 'E' %}
-            <li  onclick="tabHandler(event, 'testcase{{case.order}}')" class="tab {% if case.order == 1 %}{{ 'active' }}{% endif %} {% if case.sub_order %}{{'subcase'}}{% endif %}"  >
-                {% if case.type == 'S' %}
+            <li class="{% if case.sub_order %}{{'subcase'}}{% endif %}"  >
+                <a href="#testcase{{case.order}}">
+                    {% if case.type == 'S' %}
                     <span>Batch {{case.batch_order}}</span>
-                {% else %}
-                    {% if case.sub_order %}
-                        <span>Case {{case.sub_order}}</span>
                     {% else %}
-                        <span>Test case {{case.batch_order}}</span>
-                    {% endif %}
-                    {% set case_order = case_count() %}
-                    {% if submission %}
-                        {% set case_submission = submission.test_cases.filter(case=case_order)[0] %}
-                    {% endif %}
-                    {% if case_submission %}
-                        {% if case_submission.status == 'AC' %}
-                            <span class="success">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                </svg>
-                            </span>
+                        {% if case.sub_order %}
+                            <span>Case {{case.sub_order}}</span>
                         {% else %}
-                            <span class="danger">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </span>
+                            <span>Test case {{case.batch_order}}</span>
+                        {% endif %}
+                        {% set case_order = case_count() %}
+                        {% if submission %}
+                            {% set case_submission = submission.test_cases.filter(case=case_order)[0] %}
+                        {% endif %}
+                        {% if case_submission %}
+                            {% if case_submission.status == 'AC' %}
+                                <span class="success">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                </span>
+                            {% else %}
+                                <span class="danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </span>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
-                {% endif %}
 
-                {% if case.is_pretest == false %}
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                    </svg>
-                {% endif %}
-
-
+                    {% if case.is_pretest == false %}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                    {% endif %}
+                </a>
             </li>
         {% endif %}
     {% endfor %}
@@ -62,7 +62,7 @@
 
         {% endif %}
 
-        <div id="testcase{{case.order}}" class="tab_content {% if case.order == 1 %}{{ 'active' }}{% endif %}">
+        <div id="testcase{{case.order}}" class="testcase-content">
             <div class="inner">
                 {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}

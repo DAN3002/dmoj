@@ -2,9 +2,9 @@
     {% include "funix/problem/toolbar.html" %}
 </div>
 
-{# uuuuvcomment ------------------------- submission form ------------------------- #}
+{#  ------------------------- submission form ------------------------- #}
 <form id="problem_submit" method="POST">
-    {# uuuuvcomment ------------------------- choose languages ------------------------- #}
+    {#  ------------------------- choose languages ------------------------- #}
     {% if not no_judges %}
        <div id="language-bar">
         <div id="language">
@@ -30,7 +30,7 @@
        </div>
     {% endif %}
 
-    {# uuuuvcomment ------------------------- warning ------------------------- #}
+    {#  ------------------------- warning ------------------------- #}
     <div class="codeplace_warning">
         {% if not no_judges %}
             {% if default_lang not in form.fields.language.queryset %}
@@ -61,8 +61,8 @@
         {% endif %}
     </div>
 
-    {# uuuuvcomment ------------------------- editor ------------------------- #}
-    <div class="codeplace_editor">
+    {#  ------------------------- editor ------------------------- #}
+    <div id="editor-wrapper">
         {% csrf_token %}
         {{ form.non_field_errors() }}
         <div id="submit-wrapper">
@@ -76,8 +76,8 @@
     {{form.suspicious_behaviors}}
     {{form.wpm}}
 
-    {# uuuuvcomment ------------------------- submit button ------------------------- #}
-    {# uuuuvcomment ------------------ or no judge is available --------------------- #}
+    {#  ------------------------- submit button ------------------------- #}
+    {#  ------------------ or no judge is available --------------------- #}
     <div class="submitbar">
         {% if no_judges %}
             <span style="color: red">{{ _('No judge is available for this problem.') }}</span>

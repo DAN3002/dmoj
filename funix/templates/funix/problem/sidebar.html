@@ -1,0 +1,57 @@
+<ul id="sidebar">
+  <li>
+    <a href="#problem-description">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1"
+        stroke="currentColor"
+        class="w-6 h-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+        />
+      </svg>
+    </a>
+  </li>
+  
+  
+  
+  {% if request.user.is_authenticated and submissions %}
+    <li>
+      <a href="#submissions" title="{{ _('My submissions') }}">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </a>
+    </li>
+  {% endif %}
+
+  <form id="i18n" action="{{ url('set_language') }}" method="post" >
+    {% csrf_token %}
+  <input name="next" type="hidden" value="{{ request.get_full_path() }}">
+  <select name="language" onchange="form.submit()" style="height: 1.5em">
+        <option value="en" {% if "en" == LANGUAGE_CODE %}selected{% endif %}>
+            en
+        </option>
+        <option value="vi" {% if "vi" == LANGUAGE_CODE %}selected{% endif %}>
+          vi
+      </option>
+  </select>
+  </form>
+</ul>
+

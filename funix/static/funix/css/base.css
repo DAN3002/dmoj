@@ -1,10 +1,6 @@
 :root {
   --mainnav-height: 44px;
-  --sidebar-width: 60px;
-  --problem-clsf-height: 90px;
   --button-height: 30px;
-  --submitbar-height: 44px;
-  --toolbar-height: 50px;
 
   --border: #e0e0e0;
   --border-hover: #919191;
@@ -83,17 +79,12 @@
   width: 100% !important;
   max-width: 100% !important;
 }
+
 #page-container {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
   height: 100vh !important;
-}
-
-#page-container footer,
-#page-container br:first-of-type,
-#page-container h2:first-of-type {
-  display: none !important;
 }
 
 #page-container #content,
@@ -152,10 +143,10 @@
 #beta-container {
   width: 100%;
   height: 100vh;
-  padding: 0;
   padding-top: var(--mainnav-height);
   box-sizing: border-box;
-  display: flex;
+  display: block;
+  overflow: hidden;
 }
 
 /* override tabs  */
@@ -178,72 +169,3 @@
   box-sizing: border-box;
 }
 
-/* sidebar  */
-#sidebar {
-  width: var(--sidebar-width);
-  min-width: var(--sidebar-width);
-  height: 100%;
-  box-shadow: var(--box-shadow);
-  background: var(--bg-main);
-  border-right: 0.5px solid var(--border);
-  flex-shrink: 0;
-  padding: 0;
-}
-
-#sidebar a {
-  width: 100%;
-  padding: 10px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-color-main);
-}
-
-#sidebar a:hover {
-  cursor: pointer;
-  color: var(--text-color-main-hover);
-}
-
-#sidebar svg {
-  width: 25px;
-}
-
-/* override sidebar tabs  */
-#sidebar.ui-corner-all {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-}
-
-#sidebar.ui-widget-header {
-  border-top: none;
-  border-left: none;
-  border-bottom: none;
-}
-
-#sidebar li {
-  list-style: none;
-  float: none;
-  position: static;
-  margin: 0 0 0 0;
-  border-bottom-width: 0;
-  padding: 0;
-  white-space: nowrap;
-  border: none;
-  background: transparent;
-}
-
-#sidebar li.ui-tabs-active a {
-  color: var(--text-color-active);
-}
-
-#main {
-  flex: 1;
-  height: 100%;
-  width: calc(100% - var(--sidebar-width));
-}
-
-#main * {
-  box-sizing: border-box !important;
-}

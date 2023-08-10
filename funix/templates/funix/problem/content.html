@@ -1,0 +1,26 @@
+<div id="problem-content">
+  <div id="topbar">
+    {% include "funix/problem/topbar.html" %}
+  </div>
+
+  <div id="main">
+    <div id="main-left">
+      {% include "funix/submission/history.html" %}
+      {% include "funix/problem/details.html" %}
+    </div>
+  
+    <div id="main-middle">
+      {% include "funix/problem/codeplace.html" %}
+    </div>
+
+    {% if is_html %} 
+      <div id="main-right">
+        {% include "funix/problem/html-preview.html" %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+
+
+

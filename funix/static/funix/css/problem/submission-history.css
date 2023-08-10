@@ -1,0 +1,85 @@
+#submissions {
+  padding: 0;
+}
+
+#submission-history-title {
+  color: var(--text-color-main-standout);
+  font-weight: 600;
+  height: 44px;
+  border-bottom: .5px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+#submission-list {
+  color: var(--text-color-main-standout);
+  padding: 0;
+  list-style-type: none;
+  height: calc(100vh - 26px - var(--mainnav-height) - var(--topbar-height));
+  overflow: auto;
+  margin: 0;
+}
+
+.submission-item {
+  border-bottom: 0.5px solid var(--border);
+  padding: 20px;
+}
+
+.submission-item-top {
+  display: flex;
+  width: 100%;
+}
+
+.submission-date {
+  color: var(--text-color-main);
+  font-size: 13;
+  font-style: italic;
+  width: 100px;
+}
+
+.submission-status {
+  width: 200px;
+  background: transparent;
+  color: orange;
+  flex: 1;
+}
+
+.submission-item-content {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.submission-item-content-inner {
+  display: flex;
+}
+
+.submission-language {
+  width: 100px;
+}
+
+.submission-status.WA {
+  color: red;
+}
+
+.submission-status.AC {
+  color: green;
+}
+
+.submission-memory {
+  width: 80px;
+}
+
+.submission-time {
+  width: 80px;
+}
+
+.submission-url {
+  color: blue !important;
+}
+
+.submission-problem-name {
+  flex: 1;
+}

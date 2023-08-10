@@ -22,10 +22,10 @@ def save(self, *args, **kwargs):
             test_case_data = ProblemTestCaseData.objects.create(problem_test_case=self)
     
         if self.input_file != '':
-            test_case_data.input_data = archive.read(self.input_file).decode('utf-8')
+            test_case_data.input_data = archive.read(self.input_file).decode('utf-8')[0:200]
             
         if self.output_file != '':
-            test_case_data.output_data = archive.read(self.output_file).decode('utf-8')
+            test_case_data.output_data = archive.read(self.output_file).decode('utf-8')[0:200]
 
         test_case_data.save()
 

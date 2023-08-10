@@ -1,0 +1,21 @@
+#problem-description {
+  height: 100%;
+  overflow: auto;
+  padding: 10px;
+}
+
+#problem-description-content-wrapper {
+  padding: 8px;
+  padding-bottom: 20px;
+  color: var(--text-color-main);
+}
+
+#problem-description-content p,
+#problem-description-content h1,
+#problem-description-content h2,
+#problem-description-content h3,
+#problem-description-content h4,
+#problem-description-content h5,
+#problem-description-content h6 {
+  color: var(--text-color-main-standout);
+}
