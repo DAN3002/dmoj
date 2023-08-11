@@ -33,14 +33,6 @@
     {#  ------------------------- warning ------------------------- #}
     <div class="codeplace_warning">
         {% if not no_judges %}
-            {% if default_lang not in form.fields.language.queryset %}
-                <div class="alert alert-warning alert-dismissable">
-                    <a class="close">x</a>
-                    <b>{{ _('Warning!') }}</b>
-                    {{ _('Your default language, %(language)s, is unavailable for this problem and has been deselected.', language=bold(default_lang.name)) }}
-                </div>
-            {% endif %}
-    
             {% if request.in_contest and submission_limit %}
                 {% if submissions_left > 0 %}
                     <div class="alert alert-warning alert-dismissable">
