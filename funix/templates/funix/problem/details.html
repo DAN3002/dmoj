@@ -1,21 +1,20 @@
 <div id="problem-description">
+  {% if not is_html %}
   <div id="problem-metadata" class="clearfloat">
     <div class="problem-metadata-item problem-metadata-author">
-      {% if not contest_problem or not contest_problem.contest.hide_problem_authors %} 
-      {% cache 86400 'problem_authors' problem.id LANGUAGE_CODE %} 
-      {% with authors=problem.authors.all() %}
-       {% if authors %}
-        <i class="fa fa-pencil-square-o fa-fw"></i>
-        <span class="pi-name">
-          {% trans trimmed count=authors|length %} Author: {% pluralize count %} Authors: {% endtrans %}
-        </span>
+      {% if not contest_problem or not
+      contest_problem.contest.hide_problem_authors %} {% cache 86400
+      'problem_authors' problem.id LANGUAGE_CODE %} {% with
+      authors=problem.authors.all() %} {% if authors %}
+      <i class="fa fa-pencil-square-o fa-fw"></i>
+      <span class="pi-name">
+        {% trans trimmed count=authors|length %} Author: {% pluralize count %}
+        Authors: {% endtrans %}
+      </span>
       <div class="pi-value authors-value">{{ link_users(authors) }}</div>
-      {% endif %} 
-      {% endwith %} 
-      {% endcache %} 
-      {% endif %}
+      {% endif %} {% endwith %} {% endcache %} {% endif %}
     </div>
-  
+
     <div class="problem-metadata-item problem-metadata-points">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +32,7 @@
       </svg>
       {{problem.points}} {{ _("points") }}
     </div>
-  
+
     <div class="problem-metadata-item problem-metadata-memorylimit">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -49,10 +48,11 @@
           d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
         />
       </svg>
-  
-      {{ _("memory limit")|title }}: <span>{{problem.memory_limit|kbdetailformat }}</span>
+
+      {{ _("memory limit")|title }}:
+      <span>{{problem.memory_limit|kbdetailformat }}</span>
     </div>
-  
+
     <div class="problem-metadata-item problem-metadata-type">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -68,13 +68,12 @@
           d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
         />
       </svg>
-  
-      {{ _("problem type")|title }}: 
-      {% for type in problem.types.all() %}
-        <span> {{ type }} </span>
+
+      {{ _("problem type")|title }}: {% for type in problem.types.all() %}
+      <span> {{ type }} </span>
       {% endfor %}
     </div>
-  
+
     <div class="problem-metadata-item problem-metadata-timelimit">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -90,24 +89,23 @@
           d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-  
+
       {{ _("time limit")|title }}: <span>{{ problem.time_limit }} s</span>
     </div>
   </div>
-  
-    <div id="problem-description-content">
-      <div class="content-description screen">
-          {% cache 86400 'problem_html' problem.id MATH_ENGINE LANGUAGE_CODE %}
-            {{ description|markdown(problem.markdown_style, MATH_ENGINE)|reference|str|safe }} 
-          {% endcache %} 
-        {% with license=problem.license %} 
-          {% if license %}
-            <span class="license">
-              <a href="{{ url('license', license.key) }}">{{ license.display or license.name }}</a>
-            </span>
-          {% endif %} 
-        {% endwith %}
-      </div>
+  {% endif %}
+  <div id="problem-description-content">
+    <div class="content-description screen">
+      {% cache 86400 'problem_html' problem.id MATH_ENGINE LANGUAGE_CODE %} {{
+      description|markdown(problem.markdown_style,
+      MATH_ENGINE)|reference|str|safe }} {% endcache %} {% with
+      license=problem.license %} {% if license %}
+      <span class="license">
+        <a href="{{ url('license', license.key) }}"
+          >{{ license.display or license.name }}</a
+        >
+      </span>
+      {% endif %} {% endwith %}
     </div>
-  
+  </div>
 </div>
