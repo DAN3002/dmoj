@@ -6130,3 +6130,12 @@ msgstr "Bạn đã hoàn thành bài này"
 
 msgid "Try other problems"
 msgstr "Thử các bài khác"
+
+msgid "Submit"
+msgstr "Nộp bài"
+
+msgid "Resubmit!"
+msgstr "Nộp bài lại"
+
+msgid "Reset"
+msgstr "Làm mới"

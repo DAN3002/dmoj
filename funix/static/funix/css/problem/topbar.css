@@ -6,6 +6,7 @@
   width: 992px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #topbar #problem_title a {
