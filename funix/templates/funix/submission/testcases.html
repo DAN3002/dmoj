@@ -84,9 +84,7 @@
                             <div class="odd-holder" style="width: 20px"></div>
                         </div>
                     {% endif %}
-                {% endif %}
 
-                {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}
                         <div class="testcase_data_item">
                             <label>{{ _("Expected output")|title }}:</label>
@@ -106,9 +104,7 @@
                             <div class="odd-holder" style="width: 20px"></div>
                         </div>
                     {% endif %}
-                {% endif %}
 
-                {% if case.is_pretest == true %}
                     {% if case.type != 'S' %}
                         <div class="testcase_data_item">
                             <label>{{ _("Your output")|title }}:</label>
@@ -124,47 +120,48 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                {% endif %}
 
-                {% if case.type != 'S' %}
-                    <div class="testcase_data_item">
-                        <label>{{ _("result")|title  }}:</label>
-                        {% if case_submission %}
-                            <span
-                            class=" 
-                                {% if case_submission.status == 'AC' %}{{'success'}}{% elif case_submission.status == 'WA' %}{{'danger'}}{% else %}{{'warning'}}{% endif %}"
-                            >{{case_submission.long_status}}</span>
-                        {% else %}
-                            <span>_</span>
-                        {% endif %}
-                        <div class="odd-holder" style="width: 20px"></div>
-                    </div>
-                {% endif %}
+                    {% if case.type != 'S' %}
+                        <div class="testcase_data_item">
+                            <label>{{ _("result")|title  }}:</label>
+                            {% if case_submission %}
+                                <span
+                                class=" 
+                                    {% if case_submission.status == 'AC' %}{{'success'}}{% elif case_submission.status == 'WA' %}{{'danger'}}{% else %}{{'warning'}}{% endif %}"
+                                >{{case_submission.long_status}}</span>
+                            {% else %}
+                                <span>_</span>
+                            {% endif %}
+                            <div class="odd-holder" style="width: 20px"></div>
+                        </div>
+                    {% endif %}
 
-                {% if case.type != 'S' %}
-                    <div class="testcase_data_item">
-                        <label>{{ _("memory usage")|title  }}:</label>
-                        {% if case_submission %}
-                            <span>{{case_submission.memory|kbdetailformat}}</span>
-                        {% else %}
-                            <span>_</span>
-                        {% endif %}
-                        <div class="odd-holder" style="width: 20px"></div>
-                    </div>
-                {% endif %}
+                    {% if case.type != 'S' %}
+                        <div class="testcase_data_item">
+                            <label>{{ _("memory usage")|title  }}:</label>
+                            {% if case_submission %}
+                                <span>{{case_submission.memory|kbdetailformat}}</span>
+                            {% else %}
+                                <span>_</span>
+                            {% endif %}
+                            <div class="odd-holder" style="width: 20px"></div>
+                        </div>
+                    {% endif %}
 
-                {% if case.type != 'S' %}
-                    <div class="testcase_data_item">
-                        <label>{{ _("Time")|title }}:</label>
-                        {% if case_submission %}
-                            <span>{{case_submission.time|floatformat(3)}}s</span>
-                        {% else %}
-                            <span>_</span>
-                        {% endif %}
-                        <div class="odd-holder" style="width: 20px"></div>
-                    </div>
+                    {% if case.type != 'S' %}
+                        <div class="testcase_data_item">
+                            <label>{{ _("Time")|title }}:</label>
+                            {% if case_submission %}
+                                <span>{{case_submission.time|floatformat(3)}}s</span>
+                            {% else %}
+                                <span>_</span>
+                            {% endif %}
+                            <div class="odd-holder" style="width: 20px"></div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                <span style="color: var(--text-color-main-standout);">{{ _('Hidden test case') }}</span>
                 {% endif %}
-
             </div>
         </div>
     {% endif %}

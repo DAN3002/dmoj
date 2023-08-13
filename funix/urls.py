@@ -21,6 +21,7 @@ urlpatterns = [
     path('widgets/', include([
         path('rejudge', rejudge_submission, name='beta_submission_rejudge'),
         path('submission_testcases', SubmissionTestCaseQueryBeta.as_view(), name='beta_submission_testcases_query'),
+        path('submission_testcases/<slug:course>', SubmissionTestCaseQueryBeta.as_view(), name='beta_submission_testcases_query'),
         path('template', BetaLanguageTemplateAjax.as_view(), name="beta_language_template_ajax")
         ])
     ),

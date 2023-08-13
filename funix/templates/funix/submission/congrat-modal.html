@@ -1,0 +1,28 @@
+{% if just_judged %}
+  {% if submission.result == "AC" %}
+    <div id="success-modal" class="backdrop">
+      <div class="modal">
+        <div style="display: flex; align-items: center; justify-content: center;">
+          <img  src="{{ static('funix/images/congratulations.svg') }}" alt="Congratulations">
+        </div>
+
+        <p style="font-size: 20px; text-align: center; margin: 5px 0 5px;">Congratulations</p>
+        <p style="font-size: 20px; text-align: center; margin: 10px 0 10px;"><b>{{ request.user.username }}!</b></p>
+        <p style="font-size: 15px; text-align: center;">You have just finished this problem</p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+          <button onclick="closeSuccessModal()" class="button">{{ _('Stay on this page') }}</button>
+         
+          {% if course %}
+            {% if next_course_problem %}
+              <a href="{{ url('beta_problem', problem=next_course_problem.problem.code, course=course.slug) }}" class="button">{{ _('Next problem') }}</a>
+            {% else %}
+            <a href="{{ url('beta_course_detail', course=course.slug) }}" class="button">{{ _('Go to the course page') }}</a>
+            {% endif %}
+          {% else %}
+              <a href="{{ url('problem_list') }}" class="button">{{ _('Try other problems') }}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}

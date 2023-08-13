@@ -360,14 +360,14 @@ class ProblemBeta(ProblemBetaMixin, SingleObjectFormView):
         self.new_submission.source = source
         self.new_submission.judge(force_judge=True, judge_id=form.cleaned_data['judge'])
 
-        # uuuuvcomment suspicious behaviors
+        # suspicious behaviors
         suspicious_behaviors = json.loads(form.cleaned_data['suspicious_behaviors'])
         if len(suspicious_behaviors) > 0:
             for timestamp in suspicious_behaviors: 
                 SuspiciousSubmissionBehavior.objects.create(submission= self.new_submission, time=datetime.datetime.fromtimestamp(timestamp))
 
 
-        # uuuuvcomment wpm
+        # wpm
         wpm = int(json.loads(form.cleaned_data['wpm']))
         SubmissionWPM.objects.create(submission=self.new_submission, wpm=wpm)
         

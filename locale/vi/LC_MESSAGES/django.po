@@ -6098,5 +6098,20 @@ msgstr "Tiếp tục học"
 msgid "Criteria"
 msgstr "Tiêu chuẩn"
 
+msgid "Criterias"
+msgstr "Tiêu chuẩn"
+
 msgid "Feedback"
 msgstr "Nhận xét"
+
+msgid "Judging"
+msgstr "Đang chấm"
+
+msgid "You haven't made any submission"
+msgstr "Bạn chưa nộp bài giải cho bài này"
+
+msgid "Stay on this page"
+msgstr "Ở lại trang"
+
+msgid "Hidden test case"
+msgstr "Test case ẩn"

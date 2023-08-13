@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="{{ static('plugins/css/resizable.min.css') }}" />
 
   {# problem specific css #}
+  <link rel="stylesheet" href="{{ static('funix/css/loading.css') }}" />
   <link rel="stylesheet" href="{{ static('funix/css/problem/base.css') }}" />
   <link rel="stylesheet" href="{{ static('funix/css/problem/sidebar.css') }}" />
   <link rel="stylesheet" href="{{ static('funix/css/problem/problem-content.css') }}" />
@@ -16,6 +17,7 @@
   <link rel="stylesheet" href="{{ static('funix/css/problem/problem.css') }}" />
   <link rel="stylesheet" href="{{ static('funix/css/problem/html-preview.css') }}" />
   <link rel="stylesheet" href="{{ static('funix/css/problem/submission-history.css') }}" />
+  <link rel="stylesheet" href="{{ static('funix/css/problem/modal.css') }}" />
 
   <style>
     {% if is_html %}
@@ -96,6 +98,23 @@
   <div id="problem-content-wrapper">
     {% include "funix/problem/content.html" %}
   </div>
+
+  {% if submission and  not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %}
+    <div id="loading-modal" class="backdrop">
+      <div style="min-width: 500px;" class="modal">
+        <p style="text-align: center; font-size: 20px;">{{ _('Judging') }}</p>
+        <div style="display: flex; align-items: center; justify-content: center;"><div class="lds-dual-ring"></div></div>
+        <form style="display: flex; align-items:center; justify-content: center; padding-top: 20px;" action="{{ url('beta_submission_abort', submission.id) }}" method="post"
+          title="{{ _('Press Ctrl-Enter or Command-Enter to abort.') }}">
+          {% csrf_token %}
+          <input type="submit" value="{{ _('Abort') }}" class="button"/>
+        </form>
+      </div>
+    </div>
+{% endif %}
+
+
+
 </div>
 
 {% compress js %} 
@@ -103,6 +122,10 @@
 
 <script>
   init_tabs();
+
+  function closeSuccessModal() {
+    $("#success-modal").css("display", "none")
+  }
 </script>
 {% endcompress %} 
 

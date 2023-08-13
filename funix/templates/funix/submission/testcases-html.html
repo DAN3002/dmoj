@@ -1,5 +1,5 @@
 {% if problem.cases.count() == 0 %}
-<p>This problem has no test data to display.</p>
+  <p style="color: var(--text-color-main-standout);">This problem has no test data to display.</p>
 {% else %}
 <ul id="testcases-nav">
   {% set case_count = counter() %} {% for case in testcases_map %} {% if

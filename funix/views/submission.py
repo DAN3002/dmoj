@@ -1,6 +1,7 @@
 from collections import namedtuple
 from itertools import groupby
 from operator import attrgetter
+from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import  ObjectDoesNotExist, PermissionDenied
@@ -18,6 +19,8 @@ from judge.models import Problem,  Submission
 from judge.models.problem import SubmissionSourceAccess
 from judge.utils.raw_sql import join_sql_subquery
 from judge.utils.views import  TitleMixin, generic_message
+
+from funix.models.course import Course, CourseProblem
 
 
 def submission_related(queryset):
@@ -182,6 +185,29 @@ class SubmissionTestCaseQueryBeta(SubmissionStatus):
         context['problem'] = problem
         context['testcases_map'] = map_test_cases(problem.cases.all())
         context['is_html'] = problem.allowed_languages.first().short_name in ['HTML', 'CSS']
+        context['just_judged'] = True
+        
+        # course
+        context['course'] = None
+        context['course_problem'] = None
+        context['next_course_problem'] = None
+        
+        course_slug = self.kwargs.get("course")
+
+        if course_slug:
+            
+            course = get_object_or_404(Course, slug=course_slug)
+            
+            course_problem = get_object_or_404(CourseProblem, course=course, problem=problem)
+            
+            next_course_problem = CourseProblem.objects.filter(course=course, number=course_problem.number + 1)
+            
+            context['next_course_problem'] = next_course_problem.first()
+            
+            context['course'] = course
+            context['course_problem'] = course_problem
+            
+            
         return context
 
 @require_POST

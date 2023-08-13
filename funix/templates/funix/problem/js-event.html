@@ -3,6 +3,10 @@
       var blocked = false, request = false;
       var list = $('#test-cases');
 
+      function remove_loading_modal() {
+        $("#loading-modal").remove()
+      }
+
       function update() {
           if (blocked) {
               request = true;
@@ -11,7 +15,11 @@
           request = false;
           blocked = true;
           $.ajax({
-              url: '{{ url('beta_submission_testcases_query') }}',
+            {% if course %}
+            url: '{{ url('beta_submission_testcases_query', course=course.slug) }}',
+            {% else %}
+            url: '{{ url('beta_submission_testcases_query') }}',
+            {% endif %}
               data: {id: '{{ submission.id }}'}
           }).done(function (data) {
                 const update_zone = document.getElementById('event-update')
@@ -23,7 +31,7 @@
 
               $( "#testcases").tabs();
               $( ".testcases-and-submission").tabs();
-              
+              remove_loading_modal();
               setTimeout(function () {
                   blocked = false;
                   
@@ -33,6 +41,8 @@
               
           }).fail(function (data) {
               console.log('Failed to update testcases!');
+              remove_loading_modal();
+              alert('Failed to update testcases!')
           });
 
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100)

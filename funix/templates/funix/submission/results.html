@@ -1,20 +1,7 @@
 <div id="result">
-    {% if submission and  not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %}
-    <div id="abort-button" class="d-none" >
-        {#  ------------------------- abort form ------------------------- #}
-        <form action="{{ url('beta_submission_abort', submission.id) }}" method="post"
-            title="{{ _('Press Ctrl-Enter or Command-Enter to abort.') }}">
-            {% csrf_token %}
-            <input style="float:left" type="submit" value="{{ _('Abort') }}" class="button"/>
-        </form>
-    </div>
-    {% endif %}
-
     {% if submission %}
-    {# ------------------------- submission results and loading ------------------------- #}
-    <div id="test-cases">{% include "funix/submission/status-testcases.html" %}</div>
-
+        <div id="test-cases">{% include "funix/submission/status-testcases.html" %}</div>
     {% else %}
-        <p>You haven't made any submission.</p>
+        <p style="color: var(--text-color-main-standout);">You haven't made any submission</p>
     {% endif %}
 </div>
