@@ -6,9 +6,9 @@
           <img  src="{{ static('funix/images/congratulations.svg') }}" alt="Congratulations">
         </div>
 
-        <p style="font-size: 20px; text-align: center; margin: 5px 0 5px;">Congratulations</p>
+        <p style="font-size: 20px; text-align: center; margin: 5px 0 5px;">{{ _('Congratulations') }}</p>
         <p style="font-size: 20px; text-align: center; margin: 10px 0 10px;"><b>{{ request.user.username }}!</b></p>
-        <p style="font-size: 15px; text-align: center;">You have just finished this problem</p>
+        <p style="font-size: 15px; text-align: center;">{{ _('You have just finished this problem') }}</p>
         <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
           <button onclick="closeSuccessModal()" class="button">{{ _('Stay on this page') }}</button>
          

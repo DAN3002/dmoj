@@ -7,6 +7,7 @@
 #html-preview-title {
   height: var(--html-preview-header-height);
   color: var(--text-color-main-standout);
+  border-bottom: 0.5px solid var(--border);
 }
 
 #html-preview-title p {
@@ -20,7 +21,10 @@
 
 #html-preview iframe {
   width: 100%;
-  min-height: calc(100vh - var(--topbar-height) - var(--mainnav-height) - var(--html-preview-header-height));
+  min-height: calc(
+    100vh - var(--topbar-height) - var(--mainnav-height) -
+      var(--html-preview-header-height)
+  );
   background: white;
   pointer-events: none;
 }

@@ -6115,3 +6115,18 @@ msgstr "Ở lại trang"
 
 msgid "Hidden test case"
 msgstr "Test case ẩn"
+
+msgid "Next problem"
+msgstr "Bài kế tiếp"
+
+msgid "Go to the course page"
+msgstr "Về trang khóa học"
+
+msgid "Congratulations"
+msgstr "Chúc mừng bạn"
+
+msgid "You have just finished this problem"
+msgstr "Bạn đã hoàn thành bài này"
+
+msgid "Try other problems"
+msgstr "Thử các bài khác"
