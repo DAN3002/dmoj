@@ -10,8 +10,9 @@
         <p style="font-size: 20px; text-align: center; margin: 10px 0 10px;"><b>{{ request.user.username }}!</b></p>
         <p style="font-size: 15px; text-align: center;">{{ _('You have just finished this problem') }}</p>
         <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-          <button onclick="closeSuccessModal()" class="button">{{ _('Stay on this page') }}</button>
+          <button onclick="closeSuccessModal()" class="button">{{ _('Close') }}</button>
          
+          {# 
           {% if course %}
             {% if next_course_problem %}
               <a href="{{ url('beta_problem', problem=next_course_problem.problem.code, course=course.slug) }}" class="button">{{ _('Next problem') }}</a>
@@ -21,6 +22,7 @@
           {% else %}
               <a href="{{ url('problem_list') }}" class="button">{{ _('Try other problems') }}</a>
           {% endif %}
+          #}
         </div>
       </div>
     </div>
