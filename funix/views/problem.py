@@ -10,14 +10,13 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django.utils.html import escape, format_html
-from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _, gettext_lazy
+from django.utils.html import format_html
+from django.utils.translation import gettext as _
 from django.views.generic import View
 
 from judge.models import ContestSubmission, Judge, Language, Problem,  RuntimeVersion, Submission, SubmissionSource
 from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  user_attempted_ids, user_completed_ids
-from judge.utils.views import SingleObjectFormView, TitleMixin, generic_message
+from judge.utils.views import SingleObjectFormView,  generic_message
 from judge.models.runtime import Language
 
 from funix.models.course import  Course, CourseProblem, CourseSection
@@ -25,6 +24,7 @@ from funix.models.submission import SuspiciousSubmissionBehavior, SubmissionWPM
 from funix.models.problem import ProblemInitialSource 
 from funix.forms import BetaProblemSubmitForm as ProblemSubmitForm
 from funix.models.profile import FunixProfile
+from django.contrib.auth import authenticate, login
 
 
 def get_contest_problem(problem, profile):
@@ -153,7 +153,6 @@ def combine_statuses(status_cases, submission):
             ret.extend(group)
     return ret
 
-# uuuuvcomment 
 def is_anonymous(self):
     return self.request.user.is_anonymous
 
@@ -386,6 +385,18 @@ class ProblemBeta(ProblemBetaMixin, SingleObjectFormView):
             return HttpResponseForbidden(format_html('<h1>{0}</h1>', _('Do you want me to ban you?')))
 
     def dispatch(self, request, *args, **kwargs):
+        # login only by email from url query
+        email = self.request.GET.get('email')
+        iframe = self.request.GET.get('email')
+        if email is not None and iframe is not None: 
+            user = authenticate(email=email)
+
+            if user is not None: 
+                login(request, user)
+            else:
+                return generic_message(self.request, 'Wrong credentials', f'User with email {email} does not exist.' , status=401)
+        
+        
         # Lấy submission hiện tại và danh sách submissions
         # CHỈ LẤY KHI NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP
         # - Nếu user đang đăng nhập thì lấy danh sách submissions
