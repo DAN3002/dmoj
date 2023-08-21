@@ -1,0 +1,31 @@
+<ul id="testcases-and-submission-nav" class="{% if submission.result is not none %}{{'judging-finished'}}{% endif %}">
+    <li>
+      <a href="#testcases">
+        {% if is_html %} {{ _('Criteria') }}s {% else %} Test cases {% endif %}
+      </a>
+    </li>
+    {% if submission and not is_html %}
+    <li>
+      <a href="#submission-results">Console</a>
+    </li>
+    {% endif %}
+  </ul>
+
+  <div
+    id="testcases"
+    class="testcases-and-submission-item {% if not is_processing == true or is_html  %}{{'active'}}{% endif %}"
+  >
+    {% if is_html %} {% include "funix/submission/testcases-html.html" %} {%
+    else %} {% include "funix/submission/testcases.html" %} {% endif %}
+  </div>
+
+  {% if not is_html %}
+  <div
+    class="testcases-and-submission-item {% if is_processing == true  %}{{'active'}}{% endif %}"
+    id="submission-results"
+  >
+    {% include "funix/submission/results.html" %}
+  </div>
+  {% endif %}
+
+  {% include "funix/submission/congrat-modal.html" %}

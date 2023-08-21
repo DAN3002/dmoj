@@ -170,7 +170,7 @@ class SubmissionStatus(SubmissionDetailBase):
 
 from funix.utils.problem import map_test_cases
 class SubmissionTestCaseQueryBeta(SubmissionStatus):
-    template_name = 'funix/submission/submission.html'
+    template_name = 'funix/submission/event-update-content.html'
 
     def get(self, request, *args, **kwargs):
         if 'id' not in request.GET or not request.GET['id'].isdigit():

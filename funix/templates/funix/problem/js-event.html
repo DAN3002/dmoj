@@ -3,9 +3,9 @@
       var blocked = false, request = false;
       var list = $('#test-cases');
 
-      function remove_loading_modal() {
-        $("#loading-modal").remove()
-      }
+        function remove_loading_modal() {
+            $("#loading-modal").remove()
+        }
 
       function update() {
           if (blocked) {
@@ -24,21 +24,23 @@
           }).done(function (data) {
                 const update_zone = document.getElementById('event-update')
                 update_zone.innerHTML = data;
-                
+
+
               list.empty().html(data).find('.toggle').each(function () {
                   register_toggle($(this));
               });
 
               $( "#testcases").tabs();
               $( ".testcases-and-submission").tabs();
-              remove_loading_modal();
               setTimeout(function () {
                   blocked = false;
-                  
+
                   if (request)
                       update();
               }, 500);
-              
+              if ($("#testcases-and-submission-nav").hasClass("judging-finished")) {
+                remove_loading_modal();
+                }
           }).fail(function (data) {
               console.log('Failed to update testcases!');
               remove_loading_modal();
@@ -62,7 +64,7 @@
                   case 'grading-begin':
                   case 'processing':
                       update();
-                      
+
               }
           }
       )
