@@ -1,4 +1,4 @@
-<ul id="testcases-and-submission-nav" class="{% if submission.result is not none %}{{'judging-finished'}}{% endif %}">
+<ul id="testcases-and-submission-nav" class="{% if submission and  submission.result is not none %}{{'judging-finished'}}{% endif %}">
     <li>
       <a href="#testcases">
         {% if is_html %} {{ _('Criteria') }}s {% else %} Test cases {% endif %}
