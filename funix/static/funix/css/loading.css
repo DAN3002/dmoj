@@ -12,7 +12,8 @@
   margin: 8px;
   border-radius: 50%;
   border: 6px solid var(--text-color-main-standout);
-  border-color: var(--text-color-main-standout) transparent var(--text-color-main-standout) transparent;
+  border-color: var(--text-color-main-standout) transparent
+    var(--text-color-main-standout) transparent;
   animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {
