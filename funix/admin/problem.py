@@ -36,6 +36,5 @@ class ProblemTestCaseDataTranslationInline(admin.StackedInline):
 
 class ProblemTestCaseDataAdmin(admin.ModelAdmin):
     fields = ["input_data"]
-    readonly_fields = fields
     inlines = [ProblemTestCaseDataTranslationInline]
 
