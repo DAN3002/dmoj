@@ -3,12 +3,17 @@ from judge.models.problem_data import ProblemTestCase
 from judge.models.problem import Problem
 from zipfile import ZipFile
 from judge.models.runtime import Language
+from django.conf import settings
 
 
 class ProblemTestCaseData(models.Model):
     problem_test_case = models.OneToOneField(ProblemTestCase, on_delete=models.CASCADE, related_name='data')
-    input_data = models.TextField(verbose_name='input', blank=True)
+    input_data = models.TextField(verbose_name='input (criteria)', blank=True)
     output_data = models.TextField(verbose_name='expected output', blank=True)
+    
+    def __str__(self):
+        input_data = self.input_data[0:20] + "..." if self.input_data else ""
+        return f"{self.problem_test_case.dataset.code} - {self.problem_test_case.type}{self.problem_test_case.order} - {input_data}"
 
 def save(self, *args, **kwargs):
     super(ProblemTestCase, self).save(*args, **kwargs)
@@ -28,8 +33,12 @@ def save(self, *args, **kwargs):
             test_case_data.output_data = archive.read(self.output_file).decode('utf-8')[0:200]
 
         test_case_data.save()
+        
+def __str__(self):
+    return self.type + " " + str(self.order)
 
 ProblemTestCase.save = save
+ProblemTestCase.__str__ = __str__
 del save
 
 class ProblemInitialSource(models.Model): 
@@ -42,4 +51,17 @@ class ProblemInitialSource(models.Model):
         
     def __str__(self): 
         return self.language.name
-        
+
+
+class ProblemTestCaseDataTranslation(models.Model):
+    testcase = models.ForeignKey(ProblemTestCaseData, on_delete=models.CASCADE, related_name="translations")
+    language = models.CharField(verbose_name='language', max_length=7, choices=settings.LANGUAGES)
+    input_data = models.TextField(verbose_name='input', blank=True)
+    output_data = models.TextField(verbose_name='expected output', blank=True)
+    
+    class Meta: 
+        unique_together = ('testcase', 'language')
+        verbose_name = 'testcase translation'
+        verbose_name_plural = 'testcase translations'
+
+

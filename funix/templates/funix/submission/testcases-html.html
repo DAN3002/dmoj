@@ -70,7 +70,14 @@ submission %} {% if submission.test_cases.filter(case=case_order).count() > 0 %}
       {% if case.data and (case.data.input_data or case.data.input_data == "")
       %}
           <p style="white-space: wrap; border: .5px solid var(--border); padding: 8px; flex: 1;">
+              {# {{case.data.input_data}} #}
+
+              {% set translated_criteria =  case.data.translations.filter(language=LANGUAGE_CODE).first() %}
+              {% if translated_criteria is not none %}
+              {{translated_criteria.input_data}}
+              {% else %}
               {{case.data.input_data}}
+              {% endif %}
           </p>
       {% else %}
       <span>Custom judge</span>
