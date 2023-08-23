@@ -5,13 +5,12 @@
   }
 
   function set_initial_width() {
-    console.log("set initial width")
     const initial_left_width = localStorage.getItem("{% if is_html %}{{ 'html_mode_' }}{% else %}{{ 'normal_mode_' }}{% endif %}left_width");
     if (initial_left_width && !isNaN(Number(initial_left_width))) {
       $("#main-left").width(Number(initial_left_width));
     }
 
-    {% if is_html %}
+    {% if is_html and request.user.is_authenticated %}
       const initial_middle_width = localStorage.getItem("html_mode_middle_width");
       if (initial_middle_width && !isNaN(Number(initial_middle_width))) {
         $("#main-middle").width(Number(initial_middle_width));
@@ -19,13 +18,13 @@
     {% endif %}
   }
 
-  set_initial_width();
+{% if request.user.is_authenticated %}
+set_initial_width();
+{% endif %}
 
   // horizontal resizing
   function save_width() {
-    console.log("save width")
-
-    {% if is_html %}
+    {% if is_html and request.user.is_authenticated %}
       localStorage.setItem("html_mode_left_width", $("#main-left").width());
       localStorage.setItem("html_mode_middle_width", $("#main-middle").width());
     {% else %}
@@ -37,14 +36,16 @@
     direction: ["right"],
     stop: () => {
       save_width();
-      {% if is_html %}
-        update_iframe_height();
+      {% if request.user.is_authenticated %}
+        {% if is_html %}
+          update_iframe_height();
+        {% endif %}
+        window.aceEditor.resize();
       {% endif %}
-      window.aceEditor.resize();
     },
   });
 
-  {% if is_html %}
+  {% if is_html and request.user.is_authenticated %}
     $("#main-middle").resizable({
       direction: ["right"],
       stop: () => {
@@ -62,17 +63,21 @@
       $("#ace_source").height($("#editor-wrapper").height());
     },
     stop: () => {
-      $("#ace_source").height($("#editor-wrapper").height());
-      window.aceEditor.resize();
-      localStorage.setItem("editor_height", $("#editor-wrapper").height());
-      {% if is_html %}
-        update_iframe_height();
+      {% if request.user.is_authenticated %}
+        $("#ace_source").height($("#editor-wrapper").height());
+        window.aceEditor.resize();
+        localStorage.setItem("editor_height", $("#editor-wrapper").height());
+        {% if is_html %}
+          update_iframe_height();
+        {% endif %}
       {% endif %}
     },
   });
 
   // set initial height to #ace_source
-  $("#ace_source").height($("#editor-wrapper").height());
+  {% if request.user.is_authenticated %}
+    $("#ace_source").height($("#editor-wrapper").height());
+  {% endif %}
 
   // clear code in the editor
   function clearEditor() {
@@ -84,7 +89,7 @@
   function expandEditor(event) {
 
     function save_prev_resizing() {
-      {% if is_html %}
+      {% if is_html and request.user.is_authenticated %}
         localStorage.setItem("pre_html_mode_left_width", $("#main-left").width());
         localStorage.setItem("pre_html_mode_middle_width", $("#main-middle").width());
       {% else %}
@@ -98,7 +103,7 @@
         $("#main-left").width(Number(pre_left_width));
       }
 
-      {% if is_html %}
+      {% if is_html and request.user.is_authenticated %}
         const pre_middle_width = localStorage.getItem("pre_html_mode_middle_width");
         if (pre_middle_width && !isNaN(Number(pre_middle_width))) {
           $("#main-middle").width(Number(pre_middle_width));
@@ -109,7 +114,7 @@
     function expand_middle() {
       $("#main-middle").width($("#main").width() + "px");
       $("#main-left").width(0);
-      {% if is_html %}
+      {% if is_html  and request.user.is_authenticated  %}
       $("#main-right").width(0);
       {% endif %}
     }
@@ -145,18 +150,22 @@
 
 
   document.querySelector("#main-left .resizable-r").innerHTML = horizontal;
-  document.querySelector("#main-middle .resizable-b").innerHTML = vertical;
+  {% if request.user.is_authenticated %}
+    document.querySelector("#main-middle .resizable-b").innerHTML = vertical;
+  {% endif %}
+
+
   {% if is_html and request.user.is_authenticated %}
-  document.querySelector("#main-middle .resizable-r").innerHTML = horizontal;
-  $("#main-middle .resizable-r").mousedown(function() {
-    $("#html-preview iframe").css("pointer-events", "none")
+    document.querySelector("#main-middle .resizable-r").innerHTML = horizontal;
+    $("#main-middle .resizable-r").mousedown(function() {
+      $("#html-preview iframe").css("pointer-events", "none")
 
-      const mouseup_handler = function() {
-        $("#html-preview iframe").css("pointer-events", "auto")
-        window.removeEventListener("mouseup", mouseup_handler)
-      }
+        const mouseup_handler = function() {
+          $("#html-preview iframe").css("pointer-events", "auto")
+          window.removeEventListener("mouseup", mouseup_handler)
+        }
 
-      window.addEventListener("mouseup", mouseup_handler);
-  })
+        window.addEventListener("mouseup", mouseup_handler);
+    })
   {% endif %}
 </script>

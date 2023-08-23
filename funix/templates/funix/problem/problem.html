@@ -36,6 +36,12 @@
         flex: 1;
       }
     {% endif %}
+
+    {% if not request.user.is_authenticated %}
+        #main-left, #main-middle {
+          flex: 1;
+        }
+    {% endif %}
   </style>
 {% endblock %} 
 
@@ -114,8 +120,11 @@
 {% endif %}
 </div>
 
-{% compress js %} 
-  {% include "funix/problem/js-resizing.html" %} 
+
+{% if request.user.is_authenticated %}
+{% include "funix/problem/js-resizing.html" %} 
+{% endif %}
+  
 
 <script>
   init_tabs();
@@ -124,6 +133,5 @@
     $("#success-modal").css("display", "none")
   }
 </script>
-{% endcompress %} 
 
 {% endblock %}
