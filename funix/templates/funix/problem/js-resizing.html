@@ -146,7 +146,7 @@
 
   document.querySelector("#main-left .resizable-r").innerHTML = horizontal;
   document.querySelector("#main-middle .resizable-b").innerHTML = vertical;
-  {% if is_html %}
+  {% if is_html and request.user.is_authenticated %}
   document.querySelector("#main-middle .resizable-r").innerHTML = horizontal;
   $("#main-middle .resizable-r").mousedown(function() {
     $("#html-preview iframe").css("pointer-events", "none")

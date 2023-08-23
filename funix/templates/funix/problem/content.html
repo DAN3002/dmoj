@@ -13,7 +13,7 @@
       {% include "funix/problem/codeplace.html" %}
     </div>
 
-    {% if is_html %} 
+    {% if is_html and request.user.is_authenticated %} 
       <div id="main-right">
         {% include "funix/problem/html-preview.html" %}
       </div>
