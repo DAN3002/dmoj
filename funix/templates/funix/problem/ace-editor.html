@@ -1,241 +1,238 @@
+{% compress js %}
 <script type="text/javascript">
-  $(function () {
-      function format(state) {
-          if (!state.id) return state.text; // optgroup
-          return state.text;
-      }
+    document.addEventListener("DOMContentLoaded", function () {
+        function format(state) {
+            if (!state.id) return state.text; // optgroup
+            return state.text;
+        }
 
-      window.previous_template = '';
+        window.previous_template = '';
 
-      function update_language_template() {
-        function update_submit_area(code) {
-            window.previous_template = code;
-            source.val(code);
-            window.ace_source.getSession().setValue(code);
-            window.start_editting_at = 0;
-            window.character_count = 0;
-          }
+        function update_language_template() {
+          function update_submit_area(code) {
+              window.previous_template = code;
+              source.val(code);
+              window.ace_source.getSession().setValue(code);
+              window.start_editting_at = 0;
+              window.character_count = 0;
+            }
 
-          var source = $('textarea#id_source');
-          var lang_id = $('#id_language').val();
+            var source = $('textarea#id_source');
+            var lang_id = $('#id_language').val();
 
-          // everytime when contestants change language
-          // if the language has submission > display submission source code
-          // else if has initial code (like somecode [...] somecode), display initial code
-          // else if has template code, display it
-          // else display ""
-          $.get('{{ url('beta_language_template_ajax') }}', {
-            id: lang_id,
-            problem_code: `{{problem.id}}`
-            }).done(function (template) {
-                {% if submission %}
-                    if (lang_id == `{{submission.language.id}}`) {
-                        update_submit_area(`{{submission.source.source|safe}}`)
-                    } else {
-                        update_submit_area(template);
-                    }
-                {% else %}
-                    update_submit_area(template);
-                {% endif %}
+            // everytime when contestants change language
+            // if the language has submission > display submission source code
+            // else if has initial code (like somecode [...] somecode), display initial code
+            // else if has template code, display it
+            // else display ""
+            $.get('{{ url('beta_language_template_ajax') }}', {
+              id: lang_id,
+              problem_code: `{{problem.id}}`
+              }).done(function (template) {
+                  {% if submission %}
+                      if (lang_id == `{{submission.language.id}}`) {
+                          update_submit_area(`{{submission.source.source|safe}}`)
+                      } else {
+                          update_submit_area(template);
+                      }
+                  {% else %}
+                      update_submit_area(template);
+                  {% endif %}
 
-                // save for reset button
-                window.initial_code = template;
-            });
-      }
-
-      function makeDisplayData(data) {
-          var site_data = data.attr('data-info');
-          var judge_data = data.attr('data-judge-info');
-          var display_data = site_data || judge_data;
-          return display_data;
-      }
-
-      function formatSelection(state) {
-          if (!state.id) return state.text; // optgroup
-          var data = makeDisplayData($("option[data-id=" + state.id + "]"));
-          return $('<span>').append($('<b>').text(state.text), ' (', data, ')');
-      }
-
-      // Terrible hack, adapted from https://github.com/select2/select2/issues/4436
-      $.fn.select2.amd.define('select2/data/customAdapter', ['select2/results', 'select2/utils'], function (Result, Utils) {
-          RefPresenter = function ($element, options, dataAdapter) {
-              RefPresenter.__super__.constructor.call(this, $element, options, dataAdapter);
-          };
-          Utils.Extend(RefPresenter, Result);
-          RefPresenter.prototype.bind = function (container, $container) {
-              container.on('results:focus', function (params) {
-                  var data = makeDisplayData($("option[data-id=" + params.data.id + "]"));
-                  $("#result-version-info").text(data);
+                  // save for reset button
+                  window.initial_code = template;
               });
-              RefPresenter.__super__.bind.call(this, container, $container);
-          };
-          return RefPresenter;
-      });
+        }
 
-      var customAdapter = $.fn.select2.amd.require('select2/data/customAdapter');
+        function makeDisplayData(data) {
+            var site_data = data.attr('data-info');
+            var judge_data = data.attr('data-judge-info');
+            var display_data = site_data || judge_data;
+            return display_data;
+        }
 
-      $("#id_language").select2({
-          theme: '{{ DMOJ_SELECT2_THEME }}',
-          templateResult: format,
-          templateSelection: formatSelection,
-          resultsAdapter: customAdapter
-      });
+        function formatSelection(state) {
+            if (!state.id) return state.text; // optgroup
+            var data = makeDisplayData($("option[data-id=" + state.id + "]"));
+            return $('<span>').append($('<b>').text(state.text), ' (', data, ')');
+        }
 
-      $('#id_language').on('select2:open', function (evt) {
-          var dropdown = $('.select2-dropdown');
-          if (!$('#result-version-info').length)
-              dropdown.append($("<span id=\"result-version-info\">"));
-          dropdown.attr('id', 'language-select2');
-      });
+        // Terrible hack, adapted from https://github.com/select2/select2/issues/4436
+        $.fn.select2.amd.define('select2/data/customAdapter', ['select2/results', 'select2/utils'], function (Result, Utils) {
+            RefPresenter = function ($element, options, dataAdapter) {
+                RefPresenter.__super__.constructor.call(this, $element, options, dataAdapter);
+            };
+            Utils.Extend(RefPresenter, Result);
+            RefPresenter.prototype.bind = function (container, $container) {
+                container.on('results:focus', function (params) {
+                    var data = makeDisplayData($("option[data-id=" + params.data.id + "]"));
+                    $("#result-version-info").text(data);
+                });
+                RefPresenter.__super__.bind.call(this, container, $container);
+            };
+            return RefPresenter;
+        });
 
-      $('#id_judge').on('select2:open', function (evt) {
-          var dropdown = $('.select2-dropdown');
-          $('#result-version-info').remove();
-          dropdown.attr('id', 'judge-select2');
-      });
+        var customAdapter = $.fn.select2.amd.require('select2/data/customAdapter');
 
-      $('#id_language').change(function () {
-          var lang = $("#id_language").find("option:selected").attr('data-ace');
-          window.ace_source.getSession().setMode("ace/mode/" + lang);
-          update_language_template();
-      });
+        $("#id_language").select2({
+            theme: '{{ DMOJ_SELECT2_THEME }}',
+            templateResult: format,
+            templateSelection: formatSelection,
+            resultsAdapter: customAdapter
+        });
 
-      $('#ace_source').on('ace_load', function (e, editor) {
-          window.aceEditor = editor;
+        $('#id_language').on('select2:open', function (evt) {
+            var dropdown = $('.select2-dropdown');
+            if (!$('#result-version-info').length)
+                dropdown.append($("<span id=\"result-version-info\">"));
+            dropdown.attr('id', 'language-select2');
+        });
 
-          
-          // iframe
-          {% if is_html %}
+        $('#id_judge').on('select2:open', function (evt) {
+            var dropdown = $('.select2-dropdown');
+            $('#result-version-info').remove();
+            dropdown.attr('id', 'judge-select2');
+        });
 
-            editor.on("change", (e) => {
-                const htmlCode = editor.getValue()
-                const iframe = document.querySelector("#html-preview iframe");
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                iframeDoc.body.innerHTML = htmlCode;
-                update_iframe_height();
-            })
-          {% endif %}
-          // end update iframe
+        $('#id_language').change(function () {
+            var lang = $("#id_language").find("option:selected").attr('data-ace');
+            window.ace_source.getSession().setMode("ace/mode/" + lang);
+            update_language_template();
+        });
 
-          update_language_template();
-          
+        console.log("ace-editor run")
 
-          editor.commands.addCommand({
-              name: 'save',
-              bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
-              exec: function () {
-                  localStorage.setItem('submit:' + $('#id_language').val(), editor.getSession().getValue());
+        $('#ace_source').on('ace_load', function (e, editor) {
+            {% if is_html %}
+              function preview_iframe_when_editor_change(e) {
+                  const htmlCode = editor.getValue()
+                  const iframe = document.querySelector("#html-preview iframe");
+                  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                  iframeDoc.body.innerHTML = htmlCode;
+                  update_iframe_height();
               }
-          });
-          editor.getSession().setUseWrapMode(true);
-          editor.setFontSize(14);
-          editor.setPrintMarginColumn(100);
 
-          // uuuuvcomment wpm handling
-          function calculate_characters(e) {
-            if (window.start_editting_at === 0) window.start_editting_at = Date.now();
-            const character_count = window.character_count;
-            const actionType = e.action;
-            const this_event_character_count = e.lines.reduce((acc, cur) => acc + cur.replace(/\r/gi, "").length, 0);
+              preview_iframe_when_editor_change();
 
-            if (e.action === "insert") window.character_count += this_event_character_count;
-            if (e.action === "remove") window.character_count -= this_event_character_count;
+              editor.on("change", preview_iframe_when_editor_change);
+
+            {% endif %}
+
+            update_language_template();
+
+            editor.commands.addCommand({
+                name: 'save',
+                bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
+                exec: function () {
+                    localStorage.setItem('submit:' + $('#id_language').val(), editor.getSession().getValue());
+                }
+            });
+            editor.getSession().setUseWrapMode(true);
+            editor.setFontSize(14);
+            editor.setPrintMarginColumn(100);
+
+            // wpm handling
+            function calculate_characters(e) {
+              if (window.start_editting_at === 0) window.start_editting_at = Date.now();
+              const character_count = window.character_count;
+              const actionType = e.action;
+              const this_event_character_count = e.lines.reduce((acc, cur) => acc + cur.replace(/\r/gi, "").length, 0);
+
+              if (e.action === "insert") window.character_count += this_event_character_count;
+              if (e.action === "remove") window.character_count -= this_event_character_count;
+            }
+            editor.on("change", calculate_characters);
+
+            // end wpm handling
+
+
+            // ace paste event
+            editor.on("paste", e => {
+              if (e.text.length < 200) return;
+
+              alert("Please type your code manually, don't cheat!");
+              let suspiciousInput = document.querySelector("input[name=suspicious_behaviors]");
+              let value = JSON.parse(suspiciousInput.value);
+              value.push(Math.round(Date.now()/1000));
+              suspiciousInput.value = JSON.stringify(value);
+            })
+            // end ace paste event
+            editor.focus();
+        });
+
+        $('#problem_submit').submit(function (event) {
+          function preventSubmit() {
+              event.preventDefault();
+              $('#problem_submit').find(':submit').attr('disabled', false);
           }
-          editor.on("change", calculate_characters);
 
-          // uuuuvcomment end wpm handling
+          var ellipsis = "[...]"
 
+          if ($('#id_source').val().length > 65536) {
+              alert("{{ _('Your source code must contain at most 65536 characters.') }}");
+              preventSubmit();
+              return;
+          }
 
-          // uuuuvcomment ace pasting event
-          editor.on("paste", e => {
-            if (e.text.length < 200) return;
+          // initial_code can be template code (represents for each language)
+          // or initial_code like somecode [...] somecode
+          var initial_code = window.initial_code;
+          var initial_code_characters_count = initial_code.replace(/\[\.\.\.\]|\r/gi, '').length;
 
-            alert("Please type your code manually, don't cheat!");
-            let suspiciousInput = document.querySelector("input[name=suspicious_behaviors]");
-            let value = JSON.parse(suspiciousInput.value);
-            value.push(Math.round(Date.now()/1000));
-            suspiciousInput.value = JSON.stringify(value);
-          })
-          // uuuuvcomment end ace pasting event
-          editor.focus();
-      });
+          // if initial code contains [...] => need to check
+          if (initial_code.includes(ellipsis)) {
+              initial_code = initial_code.replace(/[\t\n\r ]+/g, " ");
+              var contestant_code = $('#id_source').val().replace(/[\t\n\r ]+/g, " ");
 
-      $('#problem_submit').submit(function (event) {
-        function preventSubmit() {
-            event.preventDefault();
-            $('#problem_submit').find(':submit').attr('disabled', false);
-        }
+              var lang_id = $("#id_language").val();
 
-        var ellipsis = "[...]"
+              // validate
+              if (contestant_code.includes(ellipsis)) {
+                  alert("Please fill out all the fields.");
+                  preventSubmit();
+                  return;
+              }
 
-        if ($('#id_source').val().length > 65536) {
-            alert("{{ _('Your source code must contain at most 65536 characters.') }}");
-            preventSubmit();
-            return;
-        }
-
-        // if (window.start_editting_at === 0) {
-        //    alert("You haven't typed any code.")
-        //    preventSubmit();
-        //    return;
-        // }
-
-        // initial_code can be template code (represents for each language)
-        // or initial_code like somecode [...] somecode
-        var initial_code = window.initial_code;
-        var initial_code_characters_count = initial_code.replace(/\[\.\.\.\]|\r/gi, '').length;
-
-        // if initial code contains [...] => need to check
-        if (initial_code.includes(ellipsis)) {
-            initial_code = initial_code.replace(/[\t\n\r ]+/g, " ");
-            var contestant_code = $('#id_source').val().replace(/[\t\n\r ]+/g, " ");
-
-            var lang_id = $("#id_language").val();
-
-            // validate
-            if (contestant_code.includes(ellipsis)) {
-                alert("Please fill out all the fields.");
-                preventSubmit();
-                return;
-            }
-
-            function transform(str) {
-                var specialCharacters = [".","*","+","?","|","[","]","(",")","{","}"]
-                var result = str.trim();
-                specialCharacters.forEach(char => {
-                    result = result.replace(new RegExp(`\\` + char, "g"), `\\` + `${char}`)
-                })
-                return result;
-            }
+              function transform(str) {
+                  var specialCharacters = [".","*","+","?","|","[","]","(",")","{","}"]
+                  var result = str.trim();
+                  specialCharacters.forEach(char => {
+                      result = result.replace(new RegExp(`\\` + char, "g"), `\\` + `${char}`)
+                  })
+                  return result;
+              }
 
 
-            var codePortions = initial_code.split(ellipsis).map(item => transform(item));
-            var regex = new RegExp(`^${codePortions.join(".+")}$`)
-            var i = 0;
-            if (!regex.test(contestant_code)) {
-                alert("Invalid code");
-                preventSubmit();
-            }
-        }
+              var codePortions = initial_code.split(ellipsis).map(item => transform(item));
+              var regex = new RegExp(`^${codePortions.join(".+")}$`)
+              var i = 0;
+              if (!regex.test(contestant_code)) {
+                  alert("Invalid code");
+                  preventSubmit();
+              }
+          }
 
 
-        let wpm;
-        function calculateNewWPM() {
-            const duration = Math.ceil((Date.now() - window.start_editting_at)/1000/60*100)/100;
-            return Math.round(window.character_count/5/duration);
-        }
+          let wpm;
+          function calculateNewWPM() {
+              const duration = Math.ceil((Date.now() - window.start_editting_at)/1000/60*100)/100;
+              return Math.round(window.character_count/5/duration);
+          }
 
-        {% if submission and submission.wpm %}
-            if (window.character_count < 300) {
-                wpm = Number(`{{submission.wpm.wpm}}`); // old wpm
-            } else {
-                wpm = calculateNewWPM();
-            }
-        {% else %}
-            wpm = calculateNewWPM();
-        {% endif %}
+          {% if submission and submission.wpm %}
+              if (window.character_count < 300) {
+                  wpm = Number(`{{submission.wpm.wpm}}`); // old wpm
+              } else {
+                  wpm = calculateNewWPM();
+              }
+          {% else %}
+              wpm = calculateNewWPM();
+          {% endif %}
 
-        document.querySelector("input[name=wpm]").value = wpm;
-      });
-  });
+          document.querySelector("input[name=wpm]").value = wpm;
+        });
+    });
 </script>
+
+{% endcompress %}

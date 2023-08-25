@@ -1,0 +1,8 @@
+<div id="login-required" >
+    <div>
+      <p>Login is needed to make submission</p>
+      <a class="button" href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}"
+        >{{ _('Login!') }}</a
+      >
+    </div>
+  </div>
