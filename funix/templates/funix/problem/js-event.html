@@ -4,7 +4,10 @@
       var list = $('#test-cases');
 
         function remove_loading_modal() {
-            $("#loading-modal").remove()
+            $("#loading-modal").remove();
+            {% if is_html %}
+                $("#sidebar-editor-button").click();
+            {% endif %}
         }
 
       function update() {
