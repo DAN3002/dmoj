@@ -2,6 +2,7 @@
   height: 100%;
   overflow: auto;
   padding: 10px;
+  min-height: calc(100vh - var(--mainnav-height) - var(--topbar-height));
 }
 
 #problem-description-content-wrapper {

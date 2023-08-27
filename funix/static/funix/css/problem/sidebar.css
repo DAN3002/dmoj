@@ -5,6 +5,9 @@
   border: none;
   position: relative;
   height: calc(100vh - var(--mainnav-height));
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 #sidebar li {

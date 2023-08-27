@@ -1,6 +1,5 @@
 :root {
   --sidebar-width: 60px;
-  --problem-clsf-height: 90px;
   --button-height: 30px;
   --submitbar-height: 44px;
   --toolbar-height: 50px;
@@ -121,7 +120,7 @@
 .resizable-handle.resizable-r {
   width: 0 !important;
   right: 0 !important;
-}
+} 
 
 .resizer {
   top: 50%;

@@ -73,6 +73,10 @@
   color: var(--color-warning);
 }
 
+.d-none {
+  display: none !important;
+}
+
 /* override  */
 /* override  */
 .window-visible {
@@ -168,3 +172,4 @@
 #beta-container * {
   box-sizing: border-box;
 }
+

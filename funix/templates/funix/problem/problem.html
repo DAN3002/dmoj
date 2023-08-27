@@ -74,13 +74,22 @@
 
         @media screen and (max-width: 992px) {
           #login-required {
-            height: 300px;
             border-left: none;
-            border-bottom: .5px solid var(--border);
           }
         }
     {% endif %}
   </style>
+    {% if not is_html %}
+    <style>
+      @media screen and (max-width: 992px) {
+        #login-required {
+          height: 300px;
+          border-bottom: .5px solid var(--border);
+        }
+      }
+
+    </style>
+    {% endif %}
 {% endblock %} 
 
 {% block js_media %}
@@ -109,7 +118,6 @@
   
   {% endif %}
 
-    {% include "funix/problem/js-tabs.html" %}
 
   {% if submission and not submission.is_graded and last_msg %} 
     {% include "funix/problem/js-event.html" %} 
@@ -141,8 +149,8 @@
 
         {% if request.user.is_authenticated %}
         <div id="main-middle" {% if is_html %}class="d-none"{% endif %}>
-          {% include 'funix/problem/editor.html' %} {% include
-          'funix/submission/submission.html' %}
+          {% include 'funix/problem/editor.html' %} 
+          {% include 'funix/submission/submission.html' %}
         </div>
 
         {% if is_html %}
@@ -155,10 +163,15 @@
     </div>
   </div>
 
+
+
   {% if submission and not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %} 
     {% include "funix/problem/judging-modal.html" %} 
   {% endif %}
 </div>
+
+{% include "funix/problem/js-tabs.html" %}
+
 
 <script type="text/javascript">
 
