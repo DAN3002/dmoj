@@ -11,6 +11,7 @@
   color: var(--text-color-main);
 }
 
+#problem-description-content table,
 #problem-description-content p,
 #problem-description-content span,
 #problem-description-content li,
