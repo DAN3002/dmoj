@@ -32,6 +32,7 @@ $(function() {
     {% endif %}
   }
 
+  {% if not is_html %}
   $("#main-left").resizable({
     direction: ["right"],
     stop: () => {
@@ -42,6 +43,7 @@ $(function() {
         window.ace_source.resize();
     },
   });
+  {% endif %}
 
   {% if is_html %}
     $("#main-middle").resizable({
@@ -100,8 +102,9 @@ $(function() {
         </div>
         `;
 
-
+  {% if not is_html %}
   document.querySelector("#main-left .resizable-r").innerHTML = horizontal;
+  {% endif %}
   document.querySelector("#main-middle .resizable-b").innerHTML = vertical;
 
 

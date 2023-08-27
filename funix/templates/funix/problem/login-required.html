@@ -1,4 +1,4 @@
-<div id="login-required" >
+<div id="login-required" {% if is_html %}class="d-none"{% endif %} >
     <div>
       <p>Login is needed to make submission</p>
       <a class="button" href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}"

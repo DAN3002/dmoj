@@ -130,12 +130,13 @@
       <div id="topbar">{% include "funix/problem/topbar.html" %}</div>
 
       <div id="main">
-        {% if not request.user.is_authenticated %} {% include
-        "funix/problem/login-required.html" %} {% endif %}
+        {% if not request.user.is_authenticated %} 
+          {% include "funix/problem/login-required.html" %} 
+        {% endif %}
 
         <div id="main-left">
-          {% include "funix/problem/details.html" %} {% include
-          "funix/submission/history.html" %}
+          {% include "funix/problem/details.html" %} 
+          {% include "funix/submission/history.html" %}
         </div>
 
         {% if request.user.is_authenticated %}
@@ -209,8 +210,12 @@
   function showProblemDescription() {
     if (document.getElementById("main-left").classList.contains("d-none")) {
       document.getElementById("main-left").classList.remove("d-none");
+      {% if request.user.is_authenticated %}
       document.getElementById("main-middle").classList.add("d-none");
       document.getElementById("main-right").classList.add("d-none");
+      {% else %}
+      document.getElementById("login-required").classList.add("d-none");
+      {% endif %}
     };
   }
 
@@ -218,8 +223,12 @@
     if (document.getElementById("main-left").classList.contains("d-none")) return;
 
     document.getElementById("main-left").classList.add("d-none");
+    {% if request.user.is_authenticated %}
     document.getElementById("main-middle").classList.remove("d-none");
     document.getElementById("main-right").classList.remove("d-none");
+    {% else %}
+    document.getElementById("login-required").classList.remove("d-none");
+    {% endif %}
   }
 
   function showMySubmission() {
