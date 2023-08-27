@@ -36,6 +36,10 @@
 
   <style>
     {% if is_html %}
+      #main-left {
+        width: 100% !important;
+      }
+      
       #main-right {
         flex: 1;
         border-left: .5px solid var(--border);
@@ -135,13 +139,13 @@
         </div>
 
         {% if request.user.is_authenticated %}
-        <div id="main-middle">
+        <div id="main-middle" {% if is_html %}class="d-none"{% endif %}>
           {% include 'funix/problem/editor.html' %} {% include
           'funix/submission/submission.html' %}
         </div>
 
         {% if is_html %}
-        <div id="main-right">
+        <div id="main-right" {% if is_html %}class="d-none"{% endif %}>
           {% include "funix/problem/html-preview.html" %}
         </div>
         {% endif %} 
@@ -200,6 +204,32 @@
     middle.classList.toggle("expand");
   }
 
+
+  {% if is_html %}
+  function showProblemDescription() {
+    if (document.getElementById("main-left").classList.contains("d-none")) {
+      document.getElementById("main-left").classList.remove("d-none");
+      document.getElementById("main-middle").classList.add("d-none");
+      document.getElementById("main-right").classList.add("d-none");
+    };
+  }
+
+  function showEditor() {
+    if (document.getElementById("main-left").classList.contains("d-none")) return;
+
+    document.getElementById("main-left").classList.add("d-none");
+    document.getElementById("main-middle").classList.remove("d-none");
+    document.getElementById("main-right").classList.remove("d-none");
+  }
+
+  function showMySubmission() {
+    if (document.getElementById("main-left").classList.contains("d-none")) {
+      document.getElementById("main-left").classList.remove("d-none");
+      document.getElementById("main-middle").classList.add("d-none");
+      document.getElementById("main-right").classList.add("d-none");
+    };
+  }
+  {% endif %}
 </script>
 
 {% endblock %}
