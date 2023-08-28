@@ -75,12 +75,7 @@ $(function() {
   // set initial height to #ace_source
     $("#ace_source").height($("#editor-wrapper").height());
 
-  // clear code in the editor
-  function clearEditor() {
-    var source = $("textarea#id_source");
-    source.val(window.initial_code);
-    window.ace_source.getSession().setValue(window.initial_code);
-  }
+
 
 
   // render resizer buttons

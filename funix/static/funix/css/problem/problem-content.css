@@ -46,10 +46,6 @@
   min-width: 0;
 }
 
-#main-right {
-  padding: 10px;
-}
-
 @media screen and (max-width: 992px) {
   #main {
     display: block;

@@ -175,7 +175,7 @@
 
 <script type="text/javascript">
 
-  function expandEditor(event) {
+  function expand_editor(event) {
 
     function save_prev_resizing() {
       {% if is_html %}
@@ -252,6 +252,13 @@
     };
   }
   {% endif %}
+
+  // clear code in the editor
+  function clear_editor() {
+    var source = $("textarea#id_source");
+    source.val(window.initial_code);
+    window.ace_source.getSession().setValue(window.initial_code);
+  }
 </script>
 
 {% endblock %}
