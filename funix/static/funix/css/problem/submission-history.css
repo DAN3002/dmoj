@@ -1,11 +1,14 @@
 #submissions {
   padding: 0;
+  --submission-history-title-height: 44px;
+  height: calc(100vh - var(--mainnav-height) - var(--topbar-height));
+  overflow: hidden;
 }
 
 #submission-history-title {
   color: var(--text-color-main-standout);
   font-weight: 600;
-  height: 44px;
+  height: var(--submission-history-title-height);
   border-bottom: .5px solid var(--border);
   display: flex;
   align-items: center;
@@ -16,8 +19,8 @@
   color: var(--text-color-main-standout);
   padding: 0;
   list-style-type: none;
-  height: calc(100vh - 26px - var(--mainnav-height) - var(--topbar-height));
-  overflow: auto;
+  height: calc(100vh - var(--submission-history-title-height) - var(--mainnav-height) - var(--topbar-height));
+  overflow: auto !important;
   margin: 0;
 }
 

@@ -19,12 +19,19 @@
   text-transform: uppercase;
 }
 
+#html-preview-iframe {
+  height: calc(
+    100vh - var(--topbar-height) - var(--mainnav-height) -
+      var(--html-preview-header-height) - 20px
+  );
+  overflow: auto;
+}
+
 #html-preview iframe {
   width: 100%;
   min-height: calc(
     100vh - var(--topbar-height) - var(--mainnav-height) -
-      var(--html-preview-header-height)
+      var(--html-preview-header-height) - 20px
   );
   background: white;
-  /* pointer-events: none; */
 }

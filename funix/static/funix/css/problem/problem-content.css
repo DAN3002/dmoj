@@ -63,10 +63,6 @@
     height: auto;
   }
 
-  #main-left {
-    border-bottom: 0.5px solid var(--border);
-  }
-
   #main-middle {
     border-left: none;
     border-bottom: .5px solid var(--border);
