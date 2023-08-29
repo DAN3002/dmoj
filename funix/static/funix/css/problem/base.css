@@ -3,6 +3,10 @@
   --button-height: 30px;
   --submitbar-height: 44px;
   --toolbar-height: 50px;
+  --topbar-height: 44px;
+  --languagebar-height: 30px;
+  --submissionnav-height: 40px;
+  --html-preview-header-height: 44px;
 }
 
 #problem-container {
@@ -107,7 +111,7 @@
   margin: 0;
 }
 
-#main-middle .django-ace-toolbar {
+#main-right .django-ace-toolbar {
   display: none;
 }
 

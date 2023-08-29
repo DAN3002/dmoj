@@ -1,89 +1,97 @@
-<div class="toolbar">
-    {% include "funix/problem/toolbar.html" %}
-</div>
-
-{#  ------------------------- submission form ------------------------- #}
-<form id="problem_submit" method="POST">
-    {#  ------------------------- choose languages ------------------------- #}
-    {% if not no_judges %}
-       <div id="language-bar">
-        <div id="language">
-            {{ form.language.errors }}
-            <div id="language-select">
-                <select id="id_language" name="language" >
-                    {% for lang in form.fields.language.queryset %}
-                        <option 
-                            value="{{ lang.id }}" 
-                            data-id="{{ lang.id }}" 
-                            data-name="{{ lang.name }}"
-                            data-info="{{ lang.info }}" 
-                            data-ace="{{ lang.ace }}"
-                            data-judge-info="{{ runtime_versions(lang.runtime_versions()) }}"
-                            {% if lang.id == default_lang.id %}selected{% endif %}
-                        >
-                            {{ lang.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-       </div>
-    {% endif %}
-
-    {#  ------------------------- warning ------------------------- #}
-    <div class="codeplace_warning">
+<div id="problem-editor">
+    <div class="toolbar">
+        {% include "funix/problem/toolbar.html" %}
+    </div>
+    
+    {#  ------------------------- submission form ------------------------- #}
+    <form id="problem_submit" method="POST">
+        {#  ------------------------- choose languages ------------------------- #}
         {% if not no_judges %}
-            {% if request.in_contest and submission_limit %}
-                {% if submissions_left > 0 %}
-                    <div class="alert alert-warning alert-dismissable">
-                        <a class="close">x</a>
-                        {% trans left=submissions_left -%}
-                            You have {{ left }} submission left
-                            {%- pluralize -%}
-                            You have {{ left }} submissions left
-                        {%- endtrans %}
-                    </div>
-                {% else %}
-                    <div class="alert alert-warning alert-dismissable">
-                        <a class="close">x</a>
-                        {{ _('You have 0 submissions left') }}
-                    </div>
+            <div id="language-bar">
+            <div id="language">
+                {{ form.language.errors }}
+                <div id="language-select">
+                    <select id="id_language" name="language" >
+                        {% for lang in form.fields.language.queryset %}
+                            <option 
+                                value="{{ lang.id }}" 
+                                data-id="{{ lang.id }}" 
+                                data-name="{{ lang.name }}"
+                                data-info="{{ lang.info }}" 
+                                data-ace="{{ lang.ace }}"
+                                data-judge-info="{{ runtime_versions(lang.runtime_versions()) }}"
+                                {% if lang.id == default_lang.id %}selected{% endif %}
+                            >
+                                {{ lang.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            </div>
+        {% endif %}
+    
+        {#  ------------------------- warning ------------------------- #}
+        <div class="codeplace_warning">
+            {% if not no_judges %}
+                {% if request.in_contest and submission_limit %}
+                    {% if submissions_left > 0 %}
+                        <div class="alert alert-warning alert-dismissable">
+                            <a class="close">x</a>
+                            {% trans left=submissions_left -%}
+                                You have {{ left }} submission left
+                                {%- pluralize -%}
+                                You have {{ left }} submissions left
+                            {%- endtrans %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning alert-dismissable">
+                            <a class="close">x</a>
+                            {{ _('You have 0 submissions left') }}
+                        </div>
+                    {% endif %}
                 {% endif %}
             {% endif %}
-        {% endif %}
-    </div>
-
-    {#  ------------------------- editor ------------------------- #}
-    <div id="editor-wrapper">
-        {% csrf_token %}
-        {{ form.non_field_errors() }}
-        <div id="submit-wrapper">
-            <div id="editor">
-                {{ form.source.errors }}
-                {{ form.source }}
+        </div>
+    
+        {#  ------------------------- editor ------------------------- #}
+        <div id="editor-wrapper">
+            {% csrf_token %}
+            {{ form.non_field_errors() }}
+            <div id="submit-wrapper">
+                <div id="editor">
+                    {{ form.source.errors }}
+                    {{ form.source }}
+                </div>
             </div>
         </div>
-    </div>
-
-    {{form.suspicious_behaviors}}
-    {{form.wpm}}
-
-    {#  ------------------------- submit button ------------------------- #}
-    {#  ------------------ or no judge is available --------------------- #}
-    <div class="submitbar">
-        {% if no_judges %}
-            <span style="color: red">{{ _('No judge is available for this problem.') }}</span>
-        {% else %}
-            <div class="submit-bar">
-                <div>
-                    {{ form.judge }}
+    
+        {{form.suspicious_behaviors}}
+        {{form.wpm}}
+    
+        {#  ------------------------- submit button ------------------------- #}
+        {#  ------------------ or no judge is available --------------------- #}
+        <div class="submitbar">
+            {% if no_judges %}
+                <span style="color: red">{{ _('No judge is available for this problem.') }}</span>
+            {% else %}
+                <div class="submit-bar">
+                    <div>
+                        {{ form.judge }}
+                    </div>
+    
+                    <div class="submitbar_buttons">
+                        <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
+                        {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}> 
+                    </div>
                 </div>
+            {% endif %}
+        </div>
+    </form>
+    
+    {% include 'funix/submission/submission.html' %}
+</div>
 
-                <div class="submitbar_buttons">
-                    <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
-                    {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}> 
-                </div>
-            </div>
-        {% endif %}
-    </div>
-</form>
+{% if is_html %}
+    {% include "funix/problem/html-preview.html" %}
+{% endif %}

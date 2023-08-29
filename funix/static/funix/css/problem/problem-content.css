@@ -21,10 +21,10 @@
 }
 
 #main {
-  width: 100%;
   height: calc(100% - var(--topbar-height));
   display: flex;
   background: var(--bg-main);
+  width: calc(100vw - var(--sidebar-width));
 }
 
 #main-left {
@@ -34,16 +34,15 @@
   color: var(--text-color-main);
 }
 
-#main-middle {
+#main-right {
   height: 100%;
   border-left: 0.5px solid var(--border);
   padding: 0 8px 0px 20px;
   position: relative;
-  display: flex;
-  flex-direction: column;
   min-height: 200px;
   background: var(--bg-main);
   min-width: 0;
+  flex: 1;
 }
 
 @media screen and (max-width: 992px) {
@@ -53,13 +52,13 @@
   }
 
   #main-left,
-  #main-middle,
+  #main-right,
   #main-right {
     width: 100% !important;
     height: auto;
   }
 
-  #main-middle {
+  #main-right {
     border-left: none;
     border-bottom: .5px solid var(--border);
     padding-bottom: 20px;

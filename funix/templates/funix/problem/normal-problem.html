@@ -1,0 +1,195 @@
+{% extends 'funix/base.html' %} 
+
+{% block media %} 
+    {{ form.media.css }}
+    <link rel="stylesheet" href="{{ static('funix/css/lib/jquery-ui.css') }}" />
+    <link rel="stylesheet" href="{{ static('plugins/css/resizable.min.css') }}" />
+
+    {# problem specific css #}
+    <link rel="stylesheet" href="{{ static('funix/css/loading.css') }}" />
+    <link rel="stylesheet" href="{{ static('funix/css/problem/base.css') }}" />
+    <link rel="stylesheet" href="{{ static('funix/css/problem/problem-content.css') }}"/>
+    <link rel="stylesheet" href="{{ static('funix/css/problem/topbar.css') }}" />
+    <link rel="stylesheet" href="{{ static('funix/css/problem/main-right.css') }}"/>
+    <link rel="stylesheet" href="{{ static('funix/css/problem/description.css') }}"/>
+    <link rel="stylesheet" href="{{ static('funix/css/problem/metadata.css') }}" />
+    <link rel="stylesheet" href="{{ static('funix/css/problem/problem.css') }}" />
+    <link rel="stylesheet" href="{{ static('funix/css/problem/html-preview.css') }}"/>
+    <link rel="stylesheet" href="{{ static('funix/css/problem/submission-history.css') }}"/>
+    <link rel="stylesheet" href="{{ static('funix/css/problem/modal.css') }}" />
+
+    {% if is_html %}
+        <style>
+            #main-left {
+                width: 100% !important;
+            }
+            
+            #main-right {
+                flex: 1;
+                border-left: .5px solid var(--border);
+            }
+
+            @media screen and (max-width: 992px) {
+                #main-right {
+                    border-left: none;
+                }
+            }
+        </style>
+    {% else %}
+        <style>
+            #main-right {
+            flex: 1;
+            }
+        </style>
+    {% endif %}
+
+{% endblock %} 
+
+{% block js_media %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-chtml.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{{static('plugins/js/resizable.min.js')}}" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
+    {{ form.media.js }}
+    <script type="text/javascript" src="{{ static('event.js') }}"></script>
+    {% include 'funix/problem/ace-editor.html' %}
+
+    {% if is_html %}
+    <script type="text/javascript">
+        function update_iframe_height() {
+        const iframe = document.querySelector("#html-preview iframe");
+        iframe.style.height = 0;
+        iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 20 + 'px';
+        }
+    </script>
+    {% endif %}
+
+    {% include "funix/problem/js-resizing.html" %} 
+
+    {% if submission and not submission.is_graded and last_msg %} 
+    {% include "funix/problem/js-event.html" %} 
+    {% endif %} 
+{% endblock %} 
+
+{% if submission %}
+    {% set is_processing = submission is not none %} 
+{% endif %} 
+
+{% block body %}
+    <div id="problem-container">
+    <div id="sidebar-wrapper">{% include "funix/problem/sidebar.html" %}</div>
+
+    <div id="problem-content-wrapper">
+        <div id="problem-content">
+        <div id="topbar">{% include "funix/problem/topbar.html" %}</div>
+
+        <div id="main">
+
+            <div id="main-left">
+            {% include "funix/problem/details.html" %} 
+            {% include "funix/submission/history.html" %}
+            </div>
+
+            <div id="main-right" {% if is_html %}class="d-none"{% endif %}>
+            {% include 'funix/problem/editor.html' %} 
+            {% include 'funix/submission/submission.html' %}
+            </div>
+
+            {% if is_html %}
+            <div id="main-right" {% if is_html %}class="d-none"{% endif %}>
+            {% include "funix/problem/html-preview.html" %}
+            </div>
+            {% endif %} 
+        </div>
+        </div>
+    </div>
+
+    {% if submission and not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %} 
+        {% include "funix/problem/judging-modal.html" %} 
+    {% endif %}
+    </div>
+
+
+    <script type="text/javascript">
+
+    function expand_editor(event) {
+
+        function save_prev_resizing() {
+        {% if is_html %}
+            localStorage.setItem("pre_html_mode_left_width", $("#main-left").width());
+            localStorage.setItem("pre_html_mode_middle_width", $("#main-right").width());
+        {% else %}
+            localStorage.setItem("pre_normal_mode_left_width", $("#main-left").width());
+        {% endif %}
+        }
+
+        function restore_prev_resizing() {
+        const pre_left_width = localStorage.getItem("{% if is_html %}{{ 'pre_html_mode_' }}{% else %}{{ 'pre_normal_mode_' }}{% endif %}left_width");
+        if (pre_left_width && !isNaN(Number(pre_left_width))) {
+            $("#main-left").width(Number(pre_left_width));
+        }
+
+        {% if is_html %}
+            const pre_middle_width = localStorage.getItem("pre_html_mode_middle_width");
+            if (pre_middle_width && !isNaN(Number(pre_middle_width))) {
+            $("#main-right").width(Number(pre_middle_width));
+            }
+        {% endif %}
+        }
+
+        function expand_middle() {
+        $("#main-right").width($("#main").width() + "px");
+        $("#main-left").width(0);
+        {% if is_html %}
+            $("#main-right").width(0);
+        {% endif %}
+        }
+
+        const middle = document.getElementById("main-right");
+        if (middle.classList.contains("expand")) {
+        restore_prev_resizing();
+        } else {
+        save_prev_resizing();
+        expand_middle();
+        }
+        middle.classList.toggle("expand");
+    }
+
+
+    {% if is_html %}
+    function showProblemDescription() {
+        if (document.getElementById("main-left").classList.contains("d-none")) {
+        document.getElementById("main-left").classList.remove("d-none");
+        document.getElementById("main-right").classList.add("d-none");
+        document.getElementById("main-right").classList.add("d-none");
+        };
+    }
+
+    function showEditor() {
+        if (document.getElementById("main-left").classList.contains("d-none")) return;
+
+        document.getElementById("main-left").classList.add("d-none");
+        document.getElementById("main-right").classList.remove("d-none");
+        document.getElementById("main-right").classList.remove("d-none");
+    }
+
+    function showMySubmission() {
+        if (document.getElementById("main-left").classList.contains("d-none")) {
+        document.getElementById("main-left").classList.remove("d-none");
+        document.getElementById("main-right").classList.add("d-none");
+        document.getElementById("main-right").classList.add("d-none");
+        };
+    }
+    {% endif %}
+
+    function clear_editor() {
+        var source = $("textarea#id_source");
+        source.val(window.initial_code);
+        window.ace_source.getSession().setValue(window.initial_code);
+    }
+    </script>
+
+    {% include "funix/problem/js-tabs.html" %}
+
+
+{% endblock %}

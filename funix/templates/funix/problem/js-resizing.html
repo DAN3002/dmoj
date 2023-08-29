@@ -1,111 +1,67 @@
+{% if is_html %}
 <script type="text/javascript">
   
-$(function() {
-  const initialResizableHeight = localStorage.getItem("editor_height");
-  if (initialResizableHeight && !isNaN(Number(initialResizableHeight))) {
-    $("#editor-wrapper").height(Number(initialResizableHeight));
-  }
+  $(function() {
+    const html_preview_width = localStorage.getItem("html_preview_width");
+    const editor_height = localStorage.getItem("html_editor_height");
 
-  function set_initial_width() {
-    const initial_left_width = localStorage.getItem("{% if is_html %}{{ 'html_mode_' }}{% else %}{{ 'normal_mode_' }}{% endif %}left_width");
-    if (initial_left_width && !isNaN(Number(initial_left_width))) {
-      $("#main-left").width(Number(initial_left_width));
+    if (editor_height && !isNaN(Number(editor_height))) {
+      $("#editor-wrapper").height(Number(editor_height));
     }
 
-    {% if is_html %}
-      const initial_middle_width = localStorage.getItem("html_mode_middle_width");
-      if (initial_middle_width && !isNaN(Number(initial_middle_width))) {
-        $("#main-middle").width(Number(initial_middle_width));
-      }
-    {% endif %}
-  }
-
-  set_initial_width();
-
-  // horizontal resizing
-  function save_width() {
-    {% if is_html %}
-      localStorage.setItem("html_mode_left_width", $("#main-left").width());
-      localStorage.setItem("html_mode_middle_width", $("#main-middle").width());
-    {% else %}
-      localStorage.setItem("normal_mode_left_width", $("#main-left").width());
-    {% endif %}
-  }
-
-  {% if not is_html %}
-  $("#main-left").resizable({
-    direction: ["right"],
-    stop: () => {
-      save_width();
-        {% if is_html %}
-          update_iframe_height();
-        {% endif %}
-        window.ace_source.resize();
-    },
-  });
-  {% endif %}
-
-  {% if is_html %}
-    $("#main-middle").resizable({
-      direction: ["right"],
+    if (html_preview_width && !isNaN(Number(html_preview_width))) {
+      $("#html-preview").width(Number(html_preview_width));
+    }
+  
+    $("#html-preview").resizable({
+      direction: ["left"],
       stop: () => {
-        save_width();
+        localStorage.setItem("html_preview_width", $("#html-preview").width());
         update_iframe_height();
         window.ace_source.resize();
       },
     });
-  {% endif %}
-
-  // updating #ace_source height when and after vertical resizing
-  $("#editor-wrapper").resizable({
-    direction: ["bottom"],
-    resize: () => {
-      $("#ace_source").height($("#editor-wrapper").height());
-    },
-    stop: () => {
+  
+    // updating #ace_source height when and after vertical resizing
+    $("#editor-wrapper").resizable({
+      direction: ["bottom"],
+      resize: () => {
         $("#ace_source").height($("#editor-wrapper").height());
-        window.ace_source.resize();
-        localStorage.setItem("editor_height", $("#editor-wrapper").height());
-        {% if is_html %}
+      },
+      stop: () => {
+          $("#ace_source").height($("#editor-wrapper").height());
+          window.ace_source.resize();
+          localStorage.setItem("html_editor_height", $("#editor-wrapper").height());
           update_iframe_height();
-        {% endif %}
-    },
-  });
-
-  // set initial height to #ace_source
+      },
+    });
+  
+    // set initial height to #ace_source
     $("#ace_source").height($("#editor-wrapper").height());
+  
+    // render resizer buttons
+    var vertical = `
+          <div class="resizer resizer-v">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+                  <g></g>
+                  <path d="M11.642 12.063l0.716 0.698-3.858 3.955-3.858-3.954 0.716-0.698 2.642 2.707v-12.542l-2.642 2.708-0.716-0.699 3.858-3.954 3.858 3.954-0.716 0.698-2.642-2.707v12.543l2.642-2.709z" fill="inherit" />
+              </svg>
+          </div>
+          `;
+  
+    var horizontal = `
+          <div class="resizer resizer-h">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+                  <g></g>
+                  <path d="M16.716 8.5l-3.954 3.858-0.698-0.716 2.707-2.642h-12.542l2.708 2.642-0.698 0.716-3.955-3.858 3.954-3.858 0.698 0.716-2.707 2.642h12.543l-2.708-2.642 0.698-0.716 3.954 3.858z" fill="inherit" />
+              </svg>
+          </div>
+          `;
+  
+    document.querySelector("#main-right .resizable-b").innerHTML = vertical;
+    document.querySelector("#html-preview .resizable-l").innerHTML = horizontal;
 
-
-
-
-  // render resizer buttons
-  var vertical = `
-        <div class="resizer resizer-v">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
-                <g></g>
-                <path d="M11.642 12.063l0.716 0.698-3.858 3.955-3.858-3.954 0.716-0.698 2.642 2.707v-12.542l-2.642 2.708-0.716-0.699 3.858-3.954 3.858 3.954-0.716 0.698-2.642-2.707v12.543l2.642-2.709z" fill="inherit" />
-            </svg>
-        </div>
-        `;
-
-  var horizontal = `
-        <div class="resizer resizer-h">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
-                <g></g>
-                <path d="M16.716 8.5l-3.954 3.858-0.698-0.716 2.707-2.642h-12.542l2.708 2.642-0.698 0.716-3.955-3.858 3.954-3.858 0.698 0.716-2.707 2.642h12.543l-2.708-2.642 0.698-0.716 3.954 3.858z" fill="inherit" />
-            </svg>
-        </div>
-        `;
-
-  {% if not is_html %}
-  document.querySelector("#main-left .resizable-r").innerHTML = horizontal;
-  {% endif %}
-  document.querySelector("#main-middle .resizable-b").innerHTML = vertical;
-
-
-  {% if is_html %}
-    document.querySelector("#main-middle .resizable-r").innerHTML = horizontal;
-    $("#main-middle .resizable-r").mousedown(function() {
+    $("#html-preview .resizable-l").mousedown(function() {
       $("#html-preview iframe").css("pointer-events", "none")
 
         const mouseup_handler = function() {
@@ -115,6 +71,71 @@ $(function() {
 
         window.addEventListener("mouseup", mouseup_handler);
     })
-  {% endif %}
-})
+
+  })
 </script>
+  
+{% else %}
+<script type="text/javascript">
+  
+  $(function() {
+    const editor_height = localStorage.getItem("editor_height");
+    const initial_left_width = localStorage.getItem("left_width");
+
+    if (editor_height && !isNaN(Number(editor_height))) {
+      $("#editor-wrapper").height(Number(editor_height));
+    }
+  
+    if (initial_left_width && !isNaN(Number(initial_left_width))) {
+      $("#main-left").width(Number(initial_left_width));
+    }
+
+    $("#main-left").resizable({
+      direction: ["right"],
+      stop: () => {
+        localStorage.setItem("left_width", $("#main-left").width());
+        window.ace_source.resize();
+      },
+    });
+  
+    // updating #ace_source height
+    $("#editor-wrapper").resizable({
+      direction: ["bottom"],
+      resize: () => {
+        $("#ace_source").height($("#editor-wrapper").height());
+      },
+      stop: () => {
+          $("#ace_source").height($("#editor-wrapper").height());
+          window.ace_source.resize();
+          localStorage.setItem("editor_height", $("#editor-wrapper").height());
+      },
+    });
+  
+    // set initial height to #ace_source
+    $("#ace_source").height($("#editor-wrapper").height());
+  
+    // render resizer buttons
+    var vertical = `
+          <div class="resizer resizer-v">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+                  <g></g>
+                  <path d="M11.642 12.063l0.716 0.698-3.858 3.955-3.858-3.954 0.716-0.698 2.642 2.707v-12.542l-2.642 2.708-0.716-0.699 3.858-3.954 3.858 3.954-0.716 0.698-2.642-2.707v12.543l2.642-2.709z" fill="inherit" />
+              </svg>
+          </div>
+          `;
+  
+    var horizontal = `
+          <div class="resizer resizer-h">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+                  <g></g>
+                  <path d="M16.716 8.5l-3.954 3.858-0.698-0.716 2.707-2.642h-12.542l2.708 2.642-0.698 0.716-3.955-3.858 3.954-3.858 0.698 0.716-2.707 2.642h12.543l-2.708-2.642 0.698-0.716 3.954 3.858z" fill="inherit" />
+              </svg>
+          </div>
+          `;
+  
+    document.querySelector("#main-left .resizable-r").innerHTML = horizontal;
+    document.querySelector("#main-right .resizable-b").innerHTML = vertical;
+  })
+</script>
+  
+{% endif %}

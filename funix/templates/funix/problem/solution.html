@@ -1,0 +1,15 @@
+
+<div id="problem-solution">
+    <div id="problem-description-content">
+      <div class="content-description screen">
+        {% if problem.solution %}
+            {% cache 86400 'problem_solution_html' problem.id MATH_ENGINE LANGUAGE_CODE %} 
+            {{ problem.solution.content|markdown('solution', MATH_ENGINE)|reference|str|safe }}
+            {% endcache %} 
+        {% else %}
+            <h3>No solution for this problem</h3>
+        {% endif %}
+      </div>
+    </div>
+</div>
+  

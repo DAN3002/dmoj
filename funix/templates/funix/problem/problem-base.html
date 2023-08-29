@@ -1,0 +1,31 @@
+{% extends 'funix/base.html' %} 
+
+{% block media %} 
+    <link rel="stylesheet" href="{{ static('funix/css/problem/base.css') }}" />
+    <link rel="stylesheet" href="{{ static('funix/css/problem/problem-content.css') }}"/>
+    <link rel="stylesheet" href="{{ static('funix/css/problem/topbar.css') }}" />
+    <link rel="stylesheet" href="{{ static('funix/css/problem/description.css') }}"/>
+    <link rel="stylesheet" href="{{ static('funix/css/problem/metadata.css') }}" />
+
+    {% block problem_media %}{% endblock %}
+{% endblock %} 
+
+{% block js_media %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-chtml.min.js"></script>
+
+    {% block problem_js_media %}{% endblock %}
+{% endblock %} 
+
+{% block body %}
+    <div id="problem-container">
+        {% include "funix/problem/sidebar.html" %}
+
+        <div id="problem-content">
+            <div id="topbar">{% include "funix/problem/topbar.html" %}</div>
+
+            <div id="main">{% block problem_main %}{% endblock %}</div>
+        </div>
+    </div>
+
+    {% block problem_js_end %}{% endblock %}
+{% endblock %}

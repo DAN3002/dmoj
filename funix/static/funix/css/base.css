@@ -146,8 +146,8 @@
 /* container  */
 #beta-container {
   width: 100%;
-  height: 100vh;
-  padding-top: var(--mainnav-height);
+  height: calc(100vh - var(--mainnav-height));
+  margin-top: var(--mainnav-height);
   box-sizing: border-box;
   display: block;
   overflow: hidden;
@@ -177,4 +177,35 @@
   padding-left: 0px;
   padding-right: 0px;
   padding-bottom: 0px;
+}
+
+
+#beta-container .button,
+#beta-container input[type="submit"] {
+  background: var(--bg-main) !important;
+  transition: 0.1s ease-in;
+  height: var(--button-height);
+  border-radius: 3.6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 10px !important;
+  border: 0.5px solid var(--button-border);
+  color: var(--button-color-standout) !important;
+}
+
+#beta-container .button *,
+#beta-container input[type="submit"] * {
+  color: var(--button-color-standout) !important;
+}
+
+#beta-container .button:hover,
+#beta-container input[type="submit"]:hover {
+  border: 0.5px solid var(--button-border-hover) !important;
+  color: var(--button-color-hover) !important;
+}
+
+#beta-container .button svg {
+  width: 18px;
 }

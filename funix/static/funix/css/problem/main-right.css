@@ -1,3 +1,11 @@
+#problem-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  min-width: 200px;
+}
+
 .toolbar {
   display: flex;
   align-items: center;
@@ -9,20 +17,20 @@
   flex-wrap: wrap;
 }
 
-#main-middle .django-ace-widget {
-  border: 0.5px solid var(--border);
-}
-
-#main-middle svg.collapse {
+#toggle-editor-button svg:first-child {
   display: none;
 }
 
-#main-middle.expand svg.expand {
-  display: none;
-}
-
-#main-middle.expand svg.collapse {
+#toggle-editor-button.expand svg:first-child {
   display: block;
+}
+
+#toggle-editor-button.expand svg:last-child {
+  display: none;
+}
+
+#main-right .django-ace-widget {
+  border: 0.5px solid var(--border);
 }
 
 #editor-wrapper {
@@ -114,5 +122,17 @@
 @media screen and (max-width: 992px) {
   #expand_button {
     display: none !important;
+  }
+
+  #main-right {
+    flex-direction: column;
+  }
+
+  #main-right #problem-editor, #main-right #html-preview {
+    width: 100% !important;
+  }
+
+  #main-right #toggle-editor-button {
+    display: none;
   }
 }
