@@ -89,6 +89,8 @@
   padding: 0 !important;
   overflow: hidden !important;
   height: 100vh !important;
+  border-left: none !important;
+  border-right: none !important;
 }
 
 #page-container #content,

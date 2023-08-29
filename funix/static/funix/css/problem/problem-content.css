@@ -25,6 +25,7 @@
   display: flex;
   background: var(--bg-main);
   width: calc(100vw - var(--sidebar-width));
+  overflow: hidden;
 }
 
 #main-left {
