@@ -6096,7 +6096,7 @@ msgid "continue learning"
 msgstr "Tiếp tục học"
 
 msgid "Criteria"
-msgstr "Tiêu chuẩn"
+msgstr "Tiêu chí"
 
 msgid "Feedback"
 msgstr "Nhận xét"

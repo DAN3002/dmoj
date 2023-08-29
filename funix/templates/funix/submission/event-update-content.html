@@ -1,9 +1,7 @@
-<link rel="stylesheet" href="{{ static('funix/css/problem/testcases-and-submission.css') }}" />
-
 <ul id="testcases-and-submission-nav" class="{% if submission and  submission.result is not none %}{{'judging-finished'}}{% endif %}">
     <li>
       <a href="#testcases">
-        {% if is_html %} {{ _('Criteria') }}s {% else %} Test cases {% endif %}
+        {% if is_html %} {{ _('Criteria') }} {% else %} Test cases {% endif %}
       </a>
     </li>
     {% if submission and not is_html %}
