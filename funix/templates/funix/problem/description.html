@@ -1,4 +1,4 @@
-<div id="problem-description">
+<div id="problem-description" {% if is_html %}style="width: 100%"{% endif %}>
   {% if not is_html %}
     {% include "funix/problem/problem-info.html" %}
   {% endif %}
