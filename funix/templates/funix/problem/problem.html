@@ -139,7 +139,7 @@
         {% if is_html and submission and not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %} 
             <script type="text/javascript">
                 $("#beta-container").tabs({
-                    active: 2
+                    active: 1
                 });
             </script>
         {% else %}
