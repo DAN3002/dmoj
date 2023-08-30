@@ -28,4 +28,7 @@
   </div>
   {% endif %}
 
-  {% include "funix/submission/congrat-modal.html" %}
+  {#{% include "funix/submission/congrat-modal.html" %}#}
+
+  <input type="hidden" id="event-update-submission-long-status" value="{{ submission.long_status }}" />
+  <input type="hidden" id="event-update-submission-result" value="{{ submission.result }}" />

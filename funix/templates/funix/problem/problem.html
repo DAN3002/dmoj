@@ -83,6 +83,22 @@
                 </div>
             </div>
         {% endif %}
+
+        <div id="success-modal" class="backdrop d-none">
+            <div class="modal">
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <img  src="{{ static('funix/images/congratulations.svg') }}" alt="Congratulations">
+              </div>
+      
+              <p style="font-size: 20px; text-align: center; margin: 5px 0 5px;">{{ _('Congratulations') }}</p>
+              <p style="font-size: 20px; text-align: center; margin: 10px 0 10px;"><b>{{ request.user.username }}!</b></p>
+              <p style="font-size: 15px; text-align: center;">{{ _('You have just finished this problem') }}</p>
+              <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                <button onclick="$('#success-modal').remove()" class="button">{{ _('Close') }}</button>
+              </div>
+            </div>
+          </div>
+
     {% else %}
         {% include "funix/problem/description.html" %}
         {% include "funix/problem/required-login-modal.html" %}

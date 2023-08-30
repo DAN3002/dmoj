@@ -2,9 +2,19 @@
   $(function () {
       var blocked = false, request = false;
       var list = $('#test-cases');
-
         function remove_loading_modal() {
             $("#loading-modal").remove();
+            const submission_long_status = document.getElementById("event-update-submission-long-status").value;
+            const submission_result = document.getElementById("event-update-submission-result").value
+
+            if (submission_result == "AC") {
+                document.getElementById("success-modal").classList.remove("d-none")
+            }
+
+            document.querySelector(".submission-history-long-status").classList.add(submission_result)
+            document.querySelector(".submission-history-long-status").innerText = submission_long_status
+
+
         }
 
       function update() {
