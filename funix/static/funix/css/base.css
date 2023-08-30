@@ -6,6 +6,7 @@
   --border-hover: #919191;
 
   --bg-main: white;
+  --bg-main-overlay: rgba(255, 255, 255, 0.788);
 
   --text-color-main: #646464;
   --text-color-main-standout: #1a1a1a;
@@ -37,6 +38,7 @@
   --border-hover: #ffffff;
 
   --bg-main: rgb(0, 0, 0);
+  --bg-main-overlay: rgba(0, 0, 0, 0.76);
 
   --text-color-main: #888888;
   /* --text-color-main: #aaaaaa; */
@@ -139,7 +141,7 @@
   padding-top: 0 !important;
 }
 
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 760px) {
   :root {
     --mainnav-height: 36px;
   }

@@ -94,30 +94,6 @@
   display: inline-block;
 }
 
-.login_required_overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.login_required_overlay div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.login_required_overlay a {
-  padding: 8px 20px;
-  box-shadow: var(--shadow-border);
-  border: 0.5px solid var(--border);
-}
 
 @media screen and (max-width: 992px) {
   #expand_button {
