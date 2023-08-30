@@ -2,7 +2,8 @@
   $(function () {
       var blocked = false, request = false;
       var list = $('#test-cases');
-        function remove_loading_modal() {
+      
+        function update_more() {
             $("#loading-modal").remove();
             const submission_long_status = document.getElementById("event-update-submission-long-status").value;
             const submission_result = document.getElementById("event-update-submission-result").value
@@ -13,8 +14,6 @@
 
             document.querySelector(".submission-history-long-status").classList.add(submission_result)
             document.querySelector(".submission-history-long-status").innerText = submission_long_status
-
-
         }
 
       function update() {
@@ -48,12 +47,12 @@
                   if (request)
                       update();
               }, 500);
-              if ($("#testcases-and-submission-nav").hasClass("judging-finished")) {
-                remove_loading_modal();
+              if (document.getElementById("event-update-submission-result").value) {
+                    update_more();
                 }
           }).fail(function (data) {
               console.log('Failed to update testcases!');
-              remove_loading_modal();
+              update_more();
               alert('Failed to update testcases!')
           });
 

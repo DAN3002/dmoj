@@ -6136,3 +6136,6 @@ msgstr "Nộp bài lại"
 
 msgid "Reset"
 msgstr "Làm mới"
+
+msgid "Login required"
+msgstr "Yêu cầu đăng nhập"

@@ -28,7 +28,17 @@
   </div>
   {% endif %}
 
-  {#{% include "funix/submission/congrat-modal.html" %}#}
+  {% if submission %}
+    <input type="hidden" id="event-update-submission-long-status" value="{{ submission.long_status }}" />
 
-  <input type="hidden" id="event-update-submission-long-status" value="{{ submission.long_status }}" />
-  <input type="hidden" id="event-update-submission-result" value="{{ submission.result }}" />
+    {% if submission.result is not none %}
+      <input type="hidden" id="event-update-submission-result" value="{{ submission.result }}" />
+    {% else %}
+      <input type="hidden" id="event-update-submission-result" value="" />
+    {% endif %}
+
+  {% else %}
+    <input type="hidden" id="event-update-submission-long-status" value="" />
+    <input type="hidden" id="event-update-submission-result" value="" />
+  {% endif %}
+
