@@ -7,8 +7,21 @@ PARENT_BASE_DIR = os.path.join(BASE_DIR, '..')
 #####################################
 ########## Django settings ##########
 #####################################
+# See <https://docs.djangoproject.com/en/3.2/ref/settings/>
+# for more info and help. If you are stuck, you can try Googling about
+# Django - many of these settings below have external documentation about them.
+#
+# The settings listed here are of special interest in configuring the site.
+
+# SECURITY WARNING: keep the secret key used in production secret!
+# You may use this command to generate a key:
+# python3 -c 'from django.core.management.utils import get_random_secret_key;print(get_random_secret_key())'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY','*yi4(4v_e9-_j_4y189vgf9434ts-p1hcuzx%_%j%n!89soj33')
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False' 
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'  # Change to False once you are done with runserver testing.
+
+# Common variables
 HOST = os.environ.get('DJANGO_HOST', '127.0.0.1')
 
 # Uncomment and set to the domain names this site is intended to serve.
@@ -29,7 +42,7 @@ if DEBUG == True:
         },
     }
 
-if DEBUG == False:
+if DEBUG == False: 
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
@@ -44,7 +57,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dmoj',
         'USER': 'dmoj',
-        'PASSWORD': '123', # nhớ sửa mật khẩu
+        'PASSWORD': '123',
         'HOST': '127.0.0.1',
         'OPTIONS': {
             'charset': 'utf8mb4',
@@ -55,8 +68,7 @@ DATABASES = {
 
 # Sessions.
 # Documentation: <https://docs.djangoproject.com/en/3.2/topics/http/sessions/>
-if DEBUG == False:
-    SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Internationalization.
 # Documentation: <https://docs.djangoproject.com/en/3.2/topics/i18n/>
@@ -85,10 +97,9 @@ STATICFILES_FINDERS += ('compressor.finders.CompressorFinder',)
 # for more documentation. You should follow the information there to define
 # your email settings.
 
-
 # Use this if you are just testing.
-#if DEBUG == True:
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if DEBUG == True:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # The following block is included for your convenience, if you want
 # to use Gmail.
@@ -106,10 +117,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #MAILGUN_SERVER_NAME = '<your Mailgun domain>'
 
 # You can also use SendGrid, with `pip install sendgrid-django`.
-
-  #  EMAIL_BACKEND = 'sgbackend.SendGridBackend'
-   # SENDGRID_API_KEY = os.environ.get('DJANGO_SENDGRID_API_KEY')
-
+#EMAIL_BACKEND = 'sgbackend.SendGridBackend'
+#SENDGRID_API_KEY = '<Your SendGrid API Key>'
 
 # The DMOJ site is able to notify administrators of errors via email,
 # if configured as shown below.
@@ -117,9 +126,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # A tuple of (name, email) pairs that specifies those who will be mailed
 # when the server experiences an error when DEBUG = False.
 ADMINS = (
-    ('Nguyen The Anh Vu', 'vuntafx17889@funix.edu.vn'),
+    ('Your Name', 'your.email@example.com'),
 )
-DEFAULT_FROM_EMAIL='ntav2095@gmail.com' 
+
 # The sender for the aforementioned emails.
 SERVER_EMAIL = 'DMOJ: Modern Online Judge <errors@dmoj.ca>'
 
@@ -154,7 +163,7 @@ TERMS_OF_SERVICE_URL = '//dmoj.ca/tos/'  # Use a flatpage.
 # The judge connection address and port; where the judges will connect to the site.
 # You should change this to something your judges can actually connect to
 # (e.g., a port that is unused and unblocked by a firewall).
-BRIDGED_JUDGE_ADDRESS = [('172.31.6.157', 9999)]
+BRIDGED_JUDGE_ADDRESS = [('192.168.1.16', 9999)]
 
 # The bridged daemon bind address and port to communicate with the site.
 BRIDGED_DJANGO_ADDRESS = [('localhost', 9998)]
@@ -172,8 +181,23 @@ BAD_MAIL_PROVIDERS = set()
 #DMOJ_SUBMISSIONS_REJUDGE_LIMIT = 10
 
 ## Event server.
+# Uncomment to enable live updating.
 EVENT_DAEMON_USE = True
+
+# Uncomment this section to use websocket/daemon.js included in the site.
+#EVENT_DAEMON_POST = '<ws:// URL to post to>'
+
+# If you are using the defaults from the guide, it is this:
 EVENT_DAEMON_POST = 'ws://127.0.0.1:15101/'
+
+# These are the publicly accessed interface configurations.
+# They should match those used by the script.
+#EVENT_DAEMON_GET = '<public ws:// URL for clients>'
+#EVENT_DAEMON_GET_SSL = '<public wss:// URL for clients>'
+#EVENT_DAEMON_POLL = '<public URL to access the HTTP long polling of event server>'
+# i.e. the path to /channels/ exposed by the daemon, through whatever proxy setup you have.
+
+# Using our standard nginx configuration, these should be:
 EVENT_DAEMON_GET = 'ws://{}/event/'.format(HOST)
 EVENT_DAEMON_GET_SSL = 'wss://{}/event/'.format(HOST)  # Optional
 EVENT_DAEMON_POLL = '/channels/'
@@ -264,7 +288,7 @@ LOGGING = {
         'bridge': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename':  os.path.join(PARENT_BASE_DIR, 'tmp', 'bridge.log'),
+            'filename': os.path.join(PARENT_BASE_DIR, 'tmp', 'bridge.log'),
             'maxBytes': 10 * 1024 * 1024,
             'backupCount': 10,
             'formatter': 'file',
@@ -283,8 +307,7 @@ LOGGING = {
         # Site 500 error mails.
         'django.request': {
             'handlers': ['mail_admins'],
-            'level': 'DEBUG',
-            # 'level': 'ERROR', uuuuvcomment
+            'level': 'ERROR',
             'propagate': False,
         },
         # Judging logs as received by bridged.
@@ -317,20 +340,22 @@ LOGGING = {
 #SOCIAL_AUTH_GITHUB_SECURE_KEY = ''
 #SOCIAL_AUTH_GITHUB_SECURE_SECRET = ''
 
+# DMOJ_PROBLEM_DATA_ROOT = '/projects/foj/problems'
 DMOJ_PROBLEM_DATA_ROOT = os.path.join(PARENT_BASE_DIR, 'problems')
 
-#####################################
-########### Funix settings ##########
-#####################################
-# cho phép nhúng <iframe>
-if DEBUG == False:
+## ======== Custom Configuration ========
+# You may add whatever Django configuration you would like here.
+# Do try to keep it separate so you can quickly patch in new settings.
+
+# uuuuvcomment allow to embed <iframe>
+if DEBUG == False or True:
     X_FRAME_OPTIONS = 'ALLOWALL'
     CSRF_COOKIE_SAMESITE = 'None'
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
 
-# thêm static dirs
+# uuuuvcomment add static dirs
 STATICFILES_DIRS = settings.STATICFILES_DIRS
 STATICFILES_DIRS = STATICFILES_DIRS + [
     os.path.join(BASE_DIR, 'funix/static'),
@@ -338,7 +363,6 @@ STATICFILES_DIRS = STATICFILES_DIRS + [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = 'media/'
-
 
 # cross site cookie for switching language 
 LANGUAGE_COOKIE_SECURE = True
