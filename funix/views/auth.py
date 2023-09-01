@@ -6,6 +6,43 @@ import json
 from django.http import Http404, JsonResponse
 from judge.models.profile import Profile
 from django.conf import settings
+import secrets
+import string
+from django.core.mail import send_mail
+from smtplib import SMTPException
+
+def generate_random_password():
+    length = 8
+    characters = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(secrets.choice(characters) for _ in range(length))
+    return password
+
+def create_password():
+    if settings.DEFAULT_USER_PASSWORD:
+        return settings.DEFAULT_USER_PASSWORD
+    return generate_random_password()
+
+def send_notification_email(username, email, password, name):
+    send_mail(
+        f"Account Created Successfully",
+        f"""
+        Hello {name},
+
+        Your user account has been successfully created. Please find the details below:
+
+        Username: {username}
+        Temporary Password: {password}
+
+        We recommend changing your password after logging in for the first time.
+
+        Thank you,
+        Funix Coding
+        """,
+        "from@example.com",
+        [email],
+        fail_silently=False,
+    )
+
 
 
 def login_with_accesstoken(request):
@@ -66,11 +103,17 @@ def login_with_accesstoken(request):
     user = User.objects.filter(username=username, email=email).first()
 
     if user is None: 
-        user = User.objects.create_user(username=username, email=email, last_name=name, password="funix.edu.vn")
+        password = create_password()
+        user = User.objects.create_user(username=username, email=email, last_name=name, password=password)
         user.is_active = True
         user.save()
-
         Profile.objects.create(user=user)
+
+        try:
+            send_notification_email(username, email, password, name)
+        except SMTPException:
+            print(f"Failed to send notification email to {email}")
+
 
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
 
