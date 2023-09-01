@@ -7,6 +7,7 @@ from django.http import Http404, JsonResponse
 from judge.models.profile import Profile
 from django.conf import settings
 
+
 def login_with_accesstoken(request):
     FAILED_TO_LOGIN_WITH_ACCESS_TOKEN = "FAILED_TO_LOGIN_WITH_ACCESS_TOKEN"
 
@@ -73,7 +74,7 @@ def login_with_accesstoken(request):
     user = User.objects.filter(username=username, email=email).first()
 
     if user is None: 
-        user = User.objects.create(username=username, email=email, last_name=name)
+        user = User.objects.create_user(username=username, email=email, last_name=name, password="funix.edu.vn")
         user.is_active = True
         user.save()
 
