@@ -3,7 +3,7 @@ import requests
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 import json
-from django.http import Http404, HttpResponseForbidden, HttpResponseBadRequest, HttpResponseServerError, JsonResponse
+from django.http import Http404, JsonResponse
 from judge.models.profile import Profile
 from django.conf import settings
 
