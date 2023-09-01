@@ -213,3 +213,55 @@
 #beta-container .button svg {
   width: 18px;
 }
+
+
+/* modal  */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: #00000084;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  padding: 20px;
+  min-width: 600px;
+  max-width: calc(100vw - 10px);
+  min-height: 150px;
+  background: var(--bg-main);
+  border: .5px solid var(--border);
+  color: var(--text-color-main-standout);
+}
+
+/* loading  */
+.lds-dual-ring {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid var(--text-color-main-standout);
+  border-color: var(--text-color-main-standout) transparent var(--text-color-main-standout) transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

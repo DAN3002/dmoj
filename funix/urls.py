@@ -4,6 +4,7 @@ from funix.views.submission import abort_submission_beta, SubmissionTestCaseQuer
 from django.urls import path, include
 from judge.views.widgets import rejudge_submission
 from funix.views.course import CourseListView, CourseDetailView, CourseEnrollView, CourseRatingView
+from funix.views.auth import login_with_accesstoken
 
 
 urlpatterns = [
@@ -33,5 +34,6 @@ urlpatterns = [
         path('/problem/<str:problem>', ProblemBeta.as_view(), name="beta_problem"),
         path('/problem/<str:problem>/submission/<int:submission>', ProblemBeta.as_view(), name="beta_problem"),
         path('/enroll', CourseEnrollView.as_view(), name="beta_course_enroll"),
-    ]))
+    ])),
+    path('/login', login_with_accesstoken, name="beta_login_with_accesstoken")
 ]

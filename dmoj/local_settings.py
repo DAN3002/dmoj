@@ -368,4 +368,4 @@ MEDIA_URL = 'media/'
 LANGUAGE_COOKIE_SECURE = True
 LANGUAGE_COOKIE_SAMESITE = 'None'
 
-
+LMS_AUTHENTICATION_URL = 'https://lms-domain.vn/api/user/v1/user-info'
