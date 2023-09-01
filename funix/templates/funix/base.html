@@ -455,7 +455,6 @@ else %} {% set is_dark = 0 %} {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
     <script type="text/javascript">
-      const full_path = `{{request.get_full_path()}}`;
       const csrftoken = document.querySelector(
         "[name=csrfmiddlewaretoken]"
       ).value;
@@ -477,9 +476,12 @@ else %} {% set is_dark = 0 %} {% endif %}
           "X-CSRFToken": csrftoken,
         },
         mode: "same-origin",
-        body: JSON.stringify({ accesstoken: "fake token", full_path }),
+        body: JSON.stringify({ accesstoken }),
       })
         .then((res) => {
+          if (res.status === 302) {
+            return { status: 200, message: "" };
+          }
           if (res.status !== 200)
             return { status: 500, message: "Internal Server Error" };
           return res.json();
@@ -488,6 +490,8 @@ else %} {% set is_dark = 0 %} {% endif %}
           if (data.status !== 200) {
             document.getElementById("logging-in-modal").remove();
             throw new CustomError(`Failed to login: ${data.message}`);
+          } else {
+            location.reload();
           }
         })
         .catch((error) => {

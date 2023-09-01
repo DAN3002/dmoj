@@ -17,7 +17,6 @@ def login_with_accesstoken(request):
     req_body = json.loads(request.body)
 
     accesstoken = req_body.get("accesstoken") 
-    full_path = req_body.get("full_path")
 
     if accesstoken is None: 
         print(FAILED_TO_LOGIN_WITH_ACCESS_TOKEN, ": missing accesstoken")
@@ -26,13 +25,6 @@ def login_with_accesstoken(request):
             "message": "Missing Credentials"
         },safe=False)
     
-    if full_path is None: 
-        print(FAILED_TO_LOGIN_WITH_ACCESS_TOKEN, ": missing full_path")
-        return JsonResponse({
-            "status": 400, 
-            "message": "Missing full_path"
-        },safe=False)
-
     try:
         res = requests.post(settings.LMS_AUTHENTICATION_URL, headers={"Content-Type": "application/json"}, json={
             "token": accesstoken
@@ -82,5 +74,8 @@ def login_with_accesstoken(request):
 
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
 
-    return redirect(full_path)
+    return JsonResponse({
+        "status": 200, 
+        "message": "Logged in successfully"
+    },safe=False)
         
