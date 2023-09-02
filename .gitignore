@@ -17,3 +17,4 @@ node_modules
 funix.zip
 /uploads/
 __pycache__/
+auth-google-credentials.json
