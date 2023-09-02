@@ -5,19 +5,6 @@ import json
 from django.http import Http404, JsonResponse
 from judge.models.profile import Profile
 from django.conf import settings
-import secrets
-import string
-
-def generate_random_password():
-    length = 8
-    characters = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(secrets.choice(characters) for _ in range(length))
-    return password
-
-def create_password():
-    if settings.DEFAULT_USER_PASSWORD:
-        return settings.DEFAULT_USER_PASSWORD
-    return generate_random_password()
 
 def login_with_accesstoken(request):
     FAILED_TO_LOGIN_WITH_ACCESS_TOKEN = "FAILED_TO_LOGIN_WITH_ACCESS_TOKEN"
