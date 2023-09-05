@@ -355,7 +355,7 @@ if DEBUG == False or True:
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
 
-# uuuuvcomment add static dirs
+#  add static dirs
 STATICFILES_DIRS = settings.STATICFILES_DIRS
 STATICFILES_DIRS = STATICFILES_DIRS + [
     os.path.join(BASE_DIR, 'funix/static'),
@@ -371,3 +371,13 @@ LANGUAGE_COOKIE_SAMESITE = 'None'
 LMS_AUTHENTICATION_URL = 'https://lms-domain.vn/api/user/v1/user-info' if DEBUG is False else "http://localhost:5000"
 
 DEFAULT_USER_PASSWORD = "" if DEBUG is False else "funix.edu.vn"
+
+## ======== Iframe isolation settings ========
+IFRAME_SESSION_COOKIE_NAME = "isessionid"
+IFRAME_CSRF_COOKIE_NAME = "icsrftoken"
+IFRAME_LANGUAGE_COOKIE_NAME = "idjango_language"
+
+MIDDLEWARE = list(settings.MIDDLEWARE)
+MIDDLEWARE[2] = "funix.middlewares.CustomSessionMiddleware"
+MIDDLEWARE[5] = "funix.middlewares.CustomCsrfViewMiddleware"
+MIDDLEWARE = ["funix.middlewares.IframeIsolationMiddleware",] + MIDDLEWARE

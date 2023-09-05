@@ -394,8 +394,9 @@ if 'impersonate' in settings.INSTALLED_APPS:
 # uuuuvcomment
 from django.conf.urls.static import static as url_static
 urlpatterns += [
-    path('beta', include('funix.urls'))
+    path('beta', include('funix.urls')),
 ] + url_static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# path('i18n/', include([ path('setlang/', set_language, name='set_language'),])),
 
 
 from django.conf import settings

@@ -41,13 +41,9 @@
         </a>
       </li>
     {% endif %}
-
-  
-      
-  
   </ul>
 
-  <form id="i18n" action="{{ url('set_language') }}" method="post" >
+  <form id="i18n" action="{{ url('set_language') }}{% if iframe and iframe == '1' %}{{'?iframe=1'}}{% endif %}" method="post" >
     {% csrf_token %}
     <input name="next" type="hidden" value="{{ request.get_full_path() }}">
     <select name="language" onchange="form.submit()" style="height: 1.5em">
