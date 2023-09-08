@@ -40,7 +40,7 @@
       </p>
       <a
         class="button"
-        href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}"
+        href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}{% if iframe and iframe == '1' %}{{'&iframe=1'}}{% endif %}"
         >{{ _('Login!') }}</a
       >
     </div>

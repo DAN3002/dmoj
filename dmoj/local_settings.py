@@ -348,7 +348,7 @@ DMOJ_PROBLEM_DATA_ROOT = os.path.join(PARENT_BASE_DIR, 'problems')
 # Do try to keep it separate so you can quickly patch in new settings.
 
 # uuuuvcomment allow to embed <iframe>
-if DEBUG == False or True:
+if DEBUG == False:
     X_FRAME_OPTIONS = 'ALLOWALL'
     CSRF_COOKIE_SAMESITE = 'None'
     CSRF_COOKIE_SECURE = True
@@ -368,7 +368,7 @@ MEDIA_URL = 'media/'
 LANGUAGE_COOKIE_SECURE = True
 LANGUAGE_COOKIE_SAMESITE = 'None'
 
-LMS_AUTHENTICATION_URL = 'https://lms-domain.vn/api/user/v1/user-info' if DEBUG is False else "http://localhost:5000"
+LMS_AUTHENTICATION_URL = os.environ.get("LMS_AUTHENTICATION_URL", "") if DEBUG is False else "http://localhost:5000"
 
 DEFAULT_USER_PASSWORD = "" if DEBUG is False else "funix.edu.vn"
 
@@ -381,3 +381,4 @@ MIDDLEWARE = list(settings.MIDDLEWARE)
 MIDDLEWARE[2] = "funix.middlewares.CustomSessionMiddleware"
 MIDDLEWARE[5] = "funix.middlewares.CustomCsrfViewMiddleware"
 MIDDLEWARE = ["funix.middlewares.IframeIsolationMiddleware",] + MIDDLEWARE
+MIDDLEWARE += ["funix.middlewares.LoginByAccessToken",]

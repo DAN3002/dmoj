@@ -31,9 +31,9 @@
                         </span>
                     </div>
                     {% if course %}
-                        <a class="submission-url" href="{{ url('beta_problem', course=course.slug, problem=subm.problem.code, submission=subm.id) }}">{{ _('view') }}</a>
+                        <a class="submission-url" href="{{ url('beta_problem', course=course.slug, problem=subm.problem.code, submission=subm.id) }}{% if iframe and iframe == '1' %}{{'?iframe=1'}}{% endif %}">{{ _('view') }}</a>
                     {% else %}
-                        <a class="submission-url" href="{{ url('beta_problem', problem=subm.problem.code, submission=subm.id) }}">{{ _('view') }}</a>
+                        <a class="submission-url" href="{{ url('beta_problem', problem=subm.problem.code, submission=subm.id) }}{% if iframe and iframe == '1' %}{{'?iframe=1'}}{% endif %}">{{ _('view') }}</a>
                     {% endif %}
                  </div>
             </li>

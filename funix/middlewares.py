@@ -7,6 +7,10 @@ from django.utils.http import http_date
 from django.middleware.csrf import CsrfViewMiddleware, CSRF_SESSION_KEY
 from django.contrib.sessions.middleware import SessionMiddleware
 from funix.utils.request import is_iframe
+import requests
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from judge.models.profile import Profile
 
 class CustomSessionMiddleware(SessionMiddleware):
 
@@ -146,5 +150,49 @@ class IframeIsolationMiddleware:
 
         return request
     
-            
+class LoginByAccessToken:
 
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        self.process_request(request)
+        response = self.get_response(request)
+        return response
+
+
+    def process_request(self, request):
+        if is_iframe(request) and not request.user.is_authenticated:
+            accesstoken = request.COOKIES.get("accessToken")
+            if not accesstoken: 
+                print("##############################################################")
+                print("NO ACCESS TOKEN")
+                print("##############################################################")
+            else:
+                try:
+                    res = requests.post(settings.LMS_AUTHENTICATION_URL, headers={"Content-Type": "application/json"}, json={
+                        "token": accesstoken
+                    }, timeout=5)
+                except: 
+                    print("##############################################################")
+                    print(f"Failed to login by accessToken probably due to LMS")
+                    print("##############################################################")
+                    pass
+
+                if res.status_code == 200:
+                    data = res.json()
+
+                    username = data.get("username")
+                    name = data.get("name")
+                    email = data.get("email")
+
+                    user = User.objects.filter(email=email).first()
+
+                    if user is None: 
+                        user = User.objects.create_user(username=username, email=email, last_name=name)
+                        user.is_active = True
+                        user.save()
+                        Profile.objects.create(user=user)
+
+                    login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        return None

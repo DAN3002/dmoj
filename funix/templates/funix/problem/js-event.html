@@ -25,9 +25,9 @@
           blocked = true;
           $.ajax({
             {% if course %}
-            url: '{{ url('beta_submission_testcases_query', course=course.slug) }}',
+            url: '{{ url('beta_submission_testcases_query', course=course.slug) }}{% if iframe and iframe == "1" %}{{"?iframe=1"}}{% endif %}',
             {% else %}
-            url: '{{ url('beta_submission_testcases_query') }}',
+            url: '{{ url('beta_submission_testcases_query') }}{% if iframe and iframe == "1" %}{{"?iframe=1"}}{% endif %}',
             {% endif %}
               data: {id: '{{ submission.id }}'}
           }).done(function (data) {

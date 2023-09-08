@@ -67,7 +67,7 @@ submission.user.user or perms.judge.abort_any_submission) %}
         justify-content: center;
         padding-top: 20px;
       "
-      action="{{ url('beta_submission_abort', submission.id) }}"
+      action="{{ url('beta_submission_abort', submission.id) }}{% if iframe and iframe == '1' %}{{'?iframe=1'}}{% endif %}"
       method="post"
       title="{{ _('Press Ctrl-Enter or Command-Enter to abort.') }}"
     >

@@ -25,7 +25,7 @@
             // else if has initial code (like somecode [...] somecode), display initial code
             // else if has template code, display it
             // else display ""
-            $.get('{{ url('beta_language_template_ajax') }}', {
+            $.get("{{ url('beta_language_template_ajax') }}{% if iframe and iframe == '1' %}{{'?iframe=1'}}{% endif %}", {
               id: lang_id,
               problem_code: `{{problem.id}}`
               }).done(function (template) {
@@ -158,7 +158,11 @@
               suspiciousInput.value = JSON.stringify(value);
             })
             // end ace paste event
-            editor.focus();
+            try {
+                editor.focus();
+            } catch (e) {
+                console.error(e)
+            }
         });
 
         $('#problem_submit').submit(function (event) {
