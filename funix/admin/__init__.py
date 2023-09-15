@@ -17,7 +17,7 @@ from judge.models.problem_data import ProblemTestCase
 inlines = ProblemAdmin.inlines + [ProblemInitialSourceInline]
 
 def get_inline_instances(self, request, obj=None):
-    if obj.allowed_languages.first().short_name in ['HTML', 'CSS']:
+    if obj and obj.allowed_languages.first().short_name in ['HTML', 'CSS']:
         self.inlines = inlines + [ProblemTestCaseInline]
     else:
         self.inlines = inlines
