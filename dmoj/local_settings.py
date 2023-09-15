@@ -54,11 +54,11 @@ if DEBUG == False:
 # Documentation: <https://docs.djangoproject.com/en/3.2/ref/databases/>
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dmoj',
-        'USER': 'dmoj',
-        'PASSWORD': '123',
-        'HOST': '127.0.0.1',
+        'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.mysql'),
+        'NAME':  os.environ.get('DATABASE_NAME', 'dmoj'),
+        'USER':  os.environ.get('DATABASE_USER', 'dmoj'),
+        'PASSWORD':  os.environ.get('DATABASE_PASSWORD', '123'),
+        'HOST':  os.environ.get('DATABASE_HOST', '127.0.0.1'),
         'OPTIONS': {
             'charset': 'utf8mb4',
             'sql_mode': 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION',
@@ -154,16 +154,16 @@ STATIC_URL = '/static/'
 ############################################
 
 ## DMOJ site display settings.
-SITE_NAME = 'DMOJ'
-SITE_LONG_NAME = 'DMOJ: Modern Online Judge'
-SITE_ADMIN_EMAIL = 'admin@example.com'
-TERMS_OF_SERVICE_URL = '//dmoj.ca/tos/'  # Use a flatpage.
+SITE_NAME = os.environ.get('SITE_NAME','DMOJ')
+SITE_LONG_NAME = os.environ.get('SITE_LONG_NAME','DMOJ: Modern Online Judge')
+SITE_ADMIN_EMAIL = os.environ.get('SITE_ADMIN_EMAIL','admin@example.com')
+TERMS_OF_SERVICE_URL = os.environ.get('TERMS_OF_SERVICE_URL','//dmoj.ca/tos/')  # Use a flatpage.
 
 ## Bridge controls.
 # The judge connection address and port; where the judges will connect to the site.
 # You should change this to something your judges can actually connect to
 # (e.g., a port that is unused and unblocked by a firewall).
-BRIDGED_JUDGE_ADDRESS = [('192.168.1.16', 9999)]
+BRIDGED_JUDGE_ADDRESS = [('0.0.0.0', 9999)]
 
 # The bridged daemon bind address and port to communicate with the site.
 BRIDGED_DJANGO_ADDRESS = [('localhost', 9998)]
@@ -189,6 +189,7 @@ EVENT_DAEMON_USE = True
 
 # If you are using the defaults from the guide, it is this:
 EVENT_DAEMON_POST = 'ws://127.0.0.1:15101/'
+# EVENT_DAEMON_POST = 'ws://0.0.0.0:15101/'
 
 # These are the publicly accessed interface configurations.
 # They should match those used by the script.
@@ -347,13 +348,12 @@ DMOJ_PROBLEM_DATA_ROOT = os.path.join(PARENT_BASE_DIR, 'problems')
 # You may add whatever Django configuration you would like here.
 # Do try to keep it separate so you can quickly patch in new settings.
 
-# uuuuvcomment allow to embed <iframe>
-if DEBUG == False:
-    X_FRAME_OPTIONS = 'ALLOWALL'
-    CSRF_COOKIE_SAMESITE = 'None'
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_SAMESITE = 'None'
+# allow to embed <iframe>
+X_FRAME_OPTIONS = 'ALLOWALL'
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
 
 #  add static dirs
 STATICFILES_DIRS = settings.STATICFILES_DIRS
