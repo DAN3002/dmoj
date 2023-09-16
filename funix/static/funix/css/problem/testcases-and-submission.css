@@ -10,6 +10,11 @@
   padding: 0;
 }
 
+.testcases-and-submission table * {
+  white-space: nowrap;
+}
+
+
 #testcases-and-submission-nav {
   background: transparent;
   list-style-type: none;
@@ -111,7 +116,7 @@
   background: var(--bg-main);
 }
 
-.testcase_data_item > label {
+.testcase_data_item>label {
   width: 160px;
   padding: 8px;
   flex-shrink: 0;
@@ -147,7 +152,7 @@
   padding: 8px;
 }
 
-.testcase_data_item > span {
+.testcase_data_item>span {
   display: flex;
   align-items: center;
 }
