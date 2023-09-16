@@ -32,15 +32,17 @@
               data: {id: '{{ submission.id }}'}
           }).done(function (data) {
                 const update_zone = document.getElementById('event-update')
-                update_zone.innerHTML = data;
-
+               update_zone.innerHTML = data;
 
               list.empty().html(data).find('.toggle').each(function () {
                   register_toggle($(this));
               });
 
-              $( "#testcases").tabs();
-              $( ".testcases-and-submission").tabs();
+              console.log(Array.from(document.querySelectorAll('.testcases-and-submission')).length)
+                $(".testcases-and-submission").tabs('destroy');
+                $(".testcases-and-submission").tabs();
+                document.querySelector('.testcases-and-submission ul li').classList.add('ntav')
+                $("#testcases").tabs();
               setTimeout(function () {
                   blocked = false;
 

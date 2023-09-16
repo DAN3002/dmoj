@@ -1,4 +1,6 @@
-<ul id="testcases-and-submission-nav" class="{% if submission and  submission.result is not none %}{{'judging-finished'}}{% endif %}">
+<link rel="stylesheet" href="{{ static('funix/css/problem/testcases-and-submission.css') }}" />
+
+  <ul id="testcases-and-submission-nav" class="{% if submission and  submission.result is not none %}{{'judging-finished'}}{% endif %}">
     <li>
       <a href="#testcases">
         {% if is_html %} {{ _('Criteria') }} {% else %} Test cases {% endif %}
@@ -15,8 +17,11 @@
     id="testcases"
     class="testcases-and-submission-item {% if not is_processing == true or is_html  %}{{'active'}}{% endif %}"
   >
-    {% if is_html %} {% include "funix/submission/testcases-html.html" %} {%
-    else %} {% include "funix/submission/testcases.html" %} {% endif %}
+    {% if is_html %} 
+    {% include "funix/submission/testcases-html.html" %} 
+    {% else %} 
+    {% include "funix/submission/testcases.html" %} 
+    {% endif %}
   </div>
 
   {% if not is_html %}
