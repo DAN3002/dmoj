@@ -16,13 +16,13 @@ PARENT_BASE_DIR = os.path.join(BASE_DIR, '..')
 # SECURITY WARNING: keep the secret key used in production secret!
 # You may use this command to generate a key:
 # python3 -c 'from django.core.management.utils import get_random_secret_key;print(get_random_secret_key())'
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY','*yi4(4v_e9-_j_4y189vgf9434ts-p1hcuzx%_%j%n!89soj33')
+SECRET_KEY = os.environ.get('DMOJ_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'  # Change to False once you are done with runserver testing.
+DEBUG = True  # Change to False once you are done with runserver testing.
 
 # Common variables
-HOST = os.environ.get('DJANGO_HOST', '127.0.0.1')
+HOST = os.environ.get('DMOJ_HOST')
 
 # Uncomment and set to the domain names this site is intended to serve.
 # You must do this once you set DEBUG to False.
@@ -54,11 +54,11 @@ if DEBUG == False:
 # Documentation: <https://docs.djangoproject.com/en/3.2/ref/databases/>
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.mysql'),
+        'ENGINE':  os.environ.get('DATABASE_ENGINE', 'django.db.backends.mysql'),
         'NAME':  os.environ.get('DATABASE_NAME', 'dmoj'),
         'USER':  os.environ.get('DATABASE_USER', 'dmoj'),
         'PASSWORD':  os.environ.get('DATABASE_PASSWORD', '123'),
-        'HOST':  os.environ.get('DATABASE_HOST', '127.0.0.1'),
+        'HOST': os.environ.get('DATABASE_HOST', 'db'),
         'OPTIONS': {
             'charset': 'utf8mb4',
             'sql_mode': 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION',
@@ -98,39 +98,37 @@ STATICFILES_FINDERS += ('compressor.finders.CompressorFinder',)
 # your email settings.
 
 # Use this if you are just testing.
-if DEBUG == True:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend') 
 
 # The following block is included for your convenience, if you want
 # to use Gmail.
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_HOST_USER = '<your account>@gmail.com'
-#EMAIL_HOST_PASSWORD = '<your password>'
-#EMAIL_PORT = 587
+if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
+    EMAIL_USE_TLS = True
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER') # '<your account>@gmail.com'
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') # '<your password>'
+    EMAIL_PORT = 587
 
 # To use Mailgun, uncomment this block.
 # You will need to run `pip install django-mailgun` to get `MailgunBackend`.
-#EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-#MAILGUN_ACCESS_KEY = '<your Mailgun access key>'
-#MAILGUN_SERVER_NAME = '<your Mailgun domain>'
+if EMAIL_BACKEND == 'django_mailgun.MailgunBackend':
+    MAILGUN_ACCESS_KEY = os.environ.get('MAILGUN_ACCESS_KEY') # '<your Mailgun access key>'
+    MAILGUN_SERVER_NAME = os.environ.get('MAILGUN_SERVER_NAME') # '<your Mailgun domain>'
 
 # You can also use SendGrid, with `pip install sendgrid-django`.
-#EMAIL_BACKEND = 'sgbackend.SendGridBackend'
-#SENDGRID_API_KEY = '<Your SendGrid API Key>'
+if EMAIL_BACKEND == 'sgbackend.SendGridBackend':
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY') # '<Your SendGrid API Key>'
 
 # The DMOJ site is able to notify administrators of errors via email,
 # if configured as shown below.
 
 # A tuple of (name, email) pairs that specifies those who will be mailed
 # when the server experiences an error when DEBUG = False.
-ADMINS = (
-    ('Your Name', 'your.email@example.com'),
-)
+
+ADMINS = list(map(lambda admin: tuple(admin.split(',')), os.environ.get('ADMIN_EMAILS').split(';')))
 
 # The sender for the aforementioned emails.
-SERVER_EMAIL = 'DMOJ: Modern Online Judge <errors@dmoj.ca>'
+SERVER_EMAIL = os.environ.get('SERVER_EMAIL')
 
 
 ################################################
@@ -160,13 +158,22 @@ SITE_ADMIN_EMAIL = os.environ.get('SITE_ADMIN_EMAIL','admin@example.com')
 TERMS_OF_SERVICE_URL = os.environ.get('TERMS_OF_SERVICE_URL','//dmoj.ca/tos/')  # Use a flatpage.
 
 ## Bridge controls.
+def parse_address(addrs):
+    addrs = addrs.split(';')
+    addrs = map(lambda addr: addr.split(','), addrs)
+    addrs = map(lambda addr: (addr[0], int(addr[1])), addrs)
+    addrs = list(addrs)
+    return addrs
+
 # The judge connection address and port; where the judges will connect to the site.
 # You should change this to something your judges can actually connect to
 # (e.g., a port that is unused and unblocked by a firewall).
-BRIDGED_JUDGE_ADDRESS = [('0.0.0.0', 9999)]
+# BRIDGED_JUDGE_ADDRESS = [('0.0.0.0', 9999)]
+BRIDGED_JUDGE_ADDRESS = parse_address(os.environ.get('BRIDGED_JUDGE_ADDRESS'))
 
 # The bridged daemon bind address and port to communicate with the site.
-BRIDGED_DJANGO_ADDRESS = [('localhost', 9998)]
+BRIDGED_DJANGO_ADDRESS = parse_address(os.environ.get('BRIDGED_DJANGO_ADDRESS'))
+# BRIDGED_DJANGO_ADDRESS = [('localhost', 9998)]
 
 ## DMOJ features.
 # Set to True to enable full-text searching for problems.
@@ -373,9 +380,9 @@ LMS_AUTHENTICATION_URL = os.environ.get("LMS_AUTHENTICATION_URL", "") if DEBUG i
 DEFAULT_USER_PASSWORD = "" if DEBUG is False else "funix.edu.vn"
 
 ## ======== Iframe isolation settings ========
-IFRAME_SESSION_COOKIE_NAME = "isessionid"
-IFRAME_CSRF_COOKIE_NAME = "icsrftoken"
-IFRAME_LANGUAGE_COOKIE_NAME = "idjango_language"
+IFRAME_SESSION_COOKIE_NAME = os.environ.get('IFRAME_SESSION_COOKIE_NAME')
+IFRAME_CSRF_COOKIE_NAME = os.environ.get('IFRAME_CSRF_COOKIE_NAME')
+IFRAME_LANGUAGE_COOKIE_NAME = os.environ.get('IFRAME_LANGUAGE_COOKIE_NAME')
 
 MIDDLEWARE = list(settings.MIDDLEWARE)
 MIDDLEWARE[2] = "funix.middlewares.CustomSessionMiddleware"
