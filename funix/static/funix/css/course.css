@@ -60,14 +60,20 @@
   align-items: center;
 }
 
+#rating svg {
+  color: rgb(155, 155, 155);
+
+}
+
+#rating svg.star-full {
+  color: orange;
+
+}
+
 #rating button {
   background: transparent;
   border: none;
   padding: 0;
-}
-
-#rating svg {
-  color: orange;
 }
 
 #author-students-rating {
@@ -218,30 +224,30 @@
   border-top: 0.5px solid var(--border);
 }
 
-#tabs > ul {
+#tabs>ul {
   background: transparent;
   border: none;
 }
 
-#tabs > ul > li {
+#tabs>ul>li {
   background: transparent;
   border: none;
 }
 
-#tabs > ul > li a {
+#tabs>ul>li a {
   color: var(--text-color-main);
   text-transform: capitalize;
 }
 
-#tabs > ul > li.ui-state-active {
+#tabs>ul>li.ui-state-active {
   border-bottom: 2px solid blue;
 }
 
-#tabs > ul > li.ui-state-active a {
+#tabs>ul>li.ui-state-active a {
   color: var(--text-color-main-standout);
 }
 
-#tabs > div {
+#tabs>div {
   color: var(--text-color-main-standout);
 }
 
@@ -321,6 +327,11 @@
 .comment-item-reacts svg {
   width: 20px;
   color: var(--text-color-main-standout);
+}
+
+#rating-modal svg {
+  width: 30px;
+  color: gray;
 }
 
 @media screen and (max-width: 992px) {
