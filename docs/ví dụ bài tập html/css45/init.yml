@@ -1,0 +1,5 @@
+checker: css45.py
+archive: css45.zip
+test_cases:
+  - { in: css45.1.in, points: 50 }
+  - { in: css45.2.in, points: 50 }

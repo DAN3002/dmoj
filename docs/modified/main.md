@@ -32,7 +32,6 @@ if DEBUG == False:
 - Mình thêm model **ProblemTestCaseData** one-to-one với **ProblemTestCase** dùng để lưu input data và expected output data (lấy từ input_file và output_file) cho những test case **công khai**.
 - Mình override method của **ProblemTestCase**, khi **save()**, thì sẽ đọc input và output data nếu có, và tạo model **ProblemTestCaseData** tương ứng.
 
-
 ## user story
 - Danh sách problems > chọn problem > trang đề bài > click **Submit solution beta** > trang code, có path: /beta/problem/<-problem code->
 - Nếu chưa đăng nhập, chỉ hiển thị đề bài, vùng code editor sẽ hiển thị yêu cầu login.

@@ -1,0 +1,5 @@
+checker: checker.py
+archive: criteria.zip
+test_cases:
+  - { in: criteria.1.in, points: 50 }
+  - { in: criteria.2.in, points: 50 }

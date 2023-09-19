@@ -1,0 +1,4 @@
+checker: html47.py
+archive: html47.zip
+test_cases:
+  - { in: html47.1.in, out: html47.1.out, points: 100 }

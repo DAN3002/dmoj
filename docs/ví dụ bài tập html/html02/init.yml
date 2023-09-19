@@ -1,0 +1,4 @@
+checker: html02.py
+archive: html02.zip
+test_cases:
+  - { in: html02.1.in, out: html02.1.out, points: 100 }
